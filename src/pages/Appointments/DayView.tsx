@@ -1,4 +1,7 @@
+import { barbers } from '@/constants/barber';
+import { format } from 'date-fns';
 import { MoreHorizontal, Plus } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { cn } from '../../lib/utils';
@@ -15,73 +18,35 @@ const timeSlots = [
   '05:00 PM',
 ];
 
-const barbers = [
-  {
-    id: '1',
-    name: 'Marcus Cole',
-    avatar: 'https://picsum.photos/seed/marcus/50',
-  },
-  { id: '2', name: 'Alex Smith', avatar: 'https://picsum.photos/seed/alex/50' },
-  { id: '3', name: 'Jay Parker', avatar: 'https://picsum.photos/seed/jay/50' },
-];
+interface DayViewProps {
+  selectedDate: Date;
+  appointments: any[];
+}
 
-const appointments = [
-  {
-    id: 1,
-    barberId: '1',
-    client: 'James Wilson',
-    service: 'Fade & Beard',
-    date: '24',
-    time: '10:00 AM',
-    duration: 2,
-    status: 'Confirmed',
-    price: 45,
-    color: 'bg-primary/20 border-primary/50 text-primary-foreground',
-  },
-  {
-    id: 2,
-    barberId: '2',
-    client: 'Elena R.',
-    service: 'Kids Cut',
-    date: '24',
-    time: '02:00 PM',
-    duration: 1,
-    status: 'Confirmed',
-    price: 30,
-    color: 'bg-blue-500/20 border-blue-500/50 text-blue-100',
-  },
-  {
-    id: 3,
-    barberId: '1',
-    client: 'Robert Brown',
-    service: 'Royal Shave',
-    date: '24',
-    time: '04:00 PM',
-    duration: 1,
-    status: 'Pending',
-    price: 55,
-    color: 'bg-purple-500/20 border-purple-500/50 text-purple-100',
-  },
-  {
-    id: 4,
-    barberId: '3',
-    client: 'Mike K.',
-    service: 'Buzz Cut',
-    date: '24',
-    time: '09:00 AM',
-    duration: 1,
-    status: 'Completed',
-    price: 25,
-    color: 'bg-green-500/20 border-green-500/50 text-green-100',
-  },
-];
+export const DayView = ({ selectedDate, appointments }: DayViewProps) => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const dateStr = format(selectedDate, 'd');
 
-export const DayView = () => {
+  const handlePlusClick = (time: string, barberId: string) => {
+    const dateFormatted = format(selectedDate, 'yyyy-MM-dd');
+    // Vaqtni HH:mm formatiga o'tkazish (09:00 AM -> 09:00)
+    let pTime = time.split(' ')[0];
+    const modifier = time.split(' ')[1];
+    let [hours, minutes] = pTime.split(':');
+    if (hours === '12') hours = '00';
+    if (modifier === 'PM') hours = (parseInt(hours) + 12).toString();
+    const timeFormatted = `${hours.padStart(2, '0')}:${minutes}`;
+
+    navigate(
+      `?booking=new&date=${dateFormatted}&time=${timeFormatted}&barberId=${barberId}`,
+    );
+  };
+
   return (
     <Card className='overflow-hidden bg-surface/50 border-white/5 w-full'>
       <div className='overflow-x-auto custom-scrollbar w-full'>
         <div className='min-w-[600px]'>
-          {/* Header Row */}
           <div className='grid grid-cols-[100px_1fr_1fr_1fr] border-b border-white/5 bg-surface sticky top-0 z-10'>
             <div className='p-4 border-r border-white/5 flex items-center justify-center text-xs font-bold text-gray-500 uppercase'>
               Vaqt
@@ -103,25 +68,22 @@ export const DayView = () => {
             ))}
           </div>
 
-          {/* Time Slots */}
           <div className='relative'>
             {timeSlots.map((time) => (
               <div
                 key={time}
                 className='grid grid-cols-[100px_1fr_1fr_1fr] min-h-[120px] border-b border-white/5 last:border-b-0'
               >
-                {/* Time Label */}
                 <div className='p-4 border-r border-white/5 text-xs text-gray-500 font-medium text-center sticky left-0 bg-surface/95 backdrop-blur-sm z-10'>
                   {time}
                 </div>
 
-                {/* Columns */}
                 {barbers.map((barber) => {
                   const appt = appointments.find(
                     (a) =>
                       a.barberId === barber.id &&
                       a.time === time &&
-                      a.date === '24',
+                      a.date === dateStr,
                   );
                   return (
                     <div
@@ -154,12 +116,12 @@ export const DayView = () => {
                           </div>
                         </div>
                       )}
-                      {/* Empty slot hover effect */}
                       {!appt && (
                         <div className='opacity-0 group-hover:opacity-100 absolute inset-0 flex items-center justify-center pointer-events-none'>
                           <Button
                             size='sm'
                             variant='ghost'
+                            onClick={() => handlePlusClick(time, barber.id)}
                             className='pointer-events-auto h-8 text-xs bg-white/5 hover:bg-white/10 rounded-full'
                           >
                             <Plus className='w-3 h-3 mr-1' /> Qo'shish
@@ -171,11 +133,6 @@ export const DayView = () => {
                 })}
               </div>
             ))}
-
-            {/* Current Time Line Indicator */}
-            <div className='absolute left-[100px] right-0 top-[280px] border-t-2 border-red-500 z-0 pointer-events-none opacity-50'>
-              <div className='absolute -left-[6px] -top-[5px] w-2.5 h-2.5 rounded-full bg-red-500' />
-            </div>
           </div>
         </div>
       </div>

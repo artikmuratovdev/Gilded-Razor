@@ -1,5 +1,6 @@
 import { CreditCard, Package, Scissors, Search, UserPlus } from 'lucide-react';
 import type { Dispatch, SetStateAction } from 'react';
+import { useSearchParams } from 'react-router';
 import { Button } from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
@@ -29,6 +30,14 @@ const Modals = ({
   onNewPayment,
   newPayment,
 }: ModalProps) => {
+  const [searchParams] = useSearchParams();
+
+  // URL dan sana va vaqtni olish
+  const paramDate = searchParams.get('date'); // YYYY-MM-DD
+  const paramTime = searchParams.get('time'); // HH:mm
+  const defaultDateTime =
+    paramDate && paramTime ? `${paramDate}T${paramTime}` : '';
+
   return (
     <>
       {/* New Booking Modal */}
@@ -49,16 +58,19 @@ const Modals = ({
             <Select
               label='Sartarosh Tanlash'
               icon={<Scissors className='h-4 w-4' />}
+              defaultValue={searchParams.get('barberId') || ''}
             >
-              <option>Mutaxassis tanlang</option>
-              <option>Marcus Cole</option>
-              <option>Alex Smith</option>
+              <option value=''>Mutaxassis tanlang</option>
+              <option value='1'>Marcus Cole</option>
+              <option value='2'>Alex Smith</option>
+              <option value='3'>Jay Parker</option>
             </Select>
           </div>
           <Input
             label='Sana va Vaqt'
             type='datetime-local'
             className='scheme-dark'
+            defaultValue={defaultDateTime}
           />
 
           <div className='pt-2'>
@@ -88,7 +100,7 @@ const Modals = ({
             <Button variant='ghost' onClick={() => onNewBooking(false)}>
               Bekor Qilish
             </Button>
-            <Button variant='primary'>Bronni Tasdiqlash</Button>
+            <Button variant='default'>Bronni Tasdiqlash</Button>
           </div>
         </div>
       </Modal>
@@ -104,7 +116,7 @@ const Modals = ({
         <div className='space-y-6'>
           <Input label='Mahsulot Nomi' placeholder='Masalan: Matt Loy' />
           <div className='grid grid-cols-2 gap-6'>
-            <Select label='Kategoriya'>
+            <Select label='Kategoriya' icon={<Package className='h-4 w-4' />}>
               <option>Soch Bezatish</option>
               <option>Sartaroshlik</option>
               <option>Soqol Parvarishi</option>
@@ -123,7 +135,7 @@ const Modals = ({
             <Button variant='ghost' onClick={() => onNewProduct(false)}>
               Bekor Qilish
             </Button>
-            <Button variant='primary'>Mahsulotni Saqlash</Button>
+            <Button variant='default'>Mahsulotni Saqlash</Button>
           </div>
         </div>
       </Modal>
@@ -152,7 +164,7 @@ const Modals = ({
             <Button variant='ghost' onClick={() => onNewClient(false)}>
               Bekor Qilish
             </Button>
-            <Button variant='primary'>Profil Yaratish</Button>
+            <Button variant='default'>Profil Yaratish</Button>
           </div>
         </div>
       </Modal>
@@ -193,7 +205,7 @@ const Modals = ({
             <Button variant='ghost' onClick={() => onNewStaff(false)}>
               Bekor Qilish
             </Button>
-            <Button variant='primary'>Xodim Qo'shish</Button>
+            <Button variant='default'>Xodim Qo'shish</Button>
           </div>
         </div>
       </Modal>
@@ -243,7 +255,7 @@ const Modals = ({
             <Button variant='ghost' onClick={() => onNewPayment(false)}>
               Bekor Qilish
             </Button>
-            <Button variant='primary' className='w-full sm:w-auto'>
+            <Button variant='default' className='w-full sm:w-auto'>
               Kartani To'lash
             </Button>
           </div>
