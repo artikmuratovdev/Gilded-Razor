@@ -19,7 +19,8 @@ interface ClientsTableProps {
 export const ClientsTable = ({ data }: ClientsTableProps) => {
   return (
     <>
-      <div className='overflow-x-auto'>
+      {/* Desktop Table View */}
+      <div className='hidden md:block overflow-x-auto'>
         <table className='w-full text-left'>
           <thead>
             <tr className='text-xs text-gray-500 font-bold uppercase tracking-wider bg-surface-light/30'>
@@ -125,17 +126,119 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
         </table>
       </div>
 
+      {/* Mobile/Tablet Card View */}
+      <div className='md:hidden divide-y divide-white/5'>
+        {data.length > 0 ? (
+          data.map((client) => (
+            <div
+              key={client.id}
+              className='p-4 space-y-4 hover:bg-white/[0.01] transition-colors'
+            >
+              <div className='flex justify-between items-start'>
+                <div className='flex items-center gap-3'>
+                  <img
+                    src={client.avatar}
+                    alt={client.name}
+                    className='w-12 h-12 rounded-full object-cover border border-white/10'
+                  />
+                  <div>
+                    <h4 className='font-bold text-white'>{client.name}</h4>
+                    <div className='flex items-center gap-1 text-[10px] text-primary mt-0.5'>
+                      <Star className='w-3 h-3 fill-current' />
+                      <span>{client.visits} Ta Tashrif</span>
+                    </div>
+                  </div>
+                </div>
+                <Badge
+                  variant={
+                    client.status === 'VIP'
+                      ? 'gold'
+                      : client.status === 'New'
+                        ? 'success'
+                        : 'default'
+                  }
+                  className='text-[9px]'
+                >
+                  {client.status}
+                </Badge>
+              </div>
+
+              <div className='grid grid-cols-2 gap-4 bg-white/[0.02] p-3 rounded-xl border border-white/5'>
+                <div className='space-y-1'>
+                  <p className='text-[8px] text-gray-500 font-bold uppercase'>
+                    Aloqa
+                  </p>
+                  <p className='text-[10px] text-gray-300 truncate max-w-full'>
+                    {client.email}
+                  </p>
+                  <p className='text-[10px] text-gray-300'>{client.phone}</p>
+                </div>
+                <div className='space-y-1'>
+                  <p className='text-[8px] text-gray-500 font-bold uppercase'>
+                    Sarflandi
+                  </p>
+                  <p className='text-xs font-bold text-white'>
+                    {formatCurrency(client.totalSpend)}
+                  </p>
+                  <p className='text-[10px] text-gray-500'>
+                    {client.lastVisit}
+                  </p>
+                </div>
+              </div>
+
+              <div className='flex gap-2 w-full'>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='flex-1 h-9 text-xs gap-2'
+                >
+                  <MessageSquare className='h-3.5 w-3.5' /> Xabar
+                </Button>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='flex-1 h-9 text-xs gap-2'
+                >
+                  <Pencil className='h-3.5 w-3.5' /> Tahrirlash
+                </Button>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='w-10 h-9 p-0 text-red-400 hover:text-red-300 hover:bg-red-400/10'
+                >
+                  <Trash2 className='h-3.5 w-3.5' />
+                </Button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className='p-10 text-center text-gray-500 italic'>
+            Mijozlar topilmadi
+          </div>
+        )}
+      </div>
+
       {/* Pagination */}
-      <div className='p-4 border-t border-white/5 flex justify-between items-center text-xs text-gray-400'>
-        <span>
+      <div className='p-4 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-400'>
+        <span className='order-2 sm:order-1 text-center sm:text-left'>
           {data.length} ta mijozdan {data.length > 0 ? '1' : '0'}-{data.length}{' '}
           ta ko'rsatilmoqda
         </span>
-        <div className='flex gap-2'>
-          <Button variant='outline' size='sm' disabled>
+        <div className='flex gap-2 order-1 sm:order-2 w-full sm:w-auto'>
+          <Button
+            variant='outline'
+            size='sm'
+            className='flex-1 sm:flex-none'
+            disabled
+          >
             Oldingi
           </Button>
-          <Button variant='outline' size='sm' disabled={data.length < 5}>
+          <Button
+            variant='outline'
+            size='sm'
+            className='flex-1 sm:flex-none'
+            disabled={data.length < 5}
+          >
             Keyingi
           </Button>
         </div>

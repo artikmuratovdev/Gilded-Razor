@@ -13,13 +13,20 @@ export const StaffPage = () => {
   };
 
   return (
-    <div className='space-y-8 animate-in fade-in zoom-in-95 duration-500'>
+    <div className='space-y-6 sm:space-y-8 animate-in fade-in zoom-in-95 duration-500'>
       {/* Top Stats */}
       <StaffStats />
 
-      <div className='flex justify-between items-center'>
-        <h2 className='text-xl font-bold text-white'>Faol Sartaroshlar</h2>
-        <Button variant='outline' size='sm' onClick={handleOpenModal}>
+      <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0'>
+        <h2 className='text-lg sm:text-xl font-bold text-white'>
+          Faol Sartaroshlar
+        </h2>
+        <Button
+          variant='outline'
+          size='sm'
+          onClick={handleOpenModal}
+          className='w-full sm:w-auto text-xs'
+        >
           Barcha Navbatlar
         </Button>
       </div>
@@ -28,7 +35,9 @@ export const StaffPage = () => {
       <StaffGrid staffMembers={staffMembers} onAddStaff={handleOpenModal} />
 
       {/* Leaderboard Table */}
-      <StaffLeaderboard staffMembers={staffMembers} />
+      <div className='pt-2'>
+        <StaffLeaderboard staffMembers={staffMembers} />
+      </div>
     </div>
   );
 };

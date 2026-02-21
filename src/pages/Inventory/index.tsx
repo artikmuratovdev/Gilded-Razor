@@ -51,12 +51,14 @@ const inventory = [
 
 export const Inventory = () => {
   return (
-    <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
+    <div className='space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
       {/* Stats Cards */}
       <InventoryStats />
 
       <div className='flex justify-between items-center gap-4'>
-        <h2 className='text-xl font-bold text-white'>Mahsulot Ombori</h2>
+        <h2 className='text-lg sm:text-xl font-bold text-white uppercase tracking-tight'>
+          Mahsulot Ombori
+        </h2>
       </div>
 
       <InventoryTable inventory={inventory} />

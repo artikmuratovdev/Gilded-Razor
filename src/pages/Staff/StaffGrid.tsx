@@ -3,7 +3,7 @@ import { Clock, Plus, Scissors } from 'lucide-react';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
-import { formatCurrency } from '../../lib/utils';
+import { cn, formatCurrency } from '../../lib/utils';
 
 interface StaffGridProps {
   staffMembers: Staff[];
@@ -12,25 +12,32 @@ interface StaffGridProps {
 
 export const StaffGrid = ({ staffMembers, onAddStaff }: StaffGridProps) => {
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6'>
+    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6'>
       {staffMembers.map((staff) => (
         <Card
           key={staff.id}
-          className='overflow-hidden group hover:border-primary/50 transition-colors'
+          className='overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40'
         >
-          <CardContent className='p-6'>
-            <div className='flex justify-between items-start mb-6'>
+          <CardContent className='p-4 sm:p-6'>
+            <div className='flex justify-between items-start mb-4 sm:mb-6'>
               <div className='relative'>
                 <img
                   src={staff.avatar}
                   alt={staff.name}
-                  className='w-16 h-16 rounded-2xl object-cover border-2 border-white/5'
+                  className='w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-white/5'
                 />
                 <div
-                  className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-surface flex items-center justify-center ${staff.status === 'Available' ? 'bg-green-500' : staff.status === 'In Session' ? 'bg-blue-500' : 'bg-gray-500'}`}
+                  className={cn(
+                    'absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-surface flex items-center justify-center',
+                    staff.status === 'Available'
+                      ? 'bg-green-500'
+                      : staff.status === 'In Session'
+                        ? 'bg-blue-500'
+                        : 'bg-gray-500',
+                  )}
                 >
                   {staff.status === 'In Session' && (
-                    <Scissors className='w-3 h-3 text-white' />
+                    <Scissors className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-white' />
                   )}
                 </div>
               </div>
@@ -43,7 +50,7 @@ export const StaffGrid = ({ staffMembers, onAddStaff }: StaffGridProps) => {
                         ? 'info'
                         : 'default'
                   }
-                  className='mb-2'
+                  className='mb-2 text-[9px] sm:text-[10px]'
                 >
                   {staff.status === 'Available'
                     ? 'MAVJUD'
@@ -51,30 +58,34 @@ export const StaffGrid = ({ staffMembers, onAddStaff }: StaffGridProps) => {
                       ? 'SESSIYADA'
                       : 'TANAFFUSDA'}
                 </Badge>
-                <p className='text-[10px] text-gray-400 font-bold uppercase'>
+                <p className='text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase'>
                   Bugungi Daromad
                 </p>
-                <p className='text-lg font-bold text-white'>
+                <p className='text-base sm:text-lg font-bold text-white'>
                   {formatCurrency(staff.todayRevenue)}
                 </p>
               </div>
             </div>
 
-            <div className='mb-6'>
-              <h3 className='text-lg font-bold text-white'>{staff.name}</h3>
-              <p className='text-sm text-primary font-medium'>{staff.role}</p>
+            <div className='mb-4 sm:mb-6'>
+              <h3 className='text-base sm:text-lg font-bold text-white truncate'>
+                {staff.name}
+              </h3>
+              <p className='text-xs sm:text-sm text-primary font-medium'>
+                {staff.role}
+              </p>
             </div>
 
-            <div className='bg-surface-light rounded-xl p-3 mb-4 border border-white/5'>
-              <p className='text-[10px] text-gray-400 font-bold uppercase mb-1'>
+            <div className='bg-surface-light rounded-xl p-2.5 sm:p-3 mb-4 border border-white/5'>
+              <p className='text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase mb-1'>
                 {staff.status === 'Available'
                   ? 'Keyingi Uchrashuv'
                   : staff.status === 'In Session'
                     ? 'Joriy Sessiya'
                     : 'Holat Eslatmasi'}
               </p>
-              <div className='flex justify-between items-center'>
-                <span className='text-sm font-medium text-white'>
+              <div className='flex justify-between items-center gap-2'>
+                <span className='text-xs sm:text-sm font-medium text-white truncate'>
                   {staff.status === 'Available'
                     ? '10:30 AM • Robert B.'
                     : staff.status === 'In Session'
@@ -82,26 +93,38 @@ export const StaffGrid = ({ staffMembers, onAddStaff }: StaffGridProps) => {
                       : '15 daqiqadan keyin'}
                 </span>
                 {staff.status === 'Available' && (
-                  <Badge variant='gold' className='text-[10px]'>
+                  <Badge
+                    variant='gold'
+                    className='text-[8px] sm:text-[9px] whitespace-nowrap px-1.5'
+                  >
                     Hot Shave
                   </Badge>
                 )}
                 {staff.status === 'In Session' && (
-                  <Badge variant='info' className='text-[10px]'>
+                  <Badge
+                    variant='info'
+                    className='text-[8px] sm:text-[9px] whitespace-nowrap px-1.5'
+                  >
                     Fade Cut
                   </Badge>
                 )}
                 {staff.status === 'On Break' && (
-                  <Clock className='w-4 h-4 text-gray-400' />
+                  <Clock className='w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400' />
                 )}
               </div>
             </div>
 
-            <div className='grid grid-cols-2 gap-3'>
-              <Button variant='outline' className='w-full text-xs h-9'>
+            <div className='grid grid-cols-2 gap-2 sm:gap-3'>
+              <Button
+                variant='outline'
+                className='w-full text-[10px] sm:text-xs h-8 sm:h-9'
+              >
                 Jadval
               </Button>
-              <Button variant='ghost' className='w-full text-xs h-9'>
+              <Button
+                variant='ghost'
+                className='w-full text-[10px] sm:text-xs h-8 sm:h-9'
+              >
                 Profil
               </Button>
             </div>
@@ -112,15 +135,15 @@ export const StaffGrid = ({ staffMembers, onAddStaff }: StaffGridProps) => {
       {/* Add New Card */}
       <button
         onClick={onAddStaff}
-        className='rounded-2xl border border-dashed border-white/10 bg-surface/50 hover:bg-surface hover:border-primary/50 transition-all flex flex-col items-center justify-center p-6 text-center group cursor-pointer h-full min-h-[300px]'
+        className='rounded-2xl border border-dashed border-white/10 bg-surface/30 hover:bg-surface/50 hover:border-primary/50 transition-all flex flex-col items-center justify-center p-6 text-center group cursor-pointer h-full min-h-[220px] sm:min-h-[280px]'
       >
-        <div className='w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors mb-4'>
-          <Plus className='w-6 h-6 text-gray-400 group-hover:text-primary' />
+        <div className='w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors mb-3 sm:mb-4'>
+          <Plus className='w-5 h-5 sm:w-6 sm:h-6 text-gray-400 group-hover:text-primary' />
         </div>
-        <h3 className='text-lg font-bold text-white group-hover:text-primary transition-colors'>
-          Yangi Jamoa A'zosini Qo'shish
+        <h3 className='text-base sm:text-lg font-bold text-white group-hover:text-primary transition-colors'>
+          Jamoaga Qo'shish
         </h3>
-        <p className='text-sm text-gray-500 mt-2'>
+        <p className='text-[10px] sm:text-sm text-gray-500 mt-1 sm:mt-2'>
           Sartaroshxona jamoangizni kengaytiring
         </p>
       </button>
