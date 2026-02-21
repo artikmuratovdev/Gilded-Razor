@@ -2,7 +2,6 @@ import { clients } from '@/constants/clients';
 import { useState } from 'react';
 import { Card, CardContent } from '../../components/ui/Card';
 import { ClientsFilters } from './ClientsFilters';
-import { ClientsHeader } from './ClientsHeader';
 import { ClientsTable } from './ClientsTable';
 
 export const Clients = () => {
@@ -25,7 +24,6 @@ export const Clients = () => {
 
   return (
     <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
-      <ClientsHeader />
 
       <Card>
         <CardContent className='p-0'>

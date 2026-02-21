@@ -1,3 +1,4 @@
+import type { Client } from '@/types';
 import {
   Calendar,
   Mail,
@@ -10,17 +11,6 @@ import {
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { formatCurrency } from '../../lib/utils';
-interface Client {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  avatar: string;
-  lastVisit: string;
-  totalSpend: number;
-  visits: number;
-  status: string;
-}
 
 interface ClientsTableProps {
   data: Client[];

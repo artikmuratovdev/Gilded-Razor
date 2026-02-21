@@ -108,10 +108,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
           <div className='hidden sm:block'>
             <h2 className='text-2xl font-bold text-white capitalize'>
-              {setMenuLabel(currentPage)}
+              {setMenuLabel(currentPage)?.title || 'Dashboard'}
             </h2>
             <p className='text-sm text-gray-400'>
-              Xush kelibsiz, bugun nima bo'layotganini ko'ring.
+              {setMenuLabel(currentPage)?.description || 'Dashboard description'}
             </p>
           </div>
 

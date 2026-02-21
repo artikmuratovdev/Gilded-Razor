@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/Button';
+import type { Booking } from '@/types';
 import { CalendarDays } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Modal } from '../../components/ui/Modal';
-import type { Booking } from '../../types';
 
 const recentBookings: Booking[] = [
   {

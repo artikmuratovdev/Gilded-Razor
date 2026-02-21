@@ -36,7 +36,7 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
       </div>
 
       {/* Nav */}
-      <nav className='flex-1 px-4 py-8 space-y-1 overflow-y-auto custom-scrollbar'>
+      <nav className='flex-1 py-2 px-3 space-y-1 overflow-y-auto custom-scrollbar'>
         {menuItems.slice(0,6).map(
           (
             item, // Display first 5 items for 'Main Menu'

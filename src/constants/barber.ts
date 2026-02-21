@@ -1,4 +1,6 @@
-export const staffMembers = [
+import type { Staff } from '@/types';
+
+export const staffMembers: Staff[] = [
   {
     id: '1',
     name: 'Marcus Cole',
@@ -27,4 +29,5 @@ export const staffMembers = [
     nextAppointment: '15 mins',
     todayRevenue: 150,
     rating: 4.5,
-  }];
+  },
+];

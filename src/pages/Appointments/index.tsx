@@ -13,16 +13,12 @@ export const Appointments = () => {
 
   const filteredAppointments = useMemo(() => {
     return appointmentsData.filter((appt) => {
-      // 1. Search filter (client name or service)
       const matchesSearch = appt.client
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
 
       if (!matchesSearch) return false;
 
-      // 2. Date filter based on view
-      // Eslatma: Demo data 'date' maydoni faqat kunni o'z ichiga oladi (masalan '24')
-      // Shuning uchun hozircha kun bo'yicha solishtiramiz
       const apptDateStr = appt.date;
 
       if (view === 'day') {
@@ -33,20 +29,15 @@ export const Appointments = () => {
         const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
         const end = endOfWeek(selectedDate, { weekStartsOn: 1 });
 
-        // Demo uchun: haftadagi kunlarni tekshiramiz
-        // Real loyihada to'liq Date obyekti bilan solishtiriladi
         const dayInMonth = parseInt(apptDateStr);
         const startDay = parseInt(format(start, 'd'));
         const endDay = parseInt(format(end, 'd'));
-
-        // Bu sodda mantiq bir oy ichidagi kunlar uchun ishlaydi
         if (start.getMonth() === end.getMonth()) {
           return dayInMonth >= startDay && dayInMonth <= endDay;
         }
-        return true; // Oy almashganda demo uchun hamma narsani ko'rsatish
+        return true;
       }
 
-      // 'list' ko'rinishida tanlangan sana va undan keyingilarni ko'rsatamiz
       const apptDay = parseInt(apptDateStr);
       const selectedDay = parseInt(format(selectedDate, 'd'));
 
@@ -55,7 +46,7 @@ export const Appointments = () => {
   }, [selectedDate, searchQuery, view]);
 
   return (
-    <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-full'>
+    <div className='space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-full'>
       <div className='relative'>
         <AppointmentsToolbar
           view={view}

@@ -3,15 +3,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Card, CardContent } from '../../components/ui/Card';
 import { cn, formatCurrency } from '../../lib/utils';
 
-interface InventoryItem {
-  id: number;
-  name: string;
-  category: string;
-  stock: number;
-  maxStock: number;
-  price: number;
-  status: string;
-}
+import type { InventoryItem } from '@/types';
 
 interface InventoryTableProps {
   inventory: InventoryItem[];

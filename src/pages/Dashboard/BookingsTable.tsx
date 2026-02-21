@@ -1,3 +1,4 @@
+import type { Booking } from '@/types';
 import { AlertTriangle, Download, Pencil, X } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '../../components/ui/Badge';
@@ -5,7 +6,6 @@ import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Input, Select } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
-import type { Booking } from '../../types';
 
 const recentBookings: Booking[] = [
   {
@@ -227,7 +227,7 @@ export const BookingsTable = () => {
               >
                 Bekor Qilish
               </Button>
-              <Button type='submit' variant='primary'>
+              <Button type='submit' variant='default'>
                 O'zgarishlarni Saqlash
               </Button>
             </div>
@@ -247,7 +247,10 @@ export const BookingsTable = () => {
           <Button variant='ghost' onClick={() => setIsDeleteModalOpen(false)}>
             Bronni Saqlash
           </Button>
-          <Button variant='danger' onClick={() => setIsDeleteModalOpen(false)}>
+          <Button
+            variant='destructive'
+            onClick={() => setIsDeleteModalOpen(false)}
+          >
             Ha, Bekor Qilish
           </Button>
         </div>

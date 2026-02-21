@@ -1,4 +1,6 @@
-export const data = [
+import type { Appointment } from '@/types';
+
+export const data: Appointment[] = [
   {
     id: 1,
     barberId: '1',
