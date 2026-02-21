@@ -10,66 +10,23 @@ import {
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { formatCurrency } from '../../lib/utils';
+interface Client {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  lastVisit: string;
+  totalSpend: number;
+  visits: number;
+  status: string;
+}
 
-const clients = [
-  {
-    id: 1,
-    name: 'James Wilson',
-    email: 'j.wilson@example.com',
-    phone: '+1 (555) 012-3456',
-    avatar: 'https://picsum.photos/seed/james/100',
-    lastVisit: 'Oct 24, 2023',
-    totalSpend: 1250,
-    visits: 12,
-    status: 'VIP',
-  },
-  {
-    id: 2,
-    name: 'Elena Rodriguez',
-    email: 'elena.r@example.com',
-    phone: '+1 (555) 098-7654',
-    avatar: 'https://picsum.photos/seed/elena/100',
-    lastVisit: 'Oct 20, 2023',
-    totalSpend: 450,
-    visits: 4,
-    status: 'Regular',
-  },
-  {
-    id: 3,
-    name: 'Robert Brown',
-    email: 'r.brown@example.com',
-    phone: '+1 (555) 111-2222',
-    avatar: 'https://picsum.photos/seed/robert/100',
-    lastVisit: 'Oct 15, 2023',
-    totalSpend: 890,
-    visits: 8,
-    status: 'Returning',
-  },
-  {
-    id: 4,
-    name: 'Sarah Miller',
-    email: 'sarah.m@example.com',
-    phone: '+1 (555) 333-4444',
-    avatar: 'https://picsum.photos/seed/sarah/100',
-    lastVisit: 'Sep 30, 2023',
-    totalSpend: 2100,
-    visits: 18,
-    status: 'VIP',
-  },
-  {
-    id: 5,
-    name: 'Michael Chen',
-    email: 'm.chen@example.com',
-    phone: '+1 (555) 555-6666',
-    avatar: 'https://picsum.photos/seed/michael/100',
-    lastVisit: 'Oct 25, 2023',
-    totalSpend: 120,
-    visits: 2,
-    status: 'New',
-  },
-];
+interface ClientsTableProps {
+  data: Client[];
+}
 
-export const ClientsTable = () => {
+export const ClientsTable = ({ data }: ClientsTableProps) => {
   return (
     <>
       <div className='overflow-x-auto'>
@@ -84,7 +41,7 @@ export const ClientsTable = () => {
             </tr>
           </thead>
           <tbody className='divide-y divide-white/5'>
-            {clients.map((client) => (
+            {data.map((client) => (
               <tr
                 key={client.id}
                 className='group hover:bg-white/[0.02] transition-colors'
@@ -180,12 +137,15 @@ export const ClientsTable = () => {
 
       {/* Pagination */}
       <div className='p-4 border-t border-white/5 flex justify-between items-center text-xs text-gray-400'>
-        <span>128 ta mijozdan 1-5 ta ko'rsatilmoqda</span>
+        <span>
+          {data.length} ta mijozdan {data.length > 0 ? '1' : '0'}-{data.length}{' '}
+          ta ko'rsatilmoqda
+        </span>
         <div className='flex gap-2'>
           <Button variant='outline' size='sm' disabled>
             Oldingi
           </Button>
-          <Button variant='outline' size='sm'>
+          <Button variant='outline' size='sm' disabled={data.length < 5}>
             Keyingi
           </Button>
         </div>

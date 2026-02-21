@@ -1,5 +1,3 @@
-import { Button } from '../../components/ui/Button';
-
 export const ClientsHeader = () => {
   return (
     <div className='flex justify-between items-center gap-4'>
@@ -9,9 +7,6 @@ export const ClientsHeader = () => {
           Mijozlar bazangizni ko'ring va boshqaring.
         </p>
       </div>
-      <Button variant='primary' className='gap-2'>
-        Ro'yxatni Eksport Qilish
-      </Button>
     </div>
   );
 };
