@@ -1,9 +1,30 @@
-export const barbers = [
+export const staffMembers = [
   {
     id: '1',
     name: 'Marcus Cole',
-    avatar: 'https://picsum.photos/seed/marcus/50',
+    role: 'Master Barber',
+    avatar: 'https://picsum.photos/seed/marcus/150',
+    status: 'Available',
+    todayRevenue: 420,
+    rating: 5.0,
   },
-  { id: '2', name: 'Alex Smith', avatar: 'https://picsum.photos/seed/alex/50' },
-  { id: '3', name: 'Jay Parker', avatar: 'https://picsum.photos/seed/jay/50' },
-];
+  {
+    id: '2',
+    name: 'Alex Smith',
+    role: 'Stylist',
+    avatar: 'https://picsum.photos/seed/alex/150',
+    status: 'In Session',
+    currentSessionEnd: '10:15 AM',
+    todayRevenue: 285.5,
+    rating: 4.8,
+  },
+  {
+    id: '3',
+    name: 'Jay Parker',
+    role: 'Barber',
+    avatar: 'https://picsum.photos/seed/jay/150',
+    status: 'On Break',
+    nextAppointment: '15 mins',
+    todayRevenue: 150,
+    rating: 4.5,
+  }];

@@ -1,7 +1,7 @@
-import { barbers } from '@/constants/barber';
+import { staffMembers as barbers } from '@/constants/barber';
 import { format } from 'date-fns';
 import { MoreHorizontal, Plus } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { cn } from '../../lib/utils';
@@ -25,7 +25,6 @@ interface DayViewProps {
 
 export const DayView = ({ selectedDate, appointments }: DayViewProps) => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const dateStr = format(selectedDate, 'd');
 
   const handlePlusClick = (time: string, barberId: string) => {

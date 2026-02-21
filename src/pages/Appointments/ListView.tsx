@@ -1,4 +1,4 @@
-import { barbers } from '@/constants/barber';
+import { staffMembers as barbers } from '@/constants/barber';
 import { Clock, MoreHorizontal } from 'lucide-react';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';

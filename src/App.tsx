@@ -23,33 +23,56 @@ function App() {
     if (searchParams.get('booking') === 'new') {
       setIsBookingModalOpen(true);
     }
+    if (searchParams.get('staff') === 'new') {
+      setIsStaffModalOpen(true);
+    }
+    if (searchParams.get('client') === 'new') {
+      setIsClientModalOpen(true);
+    }
+    if (searchParams.get('product') === 'new') {
+      setIsProductModalOpen(true);
+    }
   }, [searchParams]);
 
-  const handleCloseBooking = (
-    value: boolean | ((prev: boolean) => boolean),
-  ) => {
-    const nextValue =
-      typeof value === 'function' ? (value as any)(isBookingModalOpen) : value;
-    setIsBookingModalOpen(nextValue);
+  const clearParams = (keys: string[]) => {
+    const params = new URLSearchParams(searchParams);
+    keys.forEach((key) => params.delete(key));
+    setSearchParams(params);
+  };
 
-    if (!nextValue) {
-      // Modal yopilganda URL parametrlarini tozalash
-      const params = new URLSearchParams(searchParams);
-      params.delete('booking');
-      params.delete('date');
-      params.delete('time');
-      params.delete('barberId');
-      setSearchParams(params);
-    }
+  const handleCloseBooking = (open: boolean) => {
+    setIsBookingModalOpen(open);
+    if (!open) clearParams(['booking', 'date', 'time', 'barberId']);
+  };
+
+  const handleCloseStaff = (open: boolean) => {
+    setIsStaffModalOpen(open);
+    if (!open) clearParams(['staff']);
+  };
+
+  const handleCloseClient = (open: boolean) => {
+    setIsClientModalOpen(open);
+    if (!open) clearParams(['client']);
+  };
+
+  const handleCloseProduct = (open: boolean) => {
+    setIsProductModalOpen(open);
+    if (!open) clearParams(['product']);
+  };
+
+  const setParam = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set(key, value);
+    setSearchParams(params);
   };
 
   return (
     <>
       <MainLayout
-        onNewBooking={() => setIsBookingModalOpen(true)}
-        onNewStaff={() => setIsStaffModalOpen(true)}
-        onNewClient={() => setIsClientModalOpen(true)}
-        onNewProduct={() => setIsProductModalOpen(true)}
+        onNewBooking={() => setParam('booking', 'new')}
+        onNewStaff={() => setParam('staff', 'new')}
+        onNewClient={() => setParam('client', 'new')}
+        onNewProduct={() => setParam('product', 'new')}
       >
         <Routes>
           <Route path='/' element={<Navigate to='/dashboard' replace />} />
@@ -65,9 +88,9 @@ function App() {
 
         <Modals
           onNewBooking={handleCloseBooking as any}
-          onNewStaff={setIsStaffModalOpen}
-          onNewClient={setIsClientModalOpen}
-          onNewProduct={setIsProductModalOpen}
+          onNewStaff={handleCloseStaff as any}
+          onNewClient={handleCloseClient as any}
+          onNewProduct={handleCloseProduct as any}
           onNewPayment={setIsPaymentModalOpen}
           newBooking={isBookingModalOpen}
           newStaff={isStaffModalOpen}
