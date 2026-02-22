@@ -175,9 +175,9 @@ const Modals = ({
       >
         <form
           onSubmit={bookingForm.handleSubmit(onBookingSubmit)}
-          className='space-y-6'
+          className='space-y-2 sm:space-y-4'
         >
-          <div className='grid grid-cols-2 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
               <Input
                 label='Mijoz Ismi'
@@ -225,8 +225,8 @@ const Modals = ({
             )}
           </div>
 
-          <div className='pt-2'>
-            <span className='block text-xs font-semibold uppercase tracking-wider text-primary/80 ml-1 mb-3'>
+          <div className='pt-1'>
+            <span className='block text-xs font-semibold uppercase tracking-wider text-primary/80 ml-1 mb-2'>
               Xizmatlarni Tanlang
             </span>
             <div className='flex flex-wrap gap-2'>
@@ -244,7 +244,7 @@ const Modals = ({
                     {...bookingForm.register('services')}
                   />
                   <div className='flex items-center gap-2 px-4 py-2 rounded-full bg-surface-light border border-white/5 peer-checked:border-primary peer-checked:bg-primary/10 transition-all hover:bg-surface-light/80'>
-                    <span className='text-sm text-gray-400 group-hover:text-white peer-checked:text-primary font-medium'>
+                    <span className='text-xs text-gray-400 group-hover:text-white peer-checked:text-primary font-medium'>
                       {s}
                     </span>
                   </div>
@@ -258,7 +258,7 @@ const Modals = ({
             )}
           </div>
 
-          <div className='pt-6 flex justify-end gap-4 border-t border-white/5'>
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
             <Button
               variant='ghost'
               type='button'
@@ -283,7 +283,7 @@ const Modals = ({
       >
         <form
           onSubmit={productForm.handleSubmit(onProductSubmit)}
-          className='space-y-6'
+          className='space-y-2 sm:space-y-4'
         >
           <div>
             <Input
@@ -297,7 +297,7 @@ const Modals = ({
               </p>
             )}
           </div>
-          <div className='grid grid-cols-2 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
               <Select
                 label='Kategoriya'
@@ -330,7 +330,7 @@ const Modals = ({
               )}
             </div>
           </div>
-          <div className='grid grid-cols-2 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
               <Input
                 label='Joriy Zaxira'
@@ -358,7 +358,7 @@ const Modals = ({
               )}
             </div>
           </div>
-          <div className='pt-6 flex justify-end gap-4 border-t border-white/5'>
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
             <Button
               variant='ghost'
               type='button'
@@ -383,9 +383,9 @@ const Modals = ({
       >
         <form
           onSubmit={clientForm.handleSubmit(onClientSubmit)}
-          className='space-y-6'
+          className='space-y-2 sm:space-y-4'
         >
-          <div className='grid grid-cols-2 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
               <Input
                 label='Ism'
@@ -437,7 +437,7 @@ const Modals = ({
             )}
           </div>
 
-          <div className='pt-6 flex justify-end gap-4 border-t border-white/5'>
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
             <Button
               variant='ghost'
               type='button'
@@ -462,9 +462,9 @@ const Modals = ({
       >
         <form
           onSubmit={staffForm.handleSubmit(onStaffSubmit)}
-          className='space-y-6'
+          className='space-y-2 sm:space-y-4'
         >
-          <div className='grid grid-cols-2 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
               <Input
                 label='Xodim Ismi'
@@ -496,7 +496,7 @@ const Modals = ({
               )}
             </div>
           </div>
-          <div className='grid grid-cols-2 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
               <Input
                 label='Telefon Raqam'
@@ -523,7 +523,7 @@ const Modals = ({
               )}
             </div>
           </div>
-          <div className='pt-6 flex justify-end gap-4 border-t border-white/5'>
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
             <Button
               variant='ghost'
               type='button'
@@ -546,13 +546,13 @@ const Modals = ({
         description='Mijoz uchun tranzaktsiyani yakunlang.'
         icon={<CreditCard className='text-primary h-8 w-8' />}
       >
-        <div className='space-y-6'>
+        <div className='space-y-2 sm:space-y-4'>
           <Input
             label='Mijozni Tanlash'
             placeholder='Mijozni qidiring...'
             icon={<Search className='h-4 w-4' />}
           />
-          <div className='grid grid-cols-2 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <Select label="To'lov Usuli">
               <option>Kredit Karta</option>
               <option>Naqd Pul</option>
@@ -565,7 +565,7 @@ const Modals = ({
               className='text-right'
             />
           </div>
-          <div className='bg-surface-light p-4 rounded-xl border border-white/5'>
+          <div className='bg-surface-light p-3 sm:p-4 rounded-xl border border-white/5'>
             <div className='flex justify-between text-sm mb-2'>
               <span className='text-gray-400'>Narx</span>
               <span className='text-white'>$0.00</span>
@@ -579,7 +579,7 @@ const Modals = ({
               <span className='text-primary'>$0.00</span>
             </div>
           </div>
-          <div className='pt-6 flex justify-end gap-4 border-t border-white/5'>
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
             <Button variant='ghost' onClick={() => onNewPayment(false)}>
               Bekor Qilish
             </Button>

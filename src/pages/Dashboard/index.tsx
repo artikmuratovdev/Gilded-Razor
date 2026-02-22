@@ -10,8 +10,6 @@ export const Dashboard = () => {
         <RevenueChart />
         <RecentBookingsList />
       </div>
-
-      {/* <BookingsTable /> */}
     </div>
   );
 };

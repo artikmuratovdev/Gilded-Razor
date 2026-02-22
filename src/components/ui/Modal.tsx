@@ -48,7 +48,7 @@ export const Modal = ({
               <X className='h-5 w-5' />
             </button>
 
-            <div className='p-8'>
+            <div className='p-4 sm:p-8'>
               <div className='mb-6 text-center'>
                 {icon && (
                   <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-light border border-primary/20 shadow-[0_0_15px_rgba(212,175,53,0.15)]'>
