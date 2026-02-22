@@ -1,16 +1,38 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { staffMembers as barbers } from '@/constants/barber';
 import type { Appointment } from '@/types';
-import { Clock, MoreHorizontal } from 'lucide-react';
+import {
+  CheckCircle,
+  Clock,
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  XCircle,
+} from 'lucide-react';
+import { useState } from 'react';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
 import { formatCurrency } from '../../lib/utils';
+import {
+  DeleteAppointmentModal,
+  EditAppointmentModal,
+} from './AppointmentModals';
 
 interface ListViewProps {
   appointments: Appointment[];
 }
 
 export const ListView = ({ appointments }: ListViewProps) => {
+  const [editTarget, setEditTarget] = useState<Appointment | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Appointment | null>(null);
+
   const sortedAppointments = [...appointments].sort((a, b) => {
     if (a.date !== b.date) return parseInt(a.date) - parseInt(b.date);
     return a.time.localeCompare(b.time);
@@ -89,16 +111,23 @@ export const ListView = ({ appointments }: ListViewProps) => {
                     </div>
                   </div>
 
+                  {/* Mobile action buttons */}
                   <div className='flex gap-2 pt-3 border-t border-white/5'>
-                    <Button variant='secondary' className='flex-1 h-9 text-xs'>
+                    <Button
+                      variant='secondary'
+                      className='flex-1 h-9 text-xs gap-1.5'
+                      onClick={() => setEditTarget(appt)}
+                    >
+                      <Pencil className='h-3.5 w-3.5' />
                       Tahrirlash
                     </Button>
                     <Button
                       variant='ghost'
-                      size='icon'
-                      className='h-9 w-9 text-gray-400'
+                      className='h-9 px-3 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1.5'
+                      onClick={() => setDeleteTarget(appt)}
                     >
-                      <MoreHorizontal className='h-4 w-4' />
+                      <Trash2 className='h-3.5 w-3.5' />
+                      O'chirish
                     </Button>
                   </div>
                 </CardContent>
@@ -184,13 +213,56 @@ export const ListView = ({ appointments }: ListViewProps) => {
                           </Badge>
                         </td>
                         <td className='p-4 text-right'>
-                          <Button
-                            variant='ghost'
-                            size='icon'
-                            className='h-8 w-8 ml-auto text-gray-400 hover:text-white'
-                          >
-                            <MoreHorizontal className='h-4 w-4' />
-                          </Button>
+                          {/* Desktop Dropdown */}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant='ghost'
+                                size='icon'
+                                className='h-8 w-8 ml-auto text-gray-400 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white'
+                              >
+                                <MoreHorizontal className='h-4 w-4' />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align='end'
+                              className='w-48 bg-surface border border-white/10 shadow-2xl rounded-xl text-sm'
+                            >
+                              <DropdownMenuItem
+                                className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
+                                onClick={() => setEditTarget(appt)}
+                              >
+                                <Pencil className='h-4 w-4 text-primary' />
+                                Tahrirlash
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
+                                onClick={() =>
+                                  console.log('Tasdiqlash:', appt.id)
+                                }
+                              >
+                                <CheckCircle className='h-4 w-4 text-green-400' />
+                                Tasdiqlash
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
+                                onClick={() =>
+                                  console.log('Bekor qilish:', appt.id)
+                                }
+                              >
+                                <XCircle className='h-4 w-4 text-yellow-400' />
+                                Bekor qilish
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator className='bg-white/5 my-1' />
+                              <DropdownMenuItem
+                                className='flex items-center gap-2 px-3 py-2 cursor-pointer text-red-400 hover:text-red-300 focus:text-red-300 focus:bg-red-500/10 rounded-lg'
+                                onClick={() => setDeleteTarget(appt)}
+                              >
+                                <Trash2 className='h-4 w-4' />
+                                O'chirish
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </td>
                       </tr>
                     );
@@ -207,6 +279,18 @@ export const ListView = ({ appointments }: ListViewProps) => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Modals */}
+      <EditAppointmentModal
+        isOpen={editTarget !== null}
+        onClose={() => setEditTarget(null)}
+        appointment={editTarget}
+      />
+      <DeleteAppointmentModal
+        isOpen={deleteTarget !== null}
+        onClose={() => setDeleteTarget(null)}
+        appointment={deleteTarget}
+      />
     </div>
   );
 };
