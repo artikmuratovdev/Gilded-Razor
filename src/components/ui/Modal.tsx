@@ -21,9 +21,9 @@ export const Modal = ({
 }: ModalProps): JSX.Element | null => {
   useEffect(() => {
     if (isOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = 'unset';
+    else document.body.style.overflow = '';
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
 

@@ -122,8 +122,8 @@ export const ListView = ({ appointments }: ListViewProps) => {
                       Tahrirlash
                     </Button>
                     <Button
-                      variant='ghost'
-                      className='h-9 px-3 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1.5'
+                      variant='secondary'
+                      className='flex-1 h-9 px-3 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1.5'
                       onClick={() => setDeleteTarget(appt)}
                     >
                       <Trash2 className='h-3.5 w-3.5' />
