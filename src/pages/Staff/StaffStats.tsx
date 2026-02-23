@@ -4,7 +4,7 @@ import { Card } from '../../components/ui/Card';
 
 export const StaffStats = () => {
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'>
+    <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6'>
       <Card className='bg-surface p-4 sm:p-6 flex flex-col justify-center'>
         <p className='text-[10px] sm:text-xs font-semibold text-gray-400 uppercase'>
           Faol Xodimlar

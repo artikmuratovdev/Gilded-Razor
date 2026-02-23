@@ -1,5 +1,5 @@
 import type { Staff } from '@/types';
-import { Clock, Plus, Scissors } from 'lucide-react';
+import { Clock, Scissors } from 'lucide-react';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
@@ -7,10 +7,9 @@ import { cn, formatCurrency } from '../../lib/utils';
 
 interface StaffGridProps {
   staffMembers: Staff[];
-  onAddStaff: () => void;
 }
 
-export const StaffGrid = ({ staffMembers, onAddStaff }: StaffGridProps) => {
+export const StaffGrid = ({ staffMembers }: StaffGridProps) => {
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6'>
       {staffMembers.map((staff) => (
@@ -133,7 +132,7 @@ export const StaffGrid = ({ staffMembers, onAddStaff }: StaffGridProps) => {
       ))}
 
       {/* Add New Card */}
-      <button
+      {/* <button
         onClick={onAddStaff}
         className='rounded-2xl border border-dashed border-white/10 bg-surface/30 hover:bg-surface/50 hover:border-primary/50 transition-all flex flex-col items-center justify-center p-6 text-center group cursor-pointer h-full min-h-[220px] sm:min-h-[280px]'
       >
@@ -146,7 +145,7 @@ export const StaffGrid = ({ staffMembers, onAddStaff }: StaffGridProps) => {
         <p className='text-[10px] sm:text-sm text-gray-500 mt-1 sm:mt-2'>
           Sartaroshxona jamoangizni kengaytiring
         </p>
-      </button>
+      </button> */}
     </div>
   );
 };
