@@ -11,9 +11,9 @@ import type {
 export const appoitmentsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAppoitments: builder.query<AppoitmentRes, AppoitmentReq>({
-      query: ({ ordering, search, page }) => ({
-        url: '/appoitments',
-        params: { ordering, search, page },
+      query: ({ ordering, search, page, page_size }) => ({
+        url: '/appointments/',
+        params: { ordering, search, page, page_size },
       }),
       providesTags: [API_TAGS.APPOITMENTS],
     }),

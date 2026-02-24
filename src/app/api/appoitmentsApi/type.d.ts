@@ -1,14 +1,14 @@
 export type AppoitmentReq = {
-  ordering: string;
-  search: string;
-  page: number;
+  ordering?: string;
+  search?: string;
+  page?: number;
+  page_size?: number;
 };
 
 export type AppoitmentRes = {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: {
+  success: boolean;
+  message: string;
+  data: {
     id: number;
     date: string;
     start_time: string;
@@ -20,6 +20,15 @@ export type AppoitmentRes = {
     status: string;
     status_display: string;
   }[];
+  pagination: {
+    count: number;
+    total_pages: number;
+    current_page: number;
+    page_size: number;
+    next: string;
+    previous: string;
+  };
+  timestamp: string;
 };
 
 export type AddAppoitmentReq = {

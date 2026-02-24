@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/combobox';
 import { data as appointmentsData } from '@/constants/appointments';
 import { staffMembers as barbers } from '@/constants/barber';
-import type { Appointment } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Scissors, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -17,6 +16,7 @@ import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
+import type { AppoitmentRes } from '@/app/api/appoitmentsApi/type';
 
 // --- Constants ---
 
@@ -48,7 +48,7 @@ const CLIENTS = [
 
 const editAppointmentSchema = z.object({
   client: z.string().min(2, 'Mijoz ismi talab qilinadi'),
-  barberId: z.string().min(1, 'Sartarosh tanlanishi shart'),
+  barber: z.string().min(1, 'Sartarosh tanlanishi shart'),
   service: z.string().min(2, 'Xizmat talab qilinadi'),
   datetime: z.string().min(1, 'Sana va vaqt talab qilinadi'),
   status: z.string().min(1, 'Holat talab qilinadi'),
@@ -119,13 +119,13 @@ const ComboboxField = ({
                 onChange('');
                 setInputVal('');
               }}
-              className='text-gray-500 hover:text-white transition-colors ml-2 flex-shrink-0'
+              className='text-gray-500 hover:text-white transition-colors ml-2 shrink-0'
             >
               ✕
             </button>
           )}
         </div>
-        <ComboboxContent className='bg-surface border-white/10 text-white z-[200]'>
+        <ComboboxContent className='bg-surface border-white/10 text-white z-200'>
           <ComboboxList>
             {filtered.length > 0 ? (
               filtered.map((opt) => (
@@ -153,7 +153,7 @@ const ComboboxField = ({
 interface EditAppointmentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  appointment: Appointment | null;
+  appointment: AppoitmentRes['data'][0] | null;
 }
 
 export const EditAppointmentModal = ({
@@ -165,7 +165,7 @@ export const EditAppointmentModal = ({
     resolver: zodResolver(editAppointmentSchema) as any,
     defaultValues: {
       client: '',
-      barberId: '',
+      barber: '',
       service: '',
       datetime: '',
       status: 'Pending',
@@ -196,12 +196,12 @@ export const EditAppointmentModal = ({
   useEffect(() => {
     if (appointment && isOpen) {
       form.reset({
-        client: appointment.client,
-        barberId: appointment.barberId,
-        service: appointment.service,
-        datetime: toDatetimeLocal(appointment.date, appointment.time),
+        client: appointment.client_name,
+        barber: appointment.staff_member_name,
+        service: appointment.service_name,
+        datetime: toDatetimeLocal(appointment.date, appointment.start_time),
         status: appointment.status,
-        price: appointment.price,
+        price: Number(appointment.price),
       });
     }
   }, [appointment, isOpen]);
@@ -241,13 +241,13 @@ export const EditAppointmentModal = ({
         {/* Sartarosh Combobox */}
         <ComboboxField
           label='Sartarosh'
-          value={form.watch('barberId')}
+          value={form.watch('barber')}
           onChange={(v) =>
-            form.setValue('barberId', v, { shouldValidate: true })
+            form.setValue('barber', v, { shouldValidate: true })
           }
           options={barberOptions}
           placeholder='Sartarosh tanlang...'
-          error={form.formState.errors.barberId?.message}
+          error={form.formState.errors.barber?.message}
         />
 
         {/* Xizmat Combobox */}
@@ -321,7 +321,7 @@ export const EditAppointmentModal = ({
 interface DeleteAppointmentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  appointment: Appointment | null;
+  appointment: AppoitmentRes['data'][0] | null;
 }
 
 export const DeleteAppointmentModal = ({
@@ -341,7 +341,7 @@ export const DeleteAppointmentModal = ({
       title="Bronni O'chirish"
       description={
         appointment
-          ? `"${appointment.client}" uchun ${appointment.service} bronini o'chirmoqchimisiz?`
+          ? `"${appointment.client_name}" uchun ${appointment.service_name} bronini o'chirmoqchimisiz?`
           : ''
       }
       icon={<Trash2 className='text-red-400 h-8 w-8' />}

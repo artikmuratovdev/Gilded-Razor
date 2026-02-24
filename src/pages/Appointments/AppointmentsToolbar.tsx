@@ -1,12 +1,4 @@
-import {
-  addDays,
-  addWeeks,
-  endOfWeek,
-  format,
-  startOfWeek,
-  subDays,
-  subWeeks,
-} from 'date-fns';
+import { addDays, format, subDays } from 'date-fns';
 import { uz } from 'date-fns/locale';
 import {
   Calendar as CalendarIcon,
@@ -19,19 +11,14 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { DayPicker } from 'react-day-picker';
 import { Button } from '../../components/ui/Button';
-import { cn } from '../../lib/utils';
 
 interface AppointmentsToolbarProps {
-  view: 'day' | 'week' | 'list';
-  onViewChange: (view: 'day' | 'week' | 'list') => void;
   selectedDate: Date;
   onDateChange: (date: Date) => void;
   onSearchChange: (query: string) => void;
 }
 
 export const AppointmentsToolbar = ({
-  view,
-  onViewChange,
   selectedDate,
   onDateChange,
   onSearchChange,
@@ -64,19 +51,11 @@ export const AppointmentsToolbar = ({
   }, []);
 
   const handlePrev = () => {
-    if (view === 'week') {
-      onDateChange(subWeeks(selectedDate, 1));
-    } else {
-      onDateChange(subDays(selectedDate, 1));
-    }
+    onDateChange(subDays(selectedDate, 1));
   };
 
   const handleNext = () => {
-    if (view === 'week') {
-      onDateChange(addWeeks(selectedDate, 1));
-    } else {
-      onDateChange(addDays(selectedDate, 1));
-    }
+    onDateChange(addDays(selectedDate, 1));
   };
 
   const handleToday = () => {
@@ -84,14 +63,6 @@ export const AppointmentsToolbar = ({
   };
 
   const getDateLabel = () => {
-    if (view === 'week') {
-      const start = startOfWeek(selectedDate, { weekStartsOn: 1 });
-      const end = endOfWeek(selectedDate, { weekStartsOn: 1 });
-      if (start.getMonth() === end.getMonth()) {
-        return `${format(start, 'd')} – ${format(end, 'd MMM, yyyy', { locale: uz })}`;
-      }
-      return `${format(start, 'd MMM')} – ${format(end, 'd MMM, yyyy', { locale: uz })}`;
-    }
     return format(selectedDate, 'd MMMM, yyyy', { locale: uz });
   };
 
@@ -154,7 +125,7 @@ export const AppointmentsToolbar = ({
             <Filter className='h-4 w-4' /> Filter
           </Button>
 
-          <div className='bg-surface p-1 rounded-lg border border-white/5 flex text-xs font-medium w-full sm:w-auto overflow-x-auto'>
+          {/* <div className='bg-surface p-1 rounded-lg border border-white/5 flex text-xs font-medium w-full sm:w-auto overflow-x-auto'>
             <button
               onClick={() => onViewChange('list')}
               className={cn(
@@ -188,7 +159,7 @@ export const AppointmentsToolbar = ({
             >
               Hafta
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 
