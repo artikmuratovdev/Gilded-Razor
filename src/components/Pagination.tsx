@@ -1,7 +1,6 @@
 import {
   Pagination as PaginationComponent,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -15,13 +14,19 @@ type PaginationType = {
   next:boolean;
 }
 const Pagination = ({page, setPage, prev, next}: PaginationType) => {
+  console.log(prev, next)
   return (
     <div className='flex items-center justify-between p-3'>
       <PaginationComponent className='justify-end'>
-      <PaginationContent>
+      <PaginationContent className='cursor-pointer'>
         <PaginationItem>
-          <PaginationPrevious onClick={() => setPage(page - 1)} disabled={!prev} />
+          <PaginationPrevious onClick={() => {if(prev) setPage(page - 1)}} disabled={!prev} />
         </PaginationItem>
+        {page>2 && (
+          <PaginationItem className='me-3'>
+            <PaginationLink onClick={() => setPage(1)}>{1}</PaginationLink>
+          </PaginationItem>
+        )}
         {prev && (
           <PaginationItem>
             <PaginationLink onClick={() => setPage(page - 1)}>{page - 1}</PaginationLink>

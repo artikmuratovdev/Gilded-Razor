@@ -25,8 +25,8 @@ import {
   EditAppointmentModal,
 } from './AppointmentModals';
 import useSetDate from '@/hooks/useSetDate';
-import { useGetAppoitmentsQuery } from '@/app/api/appoitmentsApi';
 import type { AppoitmentRes } from '@/app/api/appoitmentsApi/type';
+import usePaginatedAppointments from '@/hooks/usePaginatedAppointments';
 
 export const Appointments = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -35,11 +35,13 @@ export const Appointments = () => {
   const [deleteTarget, setDeleteTarget] = useState<AppoitmentRes['data'][0] | null>(null);
   const [page, setPage] = useState(1);
 
-  const { data: appointmentsData } = useGetAppoitmentsQuery({
+  const { data: appointmentsData } = usePaginatedAppointments({
     page,
+    searchQuery,
     page_size: 10,
-    search: searchQuery,
   });
+
+  console.log(appointmentsData?.pagination);
 
   if (!appointmentsData) return <div>Loading...</div>;
 
@@ -162,7 +164,7 @@ export const Appointments = () => {
           </div>
 
           {/* Desktop Table View */}
-          <Card className='hidden sm:block w-full overflow-hidden'>
+          <Card className='hidden sm:block w-full'>
             <CardContent className='p-0'>
               <div className='overflow-x-auto'>
                 <table className='w-full text-left border-collapse'>
