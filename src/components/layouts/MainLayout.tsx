@@ -1,3 +1,5 @@
+import { openModal } from '@/app/slices/modalSlice';
+import { setMenuLabel } from '@/constants/menuItems';
 import {
   Bell,
   Download,
@@ -7,32 +9,50 @@ import {
   Search,
   UserPlus,
 } from 'lucide-react';
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router';
 import { Button } from '../ui/Button';
+import Modals from './Modals';
 import { Sidebar } from './Sidebar';
-import { setMenuLabel } from '@/constants/menuItems';
 
-interface MainLayoutProps {
-  children: React.ReactNode;
-  onNewBooking?: () => void;
-  onNewStaff?: () => void;
-  onNewClient?: () => void;
-  onNewProduct?: () => void;
-}
-
-export const MainLayout: React.FC<MainLayoutProps> = ({
-  children,
-  onNewBooking,
-  onNewStaff,
-  onNewClient,
-  onNewProduct,
-}) => {
+export const MainLayout = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const currentPage = location.pathname.slice(1) || 'dashboard';
+
+  // URL parametrlarini kuzatish
+  useEffect(() => {
+    if (searchParams.get('booking') === 'new') {
+      dispatch(openModal('booking'));
+    }
+    if (searchParams.get('staff') === 'new') {
+      dispatch(openModal('staff'));
+    }
+    if (searchParams.get('client') === 'new') {
+      dispatch(openModal('client'));
+    }
+    if (searchParams.get('product') === 'new') {
+      dispatch(openModal('product'));
+    }
+  }, [searchParams, dispatch]);
+  
+  const setParam = (key: string, value: string) => {
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+      params.set(key, value);
+      return params;
+    });
+  };
 
   // Dynamic Header Action Configuration
   const getHeaderAction = () => {
@@ -42,25 +62,37 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         return {
           label: 'Yangi Bron',
           icon: Plus,
-          onClick: onNewBooking || (() => {}),
+          onClick: () => {
+            setParam('booking', 'new');
+            dispatch(openModal('booking'));
+          },
         };
       case 'staff':
         return {
           label: "Xodim Qo'shish",
           icon: UserPlus,
-          onClick: onNewStaff || (() => {}),
+          onClick: () => {
+            setParam('staff', 'new');
+            dispatch(openModal('staff'));
+          },
         };
       case 'clients':
         return {
           label: "Mijoz Qo'shish",
           icon: UserPlus,
-          onClick: onNewClient || (() => {}),
+          onClick: () => {
+            setParam('client', 'new');
+            dispatch(openModal('client'));
+          },
         };
       case 'inventory':
         return {
           label: "Mahsulot Qo'shish",
           icon: Package,
-          onClick: onNewProduct || (() => {}),
+          onClick: () => {
+            setParam('product', 'new');
+            dispatch(openModal('product'));
+          },
         };
       case 'reports':
         return {
@@ -111,7 +143,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
               {setMenuLabel(currentPage)?.title || 'Dashboard'}
             </h2>
             <p className='text-sm text-gray-400'>
-              {setMenuLabel(currentPage)?.description || 'Dashboard description'}
+              {setMenuLabel(currentPage)?.description ||
+                'Dashboard description'}
             </p>
           </div>
 
@@ -144,8 +177,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 
         {/* Page Content */}
         <div className='p-6 lg:p-10 max-w-400 mx-auto w-full flex-1'>
-          {children}
+          <Outlet />
         </div>
+        <Modals />
       </main>
     </div>
   );

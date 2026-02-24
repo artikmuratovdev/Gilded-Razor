@@ -4,28 +4,29 @@ export type LoginRequest = {
   password: string;
 };
 export type LoginResponse = {
-  success: boolean;
   data: {
-    user: {
-      id: number;
-      username: string;
-      email: string;
-      first_name: string;
-      last_name: string;
-      role: RoleConstants;
-      phone_number: string;
-      avatar: string | null;
-      is_active: boolean;
-      date_joined: string;
-    };
+    success: boolean;
+    user: User;
     access_token: string;
     refresh_token: string;
   };
   error: {
-    statusCode: number;
-    statusMsg: string;
-    msg: string;
+    code: string;
+    message: string;
   };
+};
+
+export type User = {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: RoleConstants;
+  phone_number: string;
+  avatar: string | null;
+  is_active: boolean;
+  date_joined: string;
 };
 
 export type RefreshTokenResponse = {

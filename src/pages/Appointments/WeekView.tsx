@@ -29,7 +29,7 @@ export const WeekView = ({ selectedDate, appointments }: WeekViewProps) => {
 
   const handlePlusClick = (time: string, dateObj: Date) => {
     const dateFormatted = format(dateObj, 'yyyy-MM-dd');
-    let pTime = time.split(' ')[0];
+    const pTime = time.split(' ')[0];
     const modifier = time.split(' ')[1];
     let [hours, minutes] = pTime.split(':');
     if (hours === '12') hours = '00';

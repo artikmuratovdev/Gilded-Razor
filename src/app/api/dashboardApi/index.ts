@@ -1,14 +1,26 @@
-import { API_TAGS } from "@/constants/ApiTags";
-import baseApi from "../baseApi";
-import type { Overview } from "./type";
+import { API_TAGS } from '@/constants/ApiTags';
+import baseApi from '../baseApi';
+import type { Chart, Overview } from './type';
 
 export const dashboardApi = baseApi.injectEndpoints({
-    endpoints: (builder) => ({
-        getOverview: builder.query<Overview, void>({
-            query: () => "/dashboard/overview",
-            providesTags: [API_TAGS.DASHBOARD],
-        }),
-    })
-})
+  endpoints: (builder) => ({
+    getOverview: builder.query<{data:Overview}, void>({
+      query: () => '/dashboard/overview',
+      providesTags: [API_TAGS.DASHBOARD],
+    }),
+    getChart: builder.query<Chart[], 'weekly' | 'monthly'>({
+      query: (period: string) => ({
+        url: '/dashboard/revenue-chart',
+        method: 'GET',
+        params: { period },
+      }),
+      transformResponse: (response: any) => {
+        if (Array.isArray(response)) return response;
+        return response?.data ?? response?.results ?? [];
+      },
+      providesTags: [API_TAGS.DASHBOARD],
+    }),
+  }),
+});
 
-export const { useGetOverviewQuery } = dashboardApi
+export const { useGetOverviewQuery, useGetChartQuery } = dashboardApi;

@@ -3,6 +3,7 @@ import type {
   LoginRequest,
   LoginResponse,
   RefreshTokenResponse,
+  User,
 } from './types';
 
 export const authApi = baseApi.injectEndpoints({
@@ -21,7 +22,10 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    me: builder.query<User, void>({
+      query: () => 'users/me/',
+    }),
   }),
 });
 
-export const { useLoginMutation, useRefreshTokenMutation } = authApi;
+export const { useLoginMutation, useRefreshTokenMutation, useMeQuery } = authApi;

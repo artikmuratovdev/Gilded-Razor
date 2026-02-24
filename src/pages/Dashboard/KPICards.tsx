@@ -1,4 +1,5 @@
 import {
+  ArrowDown,
   ArrowUp,
   Calendar,
   Clock,
@@ -9,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '../../components/ui/Badge';
 import { Card, CardContent } from '../../components/ui/Card';
-import { formatCurrency } from '../../lib/utils';
+import { cn, formatCurrency } from '../../lib/utils';
 import { useGetOverviewQuery } from '@/app/api/dashboardApi';
 
 export const KPICards = () => {
@@ -26,7 +27,7 @@ export const KPICards = () => {
                 Umumiy Daromad
               </p>
               <h3 className='text-2xl font-bold text-white mt-1'>
-                {data ? formatCurrency(data.total_revenue) : ""}
+                {data ? formatCurrency(data.data.total_revenue) : ""}
               </h3>
             </div>
             <div className='p-2 bg-primary/10 rounded-lg text-primary shadow-[0_0_10px_rgba(212,175,53,0.1)]'>
@@ -34,13 +35,13 @@ export const KPICards = () => {
             </div>
           </div>
           <div className='mt-3 flex items-center gap-2'>
-            <Badge variant={(data && data.revenue_change_percent > 0 ? 'success' : 'danger')} className='gap-1 h-5 px-1.5 font-medium'>
-              {data && data.revenue_change_percent > 0 ? (
+            <Badge variant={(data && data.data.revenue_change_percent > 0 ? 'success' : 'danger')} className='gap-1 h-5 px-1.5 font-medium'>
+              {data && data.data.revenue_change_percent > 0 ? (
                 <TrendingUp className='h-3 w-3' /> 
               ) : (
                 <TrendingDown className='h-3 w-3' /> 
               )}
-              <span>{data?.revenue_change_percent}%</span>
+              <span>{data?.data.revenue_change_percent}%</span>
             </Badge>
             <span className='text-xs text-gray-500'>
               o'tgan haftaga nisbatan
@@ -57,7 +58,7 @@ export const KPICards = () => {
               <p className='text-xs font-semibold text-gray-400 uppercase tracking-wider'>
                 Kunlik Bronlar
               </p>
-              <h3 className='text-2xl font-bold text-white mt-1'>{data ? data.daily_bookings : ""}</h3>
+              <h3 className='text-2xl font-bold text-white mt-1'>{data ? data.data.daily_bookings : ""}</h3>
             </div>
             <div className='p-2 bg-blue-500/10 rounded-lg text-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.1)]'>
               <Calendar className='h-5 w-5' />
@@ -66,7 +67,7 @@ export const KPICards = () => {
           <div className='mt-3 flex items-center gap-2'>
             <Badge variant='info' className='gap-1 h-5 px-1.5 font-medium'>
               <Clock className='h-3 w-3' />
-              <span>{data ? data.daily_pending : ""} Kutilmoqda</span>
+              <span>{data ? data.data.daily_pending : ""} Kutilmoqda</span>
             </Badge>
             <span className='text-xs text-gray-500'>tasdiqlash</span>
           </div>
@@ -81,16 +82,24 @@ export const KPICards = () => {
               <p className='text-xs font-semibold text-gray-400 uppercase tracking-wider'>
                 Faol Mijozlar
               </p>
-              <h3 className='text-2xl font-bold text-white mt-1'>{data ? data.active_clients : ""}</h3>
+              <h3 className='text-2xl font-bold text-white mt-1'>{data ? data.data.active_clients : ""}</h3>
             </div>
             <div className='p-2 bg-purple-500/10 rounded-lg text-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.1)]'>
               <Users className='h-5 w-5' />
             </div>
           </div>
           <div className='mt-3 flex items-center justify-between'>
-            <span className='text-xs text-green-500 font-medium flex items-center gap-1'>
-              <ArrowUp className='h-3 w-3' />
-              <span>bugun {data ? data.new_clients_today : ""} ta</span>
+            <span className={cn('text-xs font-medium flex items-center gap-1', data && data.data.new_clients_today > 0 ? 'text-green-500' : 'text-red-500', data && data.data.new_clients_today === 0 ? 'text-gray-500' : '')}>
+              {data && data.data.new_clients_today > 0 ? (
+                <ArrowUp className='h-3 w-3' />
+              ) : (
+                data && data.data.new_clients_today < 0 ? (
+                  <ArrowDown className='h-3 w-3' />
+                ) : (
+                  ''
+                )
+              )}
+              <span>bugun {data ? data.data.new_clients_today : ""} ta</span>
             </span>
           </div>
         </CardContent>

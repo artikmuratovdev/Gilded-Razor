@@ -30,7 +30,7 @@ export const DayView = ({ selectedDate, appointments }: DayViewProps) => {
   const handlePlusClick = (time: string, barberId: string) => {
     const dateFormatted = format(selectedDate, 'yyyy-MM-dd');
     // Vaqtni HH:mm formatiga o'tkazish (09:00 AM -> 09:00)
-    let pTime = time.split(' ')[0];
+    const pTime = time.split(' ')[0];
     const modifier = time.split(' ')[1];
     let [hours, minutes] = pTime.split(':');
     if (hours === '12') hours = '00';

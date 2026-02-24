@@ -1,8 +1,11 @@
+import { closeModal } from '@/app/slices/modalSlice';
+import type { RootState } from '@/app/store';
 import { staffMembers } from '@/constants/barber';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CreditCard, Package, Scissors, Search, UserPlus } from 'lucide-react';
-import { useEffect, type Dispatch, type SetStateAction } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router';
 import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
@@ -49,38 +52,55 @@ type ProductForm = z.infer<typeof productSchema>;
 type ClientForm = z.infer<typeof clientSchema>;
 type StaffForm = z.infer<typeof staffSchema>;
 
-type ModalProps = {
-  newBooking: boolean;
-  newStaff: boolean;
-  newClient: boolean;
-  newProduct: boolean;
-  newPayment: boolean;
-  onNewBooking: Dispatch<SetStateAction<boolean>>;
-  onNewStaff: Dispatch<SetStateAction<boolean>>;
-  onNewClient: Dispatch<SetStateAction<boolean>>;
-  onNewProduct: Dispatch<SetStateAction<boolean>>;
-  onNewPayment: Dispatch<SetStateAction<boolean>>;
-};
+const Modals = () => {
+  const dispatch = useDispatch();
+  const {
+    booking: newBooking,
+    staff: newStaff,
+    client: newClient,
+    product: newProduct,
+    payment: newPayment,
+  } = useSelector((state: RootState) => state.modal);
 
-const Modals = ({
-  newBooking,
-  onNewBooking,
-  onNewStaff,
-  newStaff,
-  onNewClient,
-  newClient,
-  onNewProduct,
-  newProduct,
-  onNewPayment,
-  newPayment,
-}: ModalProps) => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // URL parameters for booking
   const paramDate = searchParams.get('date');
   const paramTime = searchParams.get('time');
   const defaultDateTime =
     paramDate && paramTime ? `${paramDate}T${paramTime}` : '';
+
+  const clearParams = (keys: string[]) => {
+    const params = new URLSearchParams(searchParams);
+    keys.forEach((key) => params.delete(key));
+    setSearchParams(params);
+  };
+
+  // --- Close Handlers ---
+
+  const handleCloseBooking = () => {
+    dispatch(closeModal('booking'));
+    clearParams(['booking', 'date', 'time', 'barberId']);
+  };
+
+  const handleCloseStaff = () => {
+    dispatch(closeModal('staff'));
+    clearParams(['staff']);
+  };
+
+  const handleCloseClient = () => {
+    dispatch(closeModal('client'));
+    clearParams(['client']);
+  };
+
+  const handleCloseProduct = () => {
+    dispatch(closeModal('product'));
+    clearParams(['product']);
+  };
+
+  const handleClosePayment = () => {
+    dispatch(closeModal('payment'));
+  };
 
   // --- Form Hooks ---
 
@@ -98,10 +118,10 @@ const Modals = ({
   useEffect(() => {
     if (newBooking) {
       bookingForm.reset({
-        clientName: bookingForm.getValues('clientName'), // Mijoz ismini saqlab qolish
+        clientName: bookingForm.getValues('clientName'),
         barberId: searchParams.get('barberId') || '',
         datetime: defaultDateTime,
-        services: bookingForm.getValues('services'), // Tanlangan xizmatlarni saqlab qolish
+        services: bookingForm.getValues('services'),
       });
     }
   }, [newBooking, defaultDateTime, searchParams, bookingForm]);
@@ -141,25 +161,25 @@ const Modals = ({
 
   const onBookingSubmit = (data: BookingForm) => {
     console.log('Booking submitted:', data);
-    onNewBooking(false);
+    handleCloseBooking();
     bookingForm.reset();
   };
 
   const onProductSubmit = (data: ProductForm) => {
     console.log('Product submitted:', data);
-    onNewProduct(false);
+    handleCloseProduct();
     productForm.reset();
   };
 
   const onClientSubmit = (data: ClientForm) => {
     console.log('Client submitted:', data);
-    onNewClient(false);
+    handleCloseClient();
     clientForm.reset();
   };
 
   const onStaffSubmit = (data: StaffForm) => {
     console.log('Staff submitted:', data);
-    onNewStaff(false);
+    handleCloseStaff();
     staffForm.reset();
   };
 
@@ -168,7 +188,7 @@ const Modals = ({
       {/* New Booking Modal */}
       <Modal
         isOpen={newBooking}
-        onClose={() => onNewBooking(false)}
+        onClose={handleCloseBooking}
         title='Yangi Bron'
         description='Mijoz uchun yangi uchrashuv rejalang.'
         icon={<Scissors className='text-primary h-8 w-8' />}
@@ -259,11 +279,7 @@ const Modals = ({
           </div>
 
           <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button
-              variant='ghost'
-              type='button'
-              onClick={() => onNewBooking(false)}
-            >
+            <Button variant='ghost' type='button' onClick={handleCloseBooking}>
               Bekor Qilish
             </Button>
             <Button variant='default' type='submit'>
@@ -276,7 +292,7 @@ const Modals = ({
       {/* Add Product Modal */}
       <Modal
         isOpen={newProduct}
-        onClose={() => onNewProduct(false)}
+        onClose={handleCloseProduct}
         title="Yangi Mahsulot Qo'shish"
         description="Omborga yangi mahsulot qo'shing."
         icon={<Package className='text-primary h-8 w-8' />}
@@ -359,11 +375,7 @@ const Modals = ({
             </div>
           </div>
           <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button
-              variant='ghost'
-              type='button'
-              onClick={() => onNewProduct(false)}
-            >
+            <Button variant='ghost' type='button' onClick={handleCloseProduct}>
               Bekor Qilish
             </Button>
             <Button variant='default' type='submit'>
@@ -376,7 +388,7 @@ const Modals = ({
       {/* Add Client Modal */}
       <Modal
         isOpen={newClient}
-        onClose={() => onNewClient(false)}
+        onClose={handleCloseClient}
         title="Yangi Mijoz Qo'shish"
         description='Yangi mijoz profili yarating.'
         icon={<UserPlus className='text-primary h-8 w-8' />}
@@ -438,11 +450,7 @@ const Modals = ({
           </div>
 
           <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button
-              variant='ghost'
-              type='button'
-              onClick={() => onNewClient(false)}
-            >
+            <Button variant='ghost' type='button' onClick={handleCloseClient}>
               Bekor Qilish
             </Button>
             <Button variant='default' type='submit'>
@@ -455,7 +463,7 @@ const Modals = ({
       {/* Add Staff Modal */}
       <Modal
         isOpen={newStaff}
-        onClose={() => onNewStaff(false)}
+        onClose={handleCloseStaff}
         title="Xodim Qo'shish"
         description="Jamoangizga yangi mutaxassis ro'yxatga olish."
         icon={<Scissors className='text-primary h-8 w-8' />}
@@ -524,11 +532,7 @@ const Modals = ({
             </div>
           </div>
           <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button
-              variant='ghost'
-              type='button'
-              onClick={() => onNewStaff(false)}
-            >
+            <Button variant='ghost' type='button' onClick={handleCloseStaff}>
               Bekor Qilish
             </Button>
             <Button variant='default' type='submit'>
@@ -541,7 +545,7 @@ const Modals = ({
       {/* Process Payment Modal */}
       <Modal
         isOpen={newPayment}
-        onClose={() => onNewPayment(false)}
+        onClose={handleClosePayment}
         title="To'lovni Qayta Ishlash"
         description='Mijoz uchun tranzaktsiyani yakunlang.'
         icon={<CreditCard className='text-primary h-8 w-8' />}
@@ -580,7 +584,7 @@ const Modals = ({
             </div>
           </div>
           <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' onClick={() => onNewPayment(false)}>
+            <Button variant='ghost' onClick={handleClosePayment}>
               Bekor Qilish
             </Button>
             <Button variant='default' className='w-full sm:w-auto'>

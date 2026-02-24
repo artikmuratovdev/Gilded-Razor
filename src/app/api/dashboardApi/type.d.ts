@@ -6,3 +6,9 @@ export type Overview = {
   active_clients: number;
   new_clients_today: number;
 };
+
+export type Chart = {
+  label:"Mon"|"Tue"|"Wed"|"Thu"|"Fri"|"Sat"|"Sun";
+  revenue:number;
+  date:Date
+};
