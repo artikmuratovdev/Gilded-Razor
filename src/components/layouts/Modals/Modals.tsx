@@ -1,6 +1,6 @@
 import type { RootState } from '@/app/store';
 import { staffMembers } from '@/constants/barber';
-import { CreditCard, Package, Scissors, Search, UserPlus } from 'lucide-react';
+import { AlertTriangle, CreditCard, Package, Scissors, Search, UserPlus } from 'lucide-react';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '../../ui/Button';
@@ -19,10 +19,14 @@ const Modals = () => {
     handleClosePayment,
     handleCloseProduct,
     handleCloseStaff,
+    handleCloseDeleteClient,
+    handleCloseEditClient,
     onBookingSubmit,
     onClientSubmit,
     onProductSubmit,
     onStaffSubmit,
+    onDeleteSubmit,
+    onEditClientSubmit,
   } = useModalActions(forms);
   const {
     booking: newBooking,
@@ -30,6 +34,10 @@ const Modals = () => {
     client: newClient,
     product: newProduct,
     payment: newPayment,
+    deleteClient,
+    clientToDelete,
+    editClient,
+    clientToEdit,
   } = useSelector((state: RootState) => state.modal);
 
   // --- Form Hooks ---
@@ -49,6 +57,17 @@ const Modals = () => {
       });
     }
   }, [newBooking, bookingForm]);
+
+  useEffect(() => {
+    if (editClient && clientToEdit) {
+      clientForm.reset({
+        firstName: clientToEdit.first_name,
+        lastName: clientToEdit.last_name,
+        email: clientToEdit.email || '',
+        phone: clientToEdit.phone,
+      });
+    }
+  }, [editClient, clientToEdit, clientForm]);
 
   return (
     <>
@@ -359,6 +378,81 @@ const Modals = () => {
         </form>
       </Modal>
 
+      {/* Edit Client Modal */}
+      <Modal
+        isOpen={editClient}
+        onClose={handleCloseEditClient}
+        title="Mijozni Tahrirlash"
+        description="Mijoz ma\'lumotlarini yangilang."
+        icon={<UserPlus className='text-primary h-8 w-8' />}
+      >
+        <form
+          onSubmit={clientForm.handleSubmit(onEditClientSubmit)}
+          className='space-y-2 sm:space-y-4'
+        >
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Input
+                label='Ism'
+                placeholder='Jasur'
+                {...clientForm.register('firstName')}
+              />
+              {clientForm.formState.errors.firstName && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {clientForm.formState.errors.firstName.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                label='Familiya'
+                placeholder='Karimov'
+                {...clientForm.register('lastName')}
+              />
+              {clientForm.formState.errors.lastName && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {clientForm.formState.errors.lastName.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div>
+            <Input
+              label='Elektron Pochta'
+              type='email'
+              placeholder='jasur@example.com'
+              {...clientForm.register('email')}
+            />
+            {clientForm.formState.errors.email && (
+              <p className='text-red-500 text-xs mt-1'>
+                {clientForm.formState.errors.email.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label='Telefon Raqam'
+              placeholder='+998 (90) 000-0000'
+              {...clientForm.register('phone')}
+            />
+            {clientForm.formState.errors.phone && (
+              <p className='text-red-500 text-xs mt-1'>
+                {clientForm.formState.errors.phone.message}
+              </p>
+            )}
+          </div>
+
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseEditClient}>
+              Bekor Qilish
+            </Button>
+            <Button variant='default' type='submit'>
+              Saqlash
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
       {/* Add Staff Modal */}
       <Modal
         isOpen={newStaff}
@@ -488,6 +582,44 @@ const Modals = () => {
             </Button>
             <Button variant='default' className='w-full sm:w-auto'>
               Kartani To'lash
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Delete Client Modal */}
+      <Modal
+        isOpen={deleteClient}
+        onClose={handleCloseDeleteClient}
+        title="Mijozni O'chirish"
+        description="Bu amalni ortga qaytarib bo'lmaydi. Mijoz va unga tegishli barcha ma'lumotlar o'chiriladi."  
+        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
+      >
+        <div className='space-y-4'>
+          {clientToDelete && (
+            <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
+              <p className='text-sm text-gray-300'>
+                <span className='font-semibold text-white'>
+                  {clientToDelete.name}
+                </span>{' '}
+                nomli mijozni o'chirmoqchimisiz?
+              </p>
+            </div>
+          )}
+          
+          <div className='pt-3 flex justify-end gap-3 border-t border-white/5'>
+            <Button 
+              variant='ghost' 
+              onClick={handleCloseDeleteClient}
+            >
+              Bekor Qilish
+            </Button>
+            <Button 
+              variant='default' 
+              onClick={onDeleteSubmit}
+              className='bg-red-600 hover:bg-red-700 text-white'
+            >
+              O'chirish
             </Button>
           </div>
         </div>

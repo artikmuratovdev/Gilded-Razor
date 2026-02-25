@@ -3,7 +3,7 @@ import { MainLayout } from './components/layouts/MainLayout';
 import { PrivateRoute } from './hooks/PrivateRoute';
 import { Appointments } from './pages/Appointments/Appointments';
 import { Clients } from './pages/Clients/Clients';
-import { Dashboard } from './pages/Dashboard';
+import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Inventory } from './pages/Inventory/index';
 import { LoginForm } from './pages/LoginPage/LoginPage';
 import { Reports } from './pages/Reports/index';

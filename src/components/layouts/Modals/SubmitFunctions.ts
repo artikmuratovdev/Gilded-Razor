@@ -1,11 +1,11 @@
 import { useAddAppoitmentMutation } from '@/app/api/appoitmentsApi/appoitmentsApi';
 import type { AddAppoitmentReq } from '@/app/api/appoitmentsApi/type';
-import { useCreateClientMutation } from '@/app/api/clientsApi/clientsApi';
+import { useCreateClientMutation, useDeleteClientMutation, useUpdateClientMutation } from '@/app/api/clientsApi/clientsApi';
 import type { CreateClientReq, MutationRes } from '@/app/api/clientsApi/type';
-import { closeModal } from '@/app/slices/modalSlice';
+import { closeModal, setClientToDelete, setClientToEdit } from '@/app/slices/modalSlice';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import type { UseFormReturn } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router';
 import type {
   BookingForm,
@@ -13,6 +13,7 @@ import type {
   ProductForm,
   StaffForm,
 } from './FormTypes';
+import type { RootState } from '@/app/store';
 
 interface ModalForms {
   bookingForm: UseFormReturn<BookingForm>;
@@ -32,6 +33,10 @@ const useModalActions = ({
   const handleRequest = useHandleRequest();
   const [createAppointment] = useAddAppoitmentMutation();
   const [createClient] = useCreateClientMutation();
+  const [deleteClient] = useDeleteClientMutation();
+  const [updateClient] = useUpdateClientMutation();
+  const clientToDelete = useSelector((state: RootState) => state.modal.clientToDelete);
+  const clientToEdit = useSelector((state: RootState) => state.modal.clientToEdit);
 
   const clearParams = (keys: string[]) => {
     const params = new URLSearchParams(searchParams);
@@ -63,6 +68,16 @@ const useModalActions = ({
 
   const handleClosePayment = () => {
     dispatch(closeModal('payment'));
+  };
+
+  const handleCloseDeleteClient = () => {
+    dispatch(closeModal('deleteClient'));
+    dispatch(setClientToDelete(null));
+  };
+
+  const handleCloseEditClient = () => {
+    dispatch(closeModal('editClient'));
+    dispatch(setClientToEdit(null));
   };
 
   // --- Submit Handlers ---
@@ -122,16 +137,52 @@ const useModalActions = ({
     staffForm.reset();
   };
 
+  const onDeleteSubmit = () => {
+    if (!clientToDelete) return;
+    
+    handleRequest({
+      request: async () => await deleteClient(String(clientToDelete.id)),
+      onSuccess: (res: MutationRes) => {
+        console.log('Client deleted successfully:', res);
+        handleCloseDeleteClient();
+      },
+    });
+  };
+
+  const onEditClientSubmit = (data: ClientForm) => {
+    if (!clientToEdit) return;
+    
+    const payload: Partial<CreateClientReq> = {
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
+      phone: data.phone,
+    };
+    
+    handleRequest({
+      request: async () => await updateClient({ id: String(clientToEdit.id), body: payload }),
+      onSuccess: (res: MutationRes) => {
+        console.log('Client updated successfully:', res);
+        handleCloseEditClient();
+        clientForm.reset();
+      },
+    });
+  };
+
   return {
     handleCloseBooking,
     handleCloseStaff,
     handleCloseClient,
     handleCloseProduct,
     handleClosePayment,
+    handleCloseDeleteClient,
+    handleCloseEditClient,
     onBookingSubmit,
     onProductSubmit,
     onClientSubmit,
     onStaffSubmit,
+    onDeleteSubmit,
+    onEditClientSubmit,
   };
 };
 

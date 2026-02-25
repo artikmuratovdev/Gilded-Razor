@@ -41,7 +41,6 @@ export function LoginForm({
         });
       },
       onSuccess: () => {
-        // window.location.href = '/dashboard';
         navigate('/dashboard')
       },
       onError: (error) => {
