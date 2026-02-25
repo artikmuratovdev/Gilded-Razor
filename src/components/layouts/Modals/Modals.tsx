@@ -1,13 +1,23 @@
 import type { RootState } from '@/app/store';
 import { staffMembers } from '@/constants/barber';
 import { AlertTriangle, CreditCard, Package, Scissors, Search, UserPlus, Wrench } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '../../ui/Button';
 import { Input, Select } from '../../ui/Input';
 import { Modal } from '../../ui/Modal';
 import useModalForms from './FormTypes';
 import useModalActions from './SubmitFunctions';
+import { useGetClientsQuery } from '@/app/api/clientsApi/clientsApi';
+import { useGetServiceQuery } from '@/app/api/serviceApi/serviceApi';
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxEmpty,
+} from '../../ui/combobox';
 
 // --- Schemas ---
 const Modals = () => {
@@ -51,6 +61,52 @@ const Modals = () => {
     serviceToEdit,
   } = useSelector((state: RootState) => state.modal);
 
+  // Get data from Redux cache (prefetched in Dashboard)
+  const { data: clientsData } = useGetClientsQuery({ page: 1, page_size: 1000 });
+  const { data: servicesData } = useGetServiceQuery({ page: 1, page_size: 1000 });
+
+  // State for Combobox search and selected values
+  const [clientSearch, setClientSearch] = useState('');
+  const [serviceSearch, setServiceSearch] = useState('');
+  const [staffSearch, setStaffSearch] = useState('');
+  const [selectedClientName, setSelectedClientName] = useState('');
+  const [selectedServiceName, setSelectedServiceName] = useState('');
+  const [selectedStaffName, setSelectedStaffName] = useState('');
+
+  // Auto-format time input (add colon automatically)
+  const handleTimeInput = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'start_time' | 'end_time') => {
+    let value = e.target.value;
+    
+    // Remove all non-digit characters
+    const digits = value.replace(/\D/g, '');
+    
+    // Format: automatically add colon after 2 digits
+    if (digits.length === 0) {
+      value = '';
+    } else if (digits.length <= 2) {
+      value = digits;
+    } else if (digits.length <= 4) {
+      value = digits.slice(0, 2) + ':' + digits.slice(2);
+    } else {
+      value = digits.slice(0, 2) + ':' + digits.slice(2, 4);
+    }
+    
+    bookingForm.setValue(fieldName, value);
+  };
+
+  // Filter options based on search
+  const filteredClients = clientsData?.data?.filter((client: any) =>
+    `${client.first_name} ${client.last_name}`.toLowerCase().includes(clientSearch.toLowerCase())
+  ) || [];
+
+  const filteredServices = servicesData?.data?.filter((service: any) =>
+    service.name.toLowerCase().includes(serviceSearch.toLowerCase())
+  ) || [];
+
+  const filteredStaff = staffMembers.filter(staff =>
+    staff.name.toLowerCase().includes(staffSearch.toLowerCase())
+  );
+
   // --- Form Hooks ---
 
   useEffect(() => {
@@ -66,6 +122,13 @@ const Modals = () => {
         status: 'pending',
         notes: '',
       });
+      // Reset selected names
+      setSelectedClientName('');
+      setSelectedServiceName('');
+      setSelectedStaffName('');
+      setClientSearch('');
+      setServiceSearch('');
+      setStaffSearch('');
     }
   }, [newBooking, bookingForm]);
 
@@ -108,13 +171,45 @@ const Modals = () => {
         >
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
-              <Input
-                label='Mijoz (ID)'
-                type='number'
-                placeholder='Mijoz ID kiriting'
-                icon={<Search className='h-4 w-4' />}
-                {...bookingForm.register('client', { valueAsNumber: true })}
-              />
+              <label className='block text-sm font-medium text-white/80 mb-1.5'>
+                Mijoz
+              </label>
+              <Combobox
+                value={bookingForm.watch('client')?.toString() || ''}
+                onValueChange={(value) => {
+                  if (value) {
+                    const client = filteredClients.find((c: any) => c.id.toString() === value);
+                    if (client) {
+                      bookingForm.setValue('client', parseInt(value));
+                      setSelectedClientName(`${client.first_name} ${client.last_name}`);
+                      setClientSearch('');
+                    }
+                  }
+                }}
+              >
+                <ComboboxInput
+                  placeholder='Mijoz qidiring...'
+                  value={selectedClientName || clientSearch}
+                  onChange={(e) => {
+                    setClientSearch(e.target.value);
+                    if (!e.target.value) {
+                      setSelectedClientName('');
+                      bookingForm.setValue('client', 0);
+                    }
+                  }}
+                  className='w-full'
+                />
+                <ComboboxContent>
+                  <ComboboxList>
+                    <ComboboxEmpty>Mijoz topilmadi</ComboboxEmpty>
+                    {filteredClients.map((client: any) => (
+                      <ComboboxItem key={client.id} value={client.id.toString()}>
+                        {client.first_name} {client.last_name}
+                      </ComboboxItem>
+                    ))}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
               {bookingForm.formState.errors.client && (
                 <p className='text-red-500 text-xs mt-1'>
                   {bookingForm.formState.errors.client.message}
@@ -122,20 +217,46 @@ const Modals = () => {
               )}
             </div>
             <div>
-              <Select
-                label='Sartarosh Tanlash'
-                icon={<Scissors className='h-4 w-4' />}
-                {...bookingForm.register('staff_member', {
-                  valueAsNumber: true,
-                })}
+              <label className='block text-sm font-medium text-white/80 mb-1.5'>
+                Sartarosh
+              </label>
+              <Combobox
+                value={bookingForm.watch('staff_member')?.toString() || ''}
+                onValueChange={(value) => {
+                  if (value) {
+                    const staffId = parseInt(value.split('-')[0]);
+                    const staff = filteredStaff.find((s) => s.id === value.split('-')[0]);
+                    if (staff) {
+                      bookingForm.setValue('staff_member', staffId);
+                      setSelectedStaffName(staff.name);
+                      setStaffSearch('');
+                    }
+                  }
+                }}
               >
-                <option value=''>Mutaxassis tanlang</option>
-                {staffMembers.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-              </Select>
+                <ComboboxInput
+                  placeholder='Sartarosh qidiring...'
+                  value={selectedStaffName || staffSearch}
+                  onChange={(e) => {
+                    setStaffSearch(e.target.value);
+                    if (!e.target.value) {
+                      setSelectedStaffName('');
+                      bookingForm.setValue('staff_member', 0);
+                    }
+                  }}
+                  className='w-full'
+                />
+                <ComboboxContent>
+                  <ComboboxList>
+                    <ComboboxEmpty>Sartarosh topilmadi</ComboboxEmpty>
+                    {filteredStaff.map((staff) => (
+                      <ComboboxItem key={staff.id} value={`${staff.id}-${staff.name}`}>
+                        {staff.name}
+                      </ComboboxItem>
+                    ))}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
               {bookingForm.formState.errors.staff_member && (
                 <p className='text-red-500 text-xs mt-1'>
                   {bookingForm.formState.errors.staff_member.message}
@@ -145,12 +266,45 @@ const Modals = () => {
           </div>
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
-              <Input
-                label='Xizmat (ID)'
-                type='number'
-                placeholder='Xizmat ID kiriting'
-                {...bookingForm.register('service', { valueAsNumber: true })}
-              />
+              <label className='block text-sm font-medium text-white/80 mb-1.5'>
+                Xizmat
+              </label>
+              <Combobox
+                value={bookingForm.watch('service')?.toString() || ''}
+                onValueChange={(value) => {
+                  if (value) {
+                    const service = filteredServices.find((s: any) => s.id.toString() === value);
+                    if (service) {
+                      bookingForm.setValue('service', parseInt(value));
+                      setSelectedServiceName(`${service.name} - ${service.price} so'm`);
+                      setServiceSearch('');
+                    }
+                  }
+                }}
+              >
+                <ComboboxInput
+                  placeholder='Xizmat qidiring...'
+                  value={selectedServiceName || serviceSearch}
+                  onChange={(e) => {
+                    setServiceSearch(e.target.value);
+                    if (!e.target.value) {
+                      setSelectedServiceName('');
+                      bookingForm.setValue('service', 0);
+                    }
+                  }}
+                  className='w-full'
+                />
+                <ComboboxContent>
+                  <ComboboxList>
+                    <ComboboxEmpty>Xizmat topilmadi</ComboboxEmpty>
+                    {filteredServices.map((service: any) => (
+                      <ComboboxItem key={service.id} value={service.id.toString()}>
+                        {service.name} - {service.price} so'm
+                      </ComboboxItem>
+                    ))}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
               {bookingForm.formState.errors.service && (
                 <p className='text-red-500 text-xs mt-1'>
                   {bookingForm.formState.errors.service.message}
@@ -187,9 +341,14 @@ const Modals = () => {
             <div>
               <Input
                 label='Boshlanish vaqti'
-                type='time'
+                type='text'
+                placeholder='0900 yoki 09:00'
+                maxLength={5}
+                pattern='([01][0-9]|2[0-3]):[0-5][0-9]'
+                title='24 soatlik formatda kiriting (00:00 - 23:59)'
                 className='scheme-dark'
-                {...bookingForm.register('start_time')}
+                value={bookingForm.watch('start_time') || ''}
+                onChange={(e) => handleTimeInput(e, 'start_time')}
               />
               {bookingForm.formState.errors.start_time && (
                 <p className='text-red-500 text-xs mt-1'>
@@ -200,9 +359,14 @@ const Modals = () => {
             <div>
               <Input
                 label='Tugash vaqti'
-                type='time'
+                type='text'
+                placeholder='1800 yoki 18:00'
+                maxLength={5}
+                pattern='([01][0-9]|2[0-3]):[0-5][0-9]'
+                title='24 soatlik formatda kiriting (00:00 - 23:59)'
                 className='scheme-dark'
-                {...bookingForm.register('end_time')}
+                value={bookingForm.watch('end_time') || ''}
+                onChange={(e) => handleTimeInput(e, 'end_time')}
               />
               {bookingForm.formState.errors.end_time && (
                 <p className='text-red-500 text-xs mt-1'>

@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/Button';
 import {
   Select,
   SelectContent,
@@ -10,7 +9,7 @@ import {
 } from '@/components/ui/select';
 import { Search } from 'lucide-react';
 
-interface ClientsFiltersProps {
+interface ClientsFiltersProps { 
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   statusFilter: string;
@@ -45,16 +44,12 @@ export const ClientsFilters = ({
               <SelectGroup>
                 <SelectLabel>Mijozlar</SelectLabel>
                 <SelectItem value='all'>Barchasi</SelectItem>
-                <SelectItem value='vip'>VIP</SelectItem>
-                <SelectItem value='regular'>Doimiy</SelectItem>
-                <SelectItem value='new'>Yangi</SelectItem>
+                <SelectItem value='true'>Faol</SelectItem>
+                <SelectItem value='false'>Nofaol</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
-        <Button variant='default' className='text-xs px-3 sm:px-4'>
-          <span className='hidden sm:inline'>Ro'yxatni</span> Eksport
-        </Button>
       </div>
     </div>
   );
