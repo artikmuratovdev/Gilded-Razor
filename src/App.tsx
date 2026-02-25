@@ -1,11 +1,11 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { MainLayout } from './components/layouts/MainLayout';
 import { PrivateRoute } from './hooks/PrivateRoute';
-import { Appointments } from './pages/Appointments/index';
-import { Clients } from './pages/Clients/index';
+import { Appointments } from './pages/Appointments/Appointments';
+import { Clients } from './pages/Clients/Clients';
 import { Dashboard } from './pages/Dashboard';
 import { Inventory } from './pages/Inventory/index';
-import { LoginForm } from './pages/LoginPage';
+import { LoginForm } from './pages/LoginPage/LoginPage';
 import { Reports } from './pages/Reports/index';
 import { Settings } from './pages/Settings/index';
 import { StaffPage } from './pages/Staff/index';

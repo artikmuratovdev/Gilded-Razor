@@ -1,26 +1,22 @@
-import { clients } from '@/constants/clients';
+
 import { useState } from 'react';
 import { Card, CardContent } from '../../components/ui/Card';
 import { ClientsFilters } from './ClientsFilters';
 import { ClientsTable } from './ClientsTable';
+import Pagination from '@/components/Pagination';
+import usePaginatedClients from '@/hooks/usePaginatedClients';
+import { Spinner } from '@/components/ui/spinner';
 
 export const Clients = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [page,setPage] = useState<number>(1);
 
-  const filteredClients = clients.filter((client) => {
-    const searchLower = searchQuery.toLowerCase();
-    const matchesSearch =
-      client.name.toLowerCase().includes(searchLower) ||
-      client.email.toLowerCase().includes(searchLower) ||
-      client.phone.toLowerCase().includes(searchLower);
+  const {data} = usePaginatedClients({page,searchQuery});
 
-    const matchesStatus =
-      statusFilter === 'all' ||
-      client.status.toLowerCase() === statusFilter.toLowerCase();
-
-    return matchesSearch && matchesStatus;
-  });
+  if(!data) return <div className='flex justify-center items-center'>
+    <Spinner className="size-10" />
+  </div>
 
   return (
     <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
@@ -33,7 +29,13 @@ export const Clients = () => {
             statusFilter={statusFilter}
             setStatusFilter={setStatusFilter}
           />
-          <ClientsTable data={filteredClients} />
+          <ClientsTable data={data.data} />
+          <Pagination
+              page={page}
+              setPage={setPage}
+              prev={!!data?.pagination?.previous}
+              next={!!data?.pagination?.next}
+            />
         </CardContent>
       </Card>
     </div>

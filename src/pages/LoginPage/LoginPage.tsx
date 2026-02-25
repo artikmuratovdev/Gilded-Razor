@@ -8,9 +8,10 @@ import {
   CardTitle,
 } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { useHandleRequest } from '@/hooks/HandleRequest';
+import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import { cn } from '@/lib/utils';
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router';
 
 export function LoginForm({
   className,
@@ -18,6 +19,7 @@ export function LoginForm({
 }: React.ComponentProps<'div'>) {
   const [login] = useLoginMutation();
   const handleRequest = useHandleRequest();
+  const navigate = useNavigate();
 
   const phoneRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -39,7 +41,8 @@ export function LoginForm({
         });
       },
       onSuccess: () => {
-        window.location.href = '/dashboard';
+        // window.location.href = '/dashboard';
+        navigate('/dashboard')
       },
       onError: (error) => {
         console.log(error?.error?.message || error);

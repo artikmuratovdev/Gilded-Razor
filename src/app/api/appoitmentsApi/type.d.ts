@@ -19,6 +19,7 @@ export type AppoitmentRes = {
     price: string;
     status: string;
     status_display: string;
+    datetime?: string;
   }[];
   pagination: {
     count: number;
@@ -39,8 +40,8 @@ export type AddAppoitmentReq = {
   start_time: string;
   end_time: string;
   price: string;
-  status: string;
-  notes: string;
+  status?: string;
+  notes?: string;
 };
 
 export type AddAppoitmentRes = {

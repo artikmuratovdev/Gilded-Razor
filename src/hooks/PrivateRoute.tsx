@@ -1,5 +1,5 @@
 import { useMeQuery } from '@/app/api/authApi';
-import { clearAuthTokens, getTokenFromCache } from '@/app/api/baseApi';
+import { clearAuthTokens, getTokenFromCache } from '@/app/api/baseApi/baseApi';
 import { Loader2 } from 'lucide-react';
 import { Navigate, Outlet } from 'react-router';
 

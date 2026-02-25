@@ -1,19 +1,14 @@
-import type { Client } from '@/types';
 import {
-  Calendar,
-  Mail,
   MessageSquare,
   Pencil,
   Phone,
-  Star,
   Trash2,
 } from 'lucide-react';
-import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { formatCurrency } from '../../lib/utils';
+import type { GetClientsRes } from '@/app/api/clientsApi/type';
 
 interface ClientsTableProps {
-  data: Client[];
+  data: GetClientsRes['data'];
 }
 
 export const ClientsTable = ({ data }: ClientsTableProps) => {
@@ -38,49 +33,19 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
                 className='group hover:bg-white/[0.02] transition-colors'
               >
                 <td className='p-4 pl-6'>
-                  <div className='flex items-center gap-3'>
-                    <img
-                      src={client.avatar}
-                      alt={client.name}
-                      className='w-10 h-10 rounded-full object-cover'
-                    />
-                    <div>
                       <p className='font-bold text-white text-sm'>
-                        {client.name}
+                        {client.full_name}
                       </p>
-                      <div className='flex items-center gap-1 text-xs text-primary'>
-                        <Star className='w-3 h-3 fill-current' />
-                        <span>{client.visits} Ta Tashrif</span>
-                      </div>
-                    </div>
-                  </div>
                 </td>
                 <td className='p-4'>
                   <div className='space-y-1'>
-                    <div className='flex items-center gap-2 text-xs text-gray-400'>
-                      <Mail className='w-3 h-3' /> {client.email}
-                    </div>
                     <div className='flex items-center gap-2 text-xs text-gray-400'>
                       <Phone className='w-3 h-3' /> {client.phone}
                     </div>
                   </div>
-                </td>
+                </td> 
                 <td className='p-4'>
-                  <div className='space-y-1'>
-                    <div className='flex items-center gap-2 text-xs text-gray-400'>
-                      <Calendar className='w-3 h-3' /> Oxirgi:{' '}
-                      {client.lastVisit}
-                    </div>
-                    <div className='text-sm font-bold text-white'>
-                      {formatCurrency(client.totalSpend)}{' '}
-                      <span className='text-xs font-normal text-gray-500'>
-                        jami
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td className='p-4'>
-                  <Badge
+                  {/* <Badge
                     variant={
                       client.status === 'VIP'
                         ? 'gold'
@@ -90,7 +55,7 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
                     }
                   >
                     {client.status}
-                  </Badge>
+                  </Badge> */}
                 </td>
                 <td className='p-4 pr-6 text-right'>
                   <div className='flex justify-end gap-2'>
@@ -127,7 +92,7 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
       </div>
 
       {/* Mobile/Tablet Card View */}
-      <div className='md:hidden divide-y divide-white/5'>
+      {/* <div className='md:hidden divide-y divide-white/5'>
         {data.length > 0 ? (
           data.map((client) => (
             <div
@@ -216,33 +181,7 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
             Mijozlar topilmadi
           </div>
         )}
-      </div>
-
-      {/* Pagination */}
-      <div className='p-4 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-400'>
-        <span className='order-2 sm:order-1 text-center sm:text-left'>
-          {data.length} ta mijozdan {data.length > 0 ? '1' : '0'}-{data.length}{' '}
-          ta ko'rsatilmoqda
-        </span>
-        <div className='flex gap-2 order-1 sm:order-2 w-full sm:w-auto'>
-          <Button
-            variant='outline'
-            size='sm'
-            className='flex-1 sm:flex-none'
-            disabled
-          >
-            Oldingi
-          </Button>
-          <Button
-            variant='outline'
-            size='sm'
-            className='flex-1 sm:flex-none'
-            disabled={data.length < 5}
-          >
-            Keyingi
-          </Button>
-        </div>
-      </div>
+      </div> */}
     </>
   );
 };

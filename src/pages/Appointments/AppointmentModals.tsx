@@ -1,3 +1,4 @@
+import type { AppoitmentRes } from '@/app/api/appoitmentsApi/type';
 import {
   Combobox,
   ComboboxContent,
@@ -12,11 +13,25 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Scissors, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
-import type { AppoitmentRes } from '@/app/api/appoitmentsApi/type';
+import { useUpdateAppoitmentMutation } from '@/app/api/appoitmentsApi/appoitmentsApi';
+import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
+import z from 'zod';
+
+export const editAppointmentSchema = z.object({
+  client: z.string().min(2, 'Mijoz ismi talab qilinadi'),
+  barber: z.string().min(1, 'Sartarosh tanlanishi shart'),
+  service: z.string().min(2, 'Xizmat talab qilinadi'),
+  date: z.string().min(1, 'Sana talab qilinadi'),
+  start_time: z.string().min(1, 'Boshlanish vaqti talab qilinadi'),
+  end_time: z.string().min(1, 'Tugash vaqti talab qilinadi'),
+  status: z.string().min(1, 'Holat talab qilinadi'),
+  price: z.number().min(0, "Narx manfiy bo'lmasligi kerak"),
+});
+
+export type EditForm = z.infer<typeof editAppointmentSchema>;
 
 // --- Constants ---
 
@@ -46,16 +61,7 @@ const CLIENTS = [
 
 // --- Schema ---
 
-const editAppointmentSchema = z.object({
-  client: z.string().min(2, 'Mijoz ismi talab qilinadi'),
-  barber: z.string().min(1, 'Sartarosh tanlanishi shart'),
-  service: z.string().min(2, 'Xizmat talab qilinadi'),
-  datetime: z.string().min(1, 'Sana va vaqt talab qilinadi'),
-  status: z.string().min(1, 'Holat talab qilinadi'),
-  price: z.number().min(0, "Narx manfiy bo'lmasligi kerak"),
-});
 
-type EditForm = z.infer<typeof editAppointmentSchema>;
 
 // --- Combobox Field Wrapper ---
 
@@ -162,52 +168,50 @@ export const EditAppointmentModal = ({
   appointment,
 }: EditAppointmentModalProps) => {
   const form = useForm<EditForm>({
-    resolver: zodResolver(editAppointmentSchema) as any,
+    resolver: zodResolver(editAppointmentSchema),
     defaultValues: {
       client: '',
       barber: '',
       service: '',
-      datetime: '',
+      date: '',
+      start_time: '',
+      end_time: '',
       status: 'Pending',
       price: 0,
     },
   });
 
-  // appointment date + time → datetime-local format helper
-  const toDatetimeLocal = (date: string, time: string) => {
-    // date is day-of-month (e.g. "24"), time is "10:00 AM"
-    // Build a rough ISO string for current month/year
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(date).padStart(2, '0');
-
-    // parse 12h time → 24h
-    const match = time.match(/(\d+):(\d+)\s*(AM|PM)/i);
-    if (!match) return `${year}-${month}-${day}T00:00`;
-    let hours = parseInt(match[1]);
-    const minutes = match[2];
-    const period = match[3].toUpperCase();
-    if (period === 'PM' && hours !== 12) hours += 12;
-    if (period === 'AM' && hours === 12) hours = 0;
-    return `${year}-${month}-${day}T${String(hours).padStart(2, '0')}:${minutes}`;
-  };
-
   useEffect(() => {
     if (appointment && isOpen) {
+      // datetime'ni date va time'larga ajratish
+      const date = appointment.date;
+      const start_time = appointment.start_time;
+      const end_time = appointment.end_time;
+
       form.reset({
         client: appointment.client_name,
         barber: appointment.staff_member_name,
         service: appointment.service_name,
-        datetime: toDatetimeLocal(appointment.date, appointment.start_time),
+        date: date,
+        start_time: start_time,
+        end_time: end_time,
         status: appointment.status,
         price: Number(appointment.price),
       });
     }
   }, [appointment, isOpen]);
+  const [updateAppointment] = useUpdateAppoitmentMutation(); 
+  const handleRequest = useHandleRequest();
 
   const onSubmit = (data: EditForm) => {
+    if(!appointment) return
     console.log('Edit appointment:', data);
+    handleRequest({
+      request : async () => await updateAppointment({id:appointment.id,body:data}),
+      onSuccess: (res) => {
+        console.log(res.data)
+      }
+    })
     onClose();
     form.reset();
   };
@@ -228,79 +232,112 @@ export const EditAppointmentModal = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className='space-y-3 sm:space-y-4'
       >
-        {/* Mijoz Combobox */}
-        <ComboboxField
-          label='Mijoz Ismi'
-          value={form.watch('client')}
-          onChange={(v) => form.setValue('client', v, { shouldValidate: true })}
-          options={clientOptions}
-          placeholder='Mijozni qidiring...'
-          error={form.formState.errors.client?.message}
-        />
-
-        {/* Sartarosh Combobox */}
-        <ComboboxField
-          label='Sartarosh'
-          value={form.watch('barber')}
-          onChange={(v) =>
-            form.setValue('barber', v, { shouldValidate: true })
-          }
-          options={barberOptions}
-          placeholder='Sartarosh tanlang...'
-          error={form.formState.errors.barber?.message}
-        />
-
-        {/* Xizmat Combobox */}
-        <ComboboxField
-          label='Xizmat'
-          value={form.watch('service')}
-          onChange={(v) =>
-            form.setValue('service', v, { shouldValidate: true })
-          }
-          options={serviceOptions}
-          placeholder='Xizmat tanlang...'
-          error={form.formState.errors.service?.message}
-        />
-
-        {/* Sana va Vaqt — datetime-local */}
-        <div>
-          <Input
-            label='Sana va Vaqt'
-            type='datetime-local'
-            className='scheme-dark'
-            {...form.register('datetime')}
+        {/* Mijoz va Sartarosh - 2 ustun */}
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+          <ComboboxField
+            label='Mijoz Ismi'
+            value={form.watch('client')}
+            onChange={(v) => form.setValue('client', v, { shouldValidate: true })}
+            options={clientOptions}
+            placeholder='Mijozni qidiring...'
+            error={form.formState.errors.client?.message}
           />
-          {form.formState.errors.datetime && (
+          <ComboboxField
+            label='Sartarosh'
+            value={form.watch('barber')}
+            onChange={(v) => form.setValue('barber', v, { shouldValidate: true })}
+            options={barberOptions}
+            placeholder='Sartarosh tanlang...'
+            error={form.formState.errors.barber?.message}
+          />
+        </div>
+
+        {/* Xizmat va Sana - 2 ustun */}
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+          <ComboboxField
+            label='Xizmat'
+            value={form.watch('service')}
+            onChange={(v) =>
+              form.setValue('service', v, { shouldValidate: true })
+            }
+            options={serviceOptions}
+            placeholder='Xizmat tanlang...'
+            error={form.formState.errors.service?.message}
+          />
+          <div>
+            <Input
+              label='Sana'
+              type='date'
+              className='scheme-dark'
+              {...form.register('date')}
+            />
+            {form.formState.errors.date && (
+              <p className='text-red-500 text-xs mt-1'>
+                {form.formState.errors.date.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Boshlanish va Tugash Vaqti */}
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+          <div>
+            <Input
+              label='Boshlanish Vaqti'
+              type='time'
+              className='scheme-dark'
+              {...form.register('start_time')}
+            />
+            {form.formState.errors.start_time && (
+              <p className='text-red-500 text-xs mt-1'>
+                {form.formState.errors.start_time.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label='Tugash Vaqti'
+              type='time'
+              className='scheme-dark'
+              {...form.register('end_time')}
+            />
+            {form.formState.errors.end_time && (
+              <p className='text-red-500 text-xs mt-1'>
+                {form.formState.errors.end_time.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Holat */}
+        <div>
+          <Select label='Holat' {...form.register('status')}>
+            <option value='pending'>Kutilmoqda</option>
+            <option value='confirmed'>Tasdiqlangan</option>
+            <option value='completed'>Yakunlangan</option>
+            <option value='cancelled'>Bekor qilingan</option>
+          </Select>
+          {form.formState.errors.status && (
             <p className='text-red-500 text-xs mt-1'>
-              {form.formState.errors.datetime.message}
+              {form.formState.errors.status.message}
             </p>
           )}
         </div>
 
-        {/* Holat & Narx */}
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-          <div>
-            <Select label='Holat' {...form.register('status')}>
-              <option value='Pending'>Kutilmoqda</option>
-              <option value='Confirmed'>Tasdiqlangan</option>
-              <option value='Completed'>Yakunlangan</option>
-              <option value='Cancelled'>Bekor qilingan</option>
-            </Select>
-          </div>
-          <div>
-            <Input
-              label='Narx ($)'
-              type='number'
-              step='0.01'
-              placeholder='0.00'
-              {...form.register('price', { valueAsNumber: true })}
-            />
-            {form.formState.errors.price && (
-              <p className='text-red-500 text-xs mt-1'>
-                {form.formState.errors.price.message}
-              </p>
-            )}
-          </div>
+        {/* Narx — to'liq kenglik */}
+        <div>
+          <Input
+            label='Narx ($)'
+            type='number'
+            step='0.01'
+            placeholder='0.00'
+            {...form.register('price', { valueAsNumber: true })}
+          />
+          {form.formState.errors.price && (
+            <p className='text-red-500 text-xs mt-1'>
+              {form.formState.errors.price.message}
+            </p>
+          )}
         </div>
 
         <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>

@@ -1,21 +1,21 @@
-import { useGetAppoitmentsQuery } from '@/app/api/appoitmentsApi/appoitmentsApi';
+import { useGetClientsQuery } from '@/app/api/clientsApi/clientsApi';
 type PaginatedAppointments = {
   page: number;
   searchQuery: string;
   page_size?: number;
 };
 
-const usePaginatedAppointments = ({
+const usePaginatedClients = ({
   page,
   searchQuery,
   page_size = 10,
 }: PaginatedAppointments) => {
-  const { data } = useGetAppoitmentsQuery({
+  const { data } = useGetClientsQuery({
     page,
     page_size,
     search: searchQuery,
   });
-  const { data: nextData } = useGetAppoitmentsQuery({
+  const { data: nextData } = useGetClientsQuery({
     page: page + 1,
     page_size,
     search: searchQuery,
@@ -24,4 +24,4 @@ const usePaginatedAppointments = ({
   return { data, nextData };
 };
 
-export default usePaginatedAppointments;
+export default usePaginatedClients;

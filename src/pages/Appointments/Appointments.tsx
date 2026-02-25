@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { AppointmentsToolbar } from './AppointmentsToolbar';
+import type { AppoitmentRes } from '@/app/api/appoitmentsApi/type';
 import Pagination from '@/components/Pagination';
 import {
   DropdownMenu,
@@ -8,6 +7,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import usePaginatedAppointments from '@/hooks/usePaginatedAppointments';
+import useSetDate from '@/hooks/useSetDate';
 import {
   CheckCircle,
   Clock,
@@ -16,6 +17,7 @@ import {
   Trash2,
   XCircle,
 } from 'lucide-react';
+import { useState } from 'react';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
@@ -24,15 +26,17 @@ import {
   DeleteAppointmentModal,
   EditAppointmentModal,
 } from './AppointmentModals';
-import useSetDate from '@/hooks/useSetDate';
-import type { AppoitmentRes } from '@/app/api/appoitmentsApi/type';
-import usePaginatedAppointments from '@/hooks/usePaginatedAppointments';
+import { AppointmentsToolbar } from './AppointmentsToolbar';
 
 export const Appointments = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [searchQuery, setSearchQuery] = useState('');
-  const [editTarget, setEditTarget] = useState<AppoitmentRes['data'][0] | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<AppoitmentRes['data'][0] | null>(null);
+  const [editTarget, setEditTarget] = useState<AppoitmentRes['data'][0] | null>(
+    null,
+  );
+  const [deleteTarget, setDeleteTarget] = useState<
+    AppoitmentRes['data'][0] | null
+  >(null);
   const [page, setPage] = useState(1);
 
   const { data: appointmentsData } = usePaginatedAppointments({
@@ -42,11 +46,15 @@ export const Appointments = () => {
   });
 
   console.log(appointmentsData?.pagination);
+  console.log('editTarget', editTarget);
 
   if (!appointmentsData) return <div>Loading...</div>;
 
   return (
-    <div className='space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-full'>
+    <div
+      className='space-y-4 sm:space-y-6 animate-in fade-in
+    slide-in-from-bottom-4 duration-500 w-full max-w-full'
+    >
       <div className='relative'>
         <AppointmentsToolbar
           selectedDate={selectedDate}
@@ -237,7 +245,7 @@ export const Appointments = () => {
                             </td>
                             <td className='p-4 text-right'>
                               {/* Desktop Dropdown */}
-                              <DropdownMenu>
+                              <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
                                   <Button
                                     variant='ghost'
@@ -253,7 +261,12 @@ export const Appointments = () => {
                                 >
                                   <DropdownMenuItem
                                     className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
-                                    onClick={() => setEditTarget(appt)}
+                                    onClick={() =>
+                                      setEditTarget({
+                                        ...appt,
+                                        datetime: `${appt.date} ${appt.start_time}`,
+                                      })
+                                    }
                                   >
                                     <Pencil className='h-4 w-4 text-primary' />
                                     Tahrirlash

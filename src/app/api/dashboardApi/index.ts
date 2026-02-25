@@ -1,5 +1,5 @@
 import { API_TAGS } from '@/constants/ApiTags';
-import baseApi from '../baseApi';
+import baseApi from '../baseApi/baseApi';
 import type { Chart, Overview } from './type';
 
 export const dashboardApi = baseApi.injectEndpoints({

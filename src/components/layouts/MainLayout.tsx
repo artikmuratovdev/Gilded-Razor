@@ -18,7 +18,7 @@ import {
   useSearchParams,
 } from 'react-router';
 import { Button } from '../ui/Button';
-import Modals from './Modals';
+import Modals from './Modals/Modals';
 import { Sidebar } from './Sidebar';
 
 export const MainLayout = () => {
@@ -45,7 +45,7 @@ export const MainLayout = () => {
       dispatch(openModal('product'));
     }
   }, [searchParams, dispatch]);
-  
+
   const setParam = (key: string, value: string) => {
     setSearchParams((prev) => {
       const params = new URLSearchParams(prev);

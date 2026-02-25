@@ -1,59 +1,29 @@
-import { closeModal } from '@/app/slices/modalSlice';
 import type { RootState } from '@/app/store';
 import { staffMembers } from '@/constants/barber';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { CreditCard, Package, Scissors, Search, UserPlus } from 'lucide-react';
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router';
-import { z } from 'zod';
-import { Button } from '../../components/ui/Button';
-import { Input, Select } from '../../components/ui/Input';
-import { Modal } from '../../components/ui/Modal';
+import { useSelector } from 'react-redux';
+import { Button } from '../../ui/Button';
+import { Input, Select } from '../../ui/Input';
+import { Modal } from '../../ui/Modal';
+import useModalForms from './FormTypes';
+import useModalActions from './SubmitFunctions';
 
 // --- Schemas ---
-
-const bookingSchema = z.object({
-  clientName: z.string().min(2, 'Mijoz ismi talab qilinadi'),
-  barberId: z.string().min(1, 'Sartarosh tanlanishi shart'),
-  datetime: z.string().min(1, 'Sana va vaqt talab qilinadi'),
-  services: z.array(z.string()).min(1, 'Kamida bitta xizmat tanlang'),
-});
-
-const productSchema = z.object({
-  name: z.string().min(2, 'Mahsulot nomi talab qilinadi'),
-  category: z.string().min(1, 'Kategoriya tanlanishi shart'),
-  price: z.number().min(0, "Narx manfiy bo'lmasligi kerak"),
-  stock: z.number().min(0, "Zaxira manfiy bo'lmasligi kerak"),
-  minStock: z.number().min(0, "Min zaxira manfiy bo'lmasligi kerak"),
-});
-
-const clientSchema = z.object({
-  firstName: z.string().min(2, 'Ism talab qilinadi'),
-  lastName: z.string().min(2, 'Familiya talab qilinadi'),
-  email: z.string().email("Noto'g'ri email format"),
-  phone: z
-    .string()
-    .min(10, "Telefon raqami kamida 10 ta belgidan iborat bo'lishi kerak"),
-});
-
-const staffSchema = z.object({
-  name: z.string().min(2, 'Ism talab qilinadi'),
-  role: z.string().min(1, 'Lavozim talab qilinadi'),
-  phone: z.string().min(10, "To'g'ri telefon raqam talab qilinadi"),
-  commission: z.number().min(0).max(100),
-});
-
-// --- Types ---
-
-type BookingForm = z.infer<typeof bookingSchema>;
-type ProductForm = z.infer<typeof productSchema>;
-type ClientForm = z.infer<typeof clientSchema>;
-type StaffForm = z.infer<typeof staffSchema>;
-
 const Modals = () => {
-  const dispatch = useDispatch();
+  const forms = useModalForms();
+  const { bookingForm, productForm, clientForm, staffForm } = forms;
+  const {
+    handleCloseBooking,
+    handleCloseClient,
+    handleClosePayment,
+    handleCloseProduct,
+    handleCloseStaff,
+    onBookingSubmit,
+    onClientSubmit,
+    onProductSubmit,
+    onStaffSubmit,
+  } = useModalActions(forms);
   const {
     booking: newBooking,
     staff: newStaff,
@@ -62,126 +32,23 @@ const Modals = () => {
     payment: newPayment,
   } = useSelector((state: RootState) => state.modal);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // URL parameters for booking
-  const paramDate = searchParams.get('date');
-  const paramTime = searchParams.get('time');
-  const defaultDateTime =
-    paramDate && paramTime ? `${paramDate}T${paramTime}` : '';
-
-  const clearParams = (keys: string[]) => {
-    const params = new URLSearchParams(searchParams);
-    keys.forEach((key) => params.delete(key));
-    setSearchParams(params);
-  };
-
-  // --- Close Handlers ---
-
-  const handleCloseBooking = () => {
-    dispatch(closeModal('booking'));
-    clearParams(['booking', 'date', 'time', 'barberId']);
-  };
-
-  const handleCloseStaff = () => {
-    dispatch(closeModal('staff'));
-    clearParams(['staff']);
-  };
-
-  const handleCloseClient = () => {
-    dispatch(closeModal('client'));
-    clearParams(['client']);
-  };
-
-  const handleCloseProduct = () => {
-    dispatch(closeModal('product'));
-    clearParams(['product']);
-  };
-
-  const handleClosePayment = () => {
-    dispatch(closeModal('payment'));
-  };
-
   // --- Form Hooks ---
 
-  const bookingForm = useForm<BookingForm>({
-    resolver: zodResolver(bookingSchema),
-    defaultValues: {
-      clientName: '',
-      barberId: searchParams.get('barberId') || '',
-      datetime: defaultDateTime,
-      services: [],
-    },
-  });
-
-  // URL o'zgarganda bookingForm ni yangilash
   useEffect(() => {
     if (newBooking) {
       bookingForm.reset({
-        clientName: bookingForm.getValues('clientName'),
-        barberId: searchParams.get('barberId') || '',
-        datetime: defaultDateTime,
-        services: bookingForm.getValues('services'),
+        client: bookingForm.getValues('client'),
+        staff_member: 0,
+        service: 0,
+        date: '',
+        start_time: '',
+        end_time: '',
+        price: '',
+        status: 'pending',
+        notes: '',
       });
     }
-  }, [newBooking, defaultDateTime, searchParams, bookingForm]);
-
-  const productForm = useForm<ProductForm>({
-    resolver: zodResolver(productSchema) as any,
-    defaultValues: {
-      name: '',
-      category: '',
-      price: 0,
-      stock: 0,
-      minStock: 10,
-    },
-  });
-
-  const clientForm = useForm<ClientForm>({
-    resolver: zodResolver(clientSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-    },
-  });
-
-  const staffForm = useForm<StaffForm>({
-    resolver: zodResolver(staffSchema) as any,
-    defaultValues: {
-      name: '',
-      role: '',
-      phone: '',
-      commission: 45,
-    },
-  });
-
-  // --- Submit Handlers ---
-
-  const onBookingSubmit = (data: BookingForm) => {
-    console.log('Booking submitted:', data);
-    handleCloseBooking();
-    bookingForm.reset();
-  };
-
-  const onProductSubmit = (data: ProductForm) => {
-    console.log('Product submitted:', data);
-    handleCloseProduct();
-    productForm.reset();
-  };
-
-  const onClientSubmit = (data: ClientForm) => {
-    console.log('Client submitted:', data);
-    handleCloseClient();
-    clientForm.reset();
-  };
-
-  const onStaffSubmit = (data: StaffForm) => {
-    console.log('Staff submitted:', data);
-    handleCloseStaff();
-    staffForm.reset();
-  };
+  }, [newBooking, bookingForm]);
 
   return (
     <>
@@ -200,14 +67,15 @@ const Modals = () => {
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
               <Input
-                label='Mijoz Ismi'
-                placeholder='Mijozni qidiring...'
+                label='Mijoz (ID)'
+                type='number'
+                placeholder='Mijoz ID kiriting'
                 icon={<Search className='h-4 w-4' />}
-                {...bookingForm.register('clientName')}
+                {...bookingForm.register('client', { valueAsNumber: true })}
               />
-              {bookingForm.formState.errors.clientName && (
+              {bookingForm.formState.errors.client && (
                 <p className='text-red-500 text-xs mt-1'>
-                  {bookingForm.formState.errors.clientName.message}
+                  {bookingForm.formState.errors.client.message}
                 </p>
               )}
             </div>
@@ -215,7 +83,9 @@ const Modals = () => {
               <Select
                 label='Sartarosh Tanlash'
                 icon={<Scissors className='h-4 w-4' />}
-                {...bookingForm.register('barberId')}
+                {...bookingForm.register('staff_member', {
+                  valueAsNumber: true,
+                })}
               >
                 <option value=''>Mutaxassis tanlang</option>
                 {staffMembers.map((s) => (
@@ -224,58 +94,87 @@ const Modals = () => {
                   </option>
                 ))}
               </Select>
-              {bookingForm.formState.errors.barberId && (
+              {bookingForm.formState.errors.staff_member && (
                 <p className='text-red-500 text-xs mt-1'>
-                  {bookingForm.formState.errors.barberId.message}
+                  {bookingForm.formState.errors.staff_member.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Input
+                label='Xizmat (ID)'
+                type='number'
+                placeholder='Xizmat ID kiriting'
+                {...bookingForm.register('service', { valueAsNumber: true })}
+              />
+              {bookingForm.formState.errors.service && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {bookingForm.formState.errors.service.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                label='Narx'
+                placeholder='0.00'
+                {...bookingForm.register('price')}
+              />
+              {bookingForm.formState.errors.price && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {bookingForm.formState.errors.price.message}
                 </p>
               )}
             </div>
           </div>
           <div>
             <Input
-              label='Sana va Vaqt'
-              type='datetime-local'
+              label='Sana'
+              type='date'
               className='scheme-dark'
-              {...bookingForm.register('datetime')}
+              {...bookingForm.register('date')}
             />
-            {bookingForm.formState.errors.datetime && (
+            {bookingForm.formState.errors.date && (
               <p className='text-red-500 text-xs mt-1'>
-                {bookingForm.formState.errors.datetime.message}
+                {bookingForm.formState.errors.date.message}
               </p>
             )}
           </div>
-
-          <div className='pt-1'>
-            <span className='block text-xs font-semibold uppercase tracking-wider text-primary/80 ml-1 mb-2'>
-              Xizmatlarni Tanlang
-            </span>
-            <div className='flex flex-wrap gap-2'>
-              {[
-                'Klassik Soch Olish',
-                'Issiq Sochiq Bilan Soqol Olish',
-                'Soqol Shakllantirish',
-                'Tez Yuz Parvarishi',
-              ].map((s) => (
-                <label key={s} className='cursor-pointer group relative'>
-                  <input
-                    type='checkbox'
-                    value={s}
-                    className='peer sr-only'
-                    {...bookingForm.register('services')}
-                  />
-                  <div className='flex items-center gap-2 px-4 py-2 rounded-full bg-surface-light border border-white/5 peer-checked:border-primary peer-checked:bg-primary/10 transition-all hover:bg-surface-light/80'>
-                    <span className='text-xs text-gray-400 group-hover:text-white peer-checked:text-primary font-medium'>
-                      {s}
-                    </span>
-                  </div>
-                </label>
-              ))}
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Input
+                label='Boshlanish vaqti'
+                type='time'
+                className='scheme-dark'
+                {...bookingForm.register('start_time')}
+              />
+              {bookingForm.formState.errors.start_time && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {bookingForm.formState.errors.start_time.message}
+                </p>
+              )}
             </div>
-            {bookingForm.formState.errors.services && (
-              <p className='text-red-500 text-xs mt-1'>
-                {bookingForm.formState.errors.services.message}
-              </p>
-            )}
+            <div>
+              <Input
+                label='Tugash vaqti'
+                type='time'
+                className='scheme-dark'
+                {...bookingForm.register('end_time')}
+              />
+              {bookingForm.formState.errors.end_time && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {bookingForm.formState.errors.end_time.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div>
+            <Input
+              label='Izohlar'
+              placeholder="Qo'shimcha izohlar..."
+              {...bookingForm.register('notes')}
+            />
           </div>
 
           <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>

@@ -8,8 +8,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/Button"
 import {
   InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
 
@@ -39,18 +37,18 @@ function ComboboxTrigger({
   )
 }
 
-function ComboboxClear({ className, ...props }: ComboboxPrimitive.Clear.Props) {
-  return (
-    <ComboboxPrimitive.Clear
-      data-slot="combobox-clear"
-      render={<InputGroupButton variant="ghost" size="icon-xs" />}
-      className={cn(className)}
-      {...props}
-    >
-      <XIcon className="pointer-events-none" />
-    </ComboboxPrimitive.Clear>
-  )
-}
+// function ComboboxClear({ className, ...props }: ComboboxPrimitive.Clear.Props) {
+//   return (
+//     <ComboboxPrimitive.Clear
+//       data-slot="combobox-clear"
+//       render={<InputGroupButton variant="ghost" size="icon-xs" />}
+//       className={cn(className)}
+//       {...props}
+//     >
+//       <XIcon className="pointer-events-none" />
+//     </ComboboxPrimitive.Clear>
+//   )
+// }
 
 function ComboboxInput({
   className,
@@ -69,7 +67,7 @@ function ComboboxInput({
         render={<InputGroupInput disabled={disabled} />}
         {...props}
       />
-      <InputGroupAddon align="inline-end">
+      {/* <InputGroupAddon align="inline-end">
         {showTrigger && (
           <InputGroupButton
             size="icon-xs"
@@ -83,7 +81,7 @@ function ComboboxInput({
           </InputGroupButton>
         )}
         {showClear && <ComboboxClear disabled={disabled} />}
-      </InputGroupAddon>
+      </InputGroupAddon> */}
       {children}
     </InputGroup>
   )

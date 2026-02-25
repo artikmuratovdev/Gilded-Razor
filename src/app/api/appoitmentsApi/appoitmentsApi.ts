@@ -1,5 +1,5 @@
 import { API_TAGS } from '@/constants/ApiTags';
-import baseApi from '../baseApi';
+import baseApi from '../baseApi/baseApi';
 import type {
   AppoitmentReq,
   AppoitmentRes,
@@ -7,6 +7,7 @@ import type {
   AddAppoitmentRes,
   GetOneAppoitmentRes,
 } from './type';
+import type { EditForm } from '@/pages/Appointments/AppointmentModals';
 
 export const appoitmentsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -29,7 +30,7 @@ export const appoitmentsApi = baseApi.injectEndpoints({
       query: (id) => `/appoitments/${id}`,
       providesTags: [API_TAGS.APPOITMENTS],
     }),
-    updateAppoitment: builder.mutation<AddAppoitmentRes, { id: number; body: AddAppoitmentReq }>({
+    updateAppoitment: builder.mutation<AddAppoitmentRes, { id: number; body: EditForm }>({
       query: ({ id, body }) => ({
         url: `/appoitments/${id}`,
         method: 'PUT',
@@ -44,6 +45,14 @@ export const appoitmentsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [API_TAGS.APPOITMENTS],
     }),
+    setStatusAppointment: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `/appoitments/${id}/set_status`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: [API_TAGS.APPOITMENTS],
+    })
   }),
 });
 

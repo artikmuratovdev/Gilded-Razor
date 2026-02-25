@@ -1,0 +1,46 @@
+export type CreateClientReq = {
+  first_name: string;
+  last_name: string;
+  email?: string;
+  phone: string;
+  notes?: string;
+  is_active?: boolean;
+};
+
+export type MutationRes = {
+  success: boolean;
+  message: string;
+  error: {
+    code: number;
+    message: string;
+  };
+};
+
+export type GetClientsReq = {
+  search?: string;
+  page?: number;
+  page_size?: number;
+};
+
+export type GetClientsRes = {
+  success: boolean;
+  message: string;
+  data: 
+    {
+      id: number;
+      first_name: string;
+      last_name: string;
+      full_name: string;
+      phone: string;
+      is_active: boolean;
+    }[];
+  pagination: {
+    count: number;
+    total_pages: number;
+    current_page: number;
+    page_size: number;
+    next: string;
+    previous: string;
+  };
+  timestamp: Date;
+};
