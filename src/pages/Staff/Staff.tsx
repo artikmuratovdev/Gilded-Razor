@@ -4,6 +4,7 @@ import { StaffLeaderboard } from './StaffLeaderboard';
 import { StaffStats } from './StaffStats';
 
 export const StaffPage = () => {
+  
   return (
     <div className='space-y-6 sm:space-y-8 animate-in fade-in zoom-in-95 duration-500'>
       {/* Top Stats */}

@@ -10,8 +10,20 @@ import {
 import { Input } from '@/components/ui/Input';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import { cn } from '@/lib/utils';
-import { useEffect, useRef } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
+import z from 'zod';
+
+const loginSchema = z.object({
+  phone_number: z
+    .string()
+    .min(1, 'Telefon raqam kiritilishi shart')
+    .regex(/^\+998\d{9}$/, 'Format: +998XXXXXXXXX'),
+  password: z.string().min(1, 'Parol kiritilishi shart'),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm({
   className,
@@ -21,28 +33,22 @@ export function LoginForm({
   const handleRequest = useHandleRequest();
   const navigate = useNavigate();
 
-  const phoneRef = useRef<HTMLInputElement | null>(null);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      phone_number: '+998901234567',
+      password: 'rdqglpqvvhyl',
+    },
+  });
 
-  useEffect(() => {
-    if (phoneRef.current && passwordRef.current) {
-      phoneRef.current.value = '+998901234567';
-      passwordRef.current.value = 'rdqglpqvvhyl';
-    }
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: LoginFormValues) => {
     await handleRequest({
-      request: async () => {
-        return login({
-          phone_number: phoneRef.current?.value || '',
-          password: passwordRef.current?.value || '',
-        });
-      },
-      onSuccess: () => {
-        navigate('/dashboard')
-      },
+      request: async () => login(data),
+      onSuccess: () => navigate('/dashboard'),
       onError: (error) => {
         console.log(error?.error?.message || error);
       },
@@ -63,34 +69,32 @@ export function LoginForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+            <form
+              className='flex flex-col gap-4'
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <Input
                 label='Telefon raqam'
                 id='phone'
-                type='phone'
+                type='tel'
                 placeholder='+998901234567'
-                required
-                ref={phoneRef}
+                {...register('phone_number')}
+                error={errors.phone_number?.message}
               />
-              <div>
-                <div className='flex items-center justify-between mb-2'>
-                  <label className='text-xs font-semibold uppercase tracking-wider text-primary/80 ml-1'>
-                    Parol
-                  </label>
-                </div>
-                <div className='relative group'>
-                  <input
-                    id='password'
-                    type='password'
-                    required
-                    ref={passwordRef}
-                    className='flex h-12 w-full rounded-xl border border-white/5 bg-surface-light px-3 py-2 text-sm text-white shadow-sm transition-colors placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50'
-                  />
-                </div>
-              </div>
+              <Input
+                label='Parol'
+                id='password'
+                type='password'
+                {...register('password')}
+                error={errors.password?.message}
+              />
               <div className='flex flex-col gap-3 pt-2'>
-                <Button type='submit' className='w-full'>
-                  Login
+                <Button
+                  type='submit'
+                  className='w-full'
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Kirish...' : 'Login'}
                 </Button>
               </div>
             </form>

@@ -126,8 +126,8 @@ export const RecentBookingsList = () => {
 
   return (
     <>
-      <Card className='h-[420px] flex flex-col'>
-        <CardContent className=' p-6 flex-1 flex flex-col'>
+      <Card className=' flex flex-col'>
+        <CardContent className='p-3 flex-1 flex flex-col'>
           <div className='flex items-center justify-between mb-3'>
             <h3 className='text-lg font-bold text-white'>Navbatdagilar</h3>
             <Button

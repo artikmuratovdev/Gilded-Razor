@@ -1,5 +1,6 @@
 import type { Staff } from '@/types';
 import { Clock, Scissors } from 'lucide-react';
+import { Link } from 'react-router';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
@@ -120,12 +121,14 @@ export const StaffGrid = ({ staffMembers }: StaffGridProps) => {
               >
                 Jadval
               </Button>
-              <Button
-                variant='ghost'
-                className='w-full text-[10px] sm:text-xs h-8 sm:h-9'
-              >
-                Profil
-              </Button>
+              <Link to={`/staff/${staff.id}`} className='w-full'>
+                <Button
+                  variant='ghost'
+                  className='w-full text-[10px] sm:text-xs h-8 sm:h-9'
+                >
+                  Profil
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

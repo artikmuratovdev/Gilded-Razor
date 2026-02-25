@@ -8,7 +8,8 @@ import { Inventory } from './pages/Inventory/Services';
 import { LoginForm } from './pages/LoginPage/LoginPage';
 import { Reports } from './pages/Reports/index';
 import { Settings } from './pages/Settings/index';
-import { StaffPage } from './pages/Staff/index';
+import { StaffPage } from './pages/Staff/Staff';
+import { StaffProfile } from './pages/Staff/StaffProfile';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         </Route>
         <Route path='/staff' element={<PrivateRoute />}>
           <Route index element={<StaffPage />} />
+          <Route path=':id' element={<StaffProfile />} />
         </Route>
         <Route path='/clients' element={<PrivateRoute />}>
           <Route index element={<Clients />} />

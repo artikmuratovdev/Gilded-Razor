@@ -5,6 +5,7 @@ export const API_TAGS = {
   APPOITMENTS:'appointments',
   CLIENTS: 'clients',
   SERVICES: 'services',
+  STAFFS: 'staffs',
 } as const;
 
 export type API_TAGS = (typeof API_TAGS)[keyof typeof API_TAGS];

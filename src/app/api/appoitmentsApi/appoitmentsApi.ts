@@ -33,7 +33,7 @@ export const appoitmentsApi = baseApi.injectEndpoints({
     updateAppoitment: builder.mutation<AddAppoitmentRes, { id: number; body: EditForm }>({
       query: ({ id, body }) => ({
         url: `/appoitments/${id}`,
-        method: 'PUT',
+        method: 'PATCH',
         body,
       }),
       invalidatesTags: [API_TAGS.APPOITMENTS],

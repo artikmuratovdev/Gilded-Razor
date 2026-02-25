@@ -166,7 +166,7 @@ export const MainLayout = () => {
         </header>
 
         {/* Page Content */}
-        <div className='p-6 lg:p-10 max-w-400 mx-auto w-full flex-1'>
+        <div className='p-6 lg:px-10 max-w-400 mx-auto w-full flex-1'>
           <Outlet />
         </div>
         <Modals />
