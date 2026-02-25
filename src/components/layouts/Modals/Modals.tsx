@@ -1,6 +1,6 @@
 import type { RootState } from '@/app/store';
 import { staffMembers } from '@/constants/barber';
-import { AlertTriangle, CreditCard, Package, Scissors, Search, UserPlus } from 'lucide-react';
+import { AlertTriangle, CreditCard, Package, Scissors, Search, UserPlus, Wrench } from 'lucide-react';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '../../ui/Button';
@@ -12,7 +12,7 @@ import useModalActions from './SubmitFunctions';
 // --- Schemas ---
 const Modals = () => {
   const forms = useModalForms();
-  const { bookingForm, productForm, clientForm, staffForm } = forms;
+  const { bookingForm, productForm, clientForm, staffForm, serviceForm } = forms;
   const {
     handleCloseBooking,
     handleCloseClient,
@@ -21,12 +21,18 @@ const Modals = () => {
     handleCloseStaff,
     handleCloseDeleteClient,
     handleCloseEditClient,
+    handleCloseService,
+    handleCloseDeleteService,
+    handleCloseEditService,
     onBookingSubmit,
     onClientSubmit,
     onProductSubmit,
     onStaffSubmit,
     onDeleteSubmit,
     onEditClientSubmit,
+    onServiceSubmit,
+    onDeleteServiceSubmit,
+    onEditServiceSubmit,
   } = useModalActions(forms);
   const {
     booking: newBooking,
@@ -38,6 +44,11 @@ const Modals = () => {
     clientToDelete,
     editClient,
     clientToEdit,
+    service: newService,
+    deleteService,
+    serviceToDelete,
+    editService,
+    serviceToEdit,
   } = useSelector((state: RootState) => state.modal);
 
   // --- Form Hooks ---
@@ -68,6 +79,18 @@ const Modals = () => {
       });
     }
   }, [editClient, clientToEdit, clientForm]);
+
+  useEffect(() => {
+    if (editService && serviceToEdit) {
+      serviceForm.reset({
+        name: serviceToEdit.name,
+        description: serviceToEdit.description,
+        price: serviceToEdit.price,
+        duration_minutes: serviceToEdit.duration_minutes,
+        is_active: serviceToEdit.is_active,
+      });
+    }
+  }, [editService, serviceToEdit, serviceForm]);
 
   return (
     <>
@@ -617,6 +640,192 @@ const Modals = () => {
             <Button 
               variant='default' 
               onClick={onDeleteSubmit}
+              className='bg-red-600 hover:bg-red-700 text-white'
+            >
+              O'chirish
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Add Service Modal */}
+      <Modal
+        isOpen={newService}
+        onClose={handleCloseService}
+        title="Yangi Xizmat Qo'shish"
+        description="Yangi xizmat yarating."
+        icon={<Wrench className='text-primary h-8 w-8' />}
+      >
+        <form
+          onSubmit={serviceForm.handleSubmit(onServiceSubmit)}
+          className='space-y-2 sm:space-y-4'
+        >
+          <div>
+            <Input
+              label='Xizmat Nomi'
+              placeholder='Masalan: Soch Kesish'
+              {...serviceForm.register('name')}
+            />
+            {serviceForm.formState.errors.name && (
+              <p className='text-red-500 text-xs mt-1'>
+                {serviceForm.formState.errors.name.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Ta'rif"
+              placeholder="Xizmat ta'rifini kiriting"
+              {...serviceForm.register('description')}
+            />
+            {serviceForm.formState.errors.description && (
+              <p className='text-red-500 text-xs mt-1'>
+                {serviceForm.formState.errors.description.message}
+              </p>
+            )}
+          </div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Input
+                label='Narx'
+                placeholder='25000'
+                {...serviceForm.register('price')}
+              />
+              {serviceForm.formState.errors.price && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {serviceForm.formState.errors.price.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                label='Davomiyligi (minut)'
+                type='number'
+                placeholder='30'
+                {...serviceForm.register('duration_minutes', { valueAsNumber: true })}
+              />
+              {serviceForm.formState.errors.duration_minutes && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {serviceForm.formState.errors.duration_minutes.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseService}>
+              Bekor Qilish
+            </Button>
+            <Button variant='default' type='submit'>
+              Xizmat Qo'shish
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Edit Service Modal */}
+      <Modal
+        isOpen={editService}
+        onClose={handleCloseEditService}
+        title="Xizmatni Tahrirlash"
+        description="Xizmat ma'lumotlarini yangilang."
+        icon={<Wrench className='text-primary h-8 w-8' />}
+      >
+        <form
+          onSubmit={serviceForm.handleSubmit(onEditServiceSubmit)}
+          className='space-y-2 sm:space-y-4'
+        >
+          <div>
+            <Input
+              label='Xizmat Nomi'
+              placeholder='Masalan: Soch Kesish'
+              {...serviceForm.register('name')}
+            />
+            {serviceForm.formState.errors.name && (
+              <p className='text-red-500 text-xs mt-1'>
+                {serviceForm.formState.errors.name.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Ta'rif"
+              placeholder="Xizmat ta'rifini kiriting"
+              {...serviceForm.register('description')}
+            />
+            {serviceForm.formState.errors.description && (
+              <p className='text-red-500 text-xs mt-1'>
+                {serviceForm.formState.errors.description.message}
+              </p>
+            )}
+          </div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Input
+                label='Narx'
+                placeholder='25000'
+                {...serviceForm.register('price')}
+              />
+              {serviceForm.formState.errors.price && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {serviceForm.formState.errors.price.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                label='Davomiyligi (minut)'
+                type='number'
+                placeholder='30'
+                {...serviceForm.register('duration_minutes', { valueAsNumber: true })}
+              />
+              {serviceForm.formState.errors.duration_minutes && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {serviceForm.formState.errors.duration_minutes.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseEditService}>
+              Bekor Qilish
+            </Button>
+            <Button variant='default' type='submit'>
+              Saqlash
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Service Modal */}
+      <Modal
+        isOpen={deleteService}
+        onClose={handleCloseDeleteService}
+        title="Xizmatni O'chirish"
+        description="Bu amalni ortga qaytarib bo'lmaydi. Xizmat va unga tegishli barcha ma'lumotlar o'chiriladi."
+        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
+      >
+        <div className='space-y-4'>
+          {serviceToDelete && (
+            <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
+              <p className='text-sm text-gray-300'>
+                <span className='font-semibold text-white'>
+                  {serviceToDelete.name}
+                </span>{' '}
+                nomli xizmatni o'chirmoqchimisiz?
+              </p>
+            </div>
+          )}
+          
+          <div className='pt-3 flex justify-end gap-3 border-t border-white/5'>
+            <Button 
+              variant='ghost' 
+              onClick={handleCloseDeleteService}
+            >
+              Bekor Qilish
+            </Button>
+            <Button 
+              variant='default' 
+              onClick={onDeleteServiceSubmit}
               className='bg-red-600 hover:bg-red-700 text-white'
             >
               O'chirish

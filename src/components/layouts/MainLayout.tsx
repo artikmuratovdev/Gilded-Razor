@@ -4,7 +4,6 @@ import {
   Bell,
   Download,
   Menu,
-  Package,
   Plus,
   Search,
   UserPlus,
@@ -83,15 +82,6 @@ export const MainLayout = () => {
           onClick: () => {
             setParam('client', 'new');
             dispatch(openModal('client'));
-          },
-        };
-      case 'inventory':
-        return {
-          label: "Mahsulot Qo'shish",
-          icon: Package,
-          onClick: () => {
-            setParam('product', 'new');
-            dispatch(openModal('product'));
           },
         };
       case 'reports':

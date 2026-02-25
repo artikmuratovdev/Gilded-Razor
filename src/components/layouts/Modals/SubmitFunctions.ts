@@ -2,7 +2,9 @@ import { useAddAppoitmentMutation } from '@/app/api/appoitmentsApi/appoitmentsAp
 import type { AddAppoitmentReq } from '@/app/api/appoitmentsApi/type';
 import { useCreateClientMutation, useDeleteClientMutation, useUpdateClientMutation } from '@/app/api/clientsApi/clientsApi';
 import type { CreateClientReq, MutationRes } from '@/app/api/clientsApi/type';
-import { closeModal, setClientToDelete, setClientToEdit } from '@/app/slices/modalSlice';
+import { useCreateServiceMutation, useDeleteServiceMutation, useUpdateServiceMutation } from '@/app/api/serviceApi/serviceApi';
+import type { CreateServiceReq } from '@/app/api/serviceApi/type';
+import { closeModal, setClientToDelete, setClientToEdit, setServiceToDelete, setServiceToEdit } from '@/app/slices/modalSlice';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import type { UseFormReturn } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +14,7 @@ import type {
   ClientForm,
   ProductForm,
   StaffForm,
+  ServiceForm,
 } from './FormTypes';
 import type { RootState } from '@/app/store';
 
@@ -20,6 +23,7 @@ interface ModalForms {
   productForm: UseFormReturn<ProductForm>;
   clientForm: UseFormReturn<ClientForm>;
   staffForm: UseFormReturn<StaffForm>;
+  serviceForm: UseFormReturn<ServiceForm>;
 }
 
 const useModalActions = ({
@@ -27,6 +31,7 @@ const useModalActions = ({
   productForm,
   clientForm,
   staffForm,
+  serviceForm,
 }: ModalForms) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,8 +40,13 @@ const useModalActions = ({
   const [createClient] = useCreateClientMutation();
   const [deleteClient] = useDeleteClientMutation();
   const [updateClient] = useUpdateClientMutation();
+  const [createService] = useCreateServiceMutation();
+  const [deleteService] = useDeleteServiceMutation();
+  const [updateService] = useUpdateServiceMutation();
   const clientToDelete = useSelector((state: RootState) => state.modal.clientToDelete);
   const clientToEdit = useSelector((state: RootState) => state.modal.clientToEdit);
+  const serviceToDelete = useSelector((state: RootState) => state.modal.serviceToDelete);
+  const serviceToEdit = useSelector((state: RootState) => state.modal.serviceToEdit);
 
   const clearParams = (keys: string[]) => {
     const params = new URLSearchParams(searchParams);
@@ -78,6 +88,20 @@ const useModalActions = ({
   const handleCloseEditClient = () => {
     dispatch(closeModal('editClient'));
     dispatch(setClientToEdit(null));
+  };
+
+  const handleCloseService = () => {
+    dispatch(closeModal('service'));
+  };
+
+  const handleCloseDeleteService = () => {
+    dispatch(closeModal('deleteService'));
+    dispatch(setServiceToDelete(null));
+  };
+
+  const handleCloseEditService = () => {
+    dispatch(closeModal('editService'));
+    dispatch(setServiceToEdit(null));
   };
 
   // --- Submit Handlers ---
@@ -169,6 +193,58 @@ const useModalActions = ({
     });
   };
 
+  const onServiceSubmit = (data: ServiceForm) => {
+    const payload: CreateServiceReq = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      duration_minutes: data.duration_minutes,
+      is_active: data.is_active ?? true,
+    };
+    
+    handleRequest({
+      request: async () => await createService(payload),
+      onSuccess: (res: any) => {
+        console.log('Service created successfully:', res);
+        handleCloseService();
+        serviceForm.reset();
+      },
+    });
+  };
+
+  const onDeleteServiceSubmit = () => {
+    if (!serviceToDelete) return;
+    
+    handleRequest({
+      request: async () => await deleteService(String(serviceToDelete.id)),
+      onSuccess: (res: MutationRes) => {
+        console.log('Service deleted successfully:', res);
+        handleCloseDeleteService();
+      },
+    });
+  };
+
+  const onEditServiceSubmit = (data: ServiceForm) => {
+    if (!serviceToEdit) return;
+    
+    const payload: Partial<CreateServiceReq> = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      duration_minutes: data.duration_minutes,
+      is_active: data.is_active,
+    };
+    
+    handleRequest({
+      request: async () => await updateService({ id: String(serviceToEdit.id), body: payload }),
+      onSuccess: (res: MutationRes) => {
+        console.log('Service updated successfully:', res);
+        handleCloseEditService();
+        serviceForm.reset();
+      },
+    });
+  };
+
   return {
     handleCloseBooking,
     handleCloseStaff,
@@ -177,12 +253,18 @@ const useModalActions = ({
     handleClosePayment,
     handleCloseDeleteClient,
     handleCloseEditClient,
+    handleCloseService,
+    handleCloseDeleteService,
+    handleCloseEditService,
     onBookingSubmit,
     onProductSubmit,
     onClientSubmit,
     onStaffSubmit,
     onDeleteSubmit,
     onEditClientSubmit,
+    onServiceSubmit,
+    onDeleteServiceSubmit,
+    onEditServiceSubmit,
   };
 };
 

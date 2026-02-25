@@ -4,7 +4,7 @@ import { PrivateRoute } from './hooks/PrivateRoute';
 import { Appointments } from './pages/Appointments/Appointments';
 import { Clients } from './pages/Clients/Clients';
 import { Dashboard } from './pages/Dashboard/Dashboard';
-import { Inventory } from './pages/Inventory/index';
+import { Inventory } from './pages/Inventory/Services';
 import { LoginForm } from './pages/LoginPage/LoginPage';
 import { Reports } from './pages/Reports/index';
 import { Settings } from './pages/Settings/index';
@@ -28,7 +28,7 @@ function App() {
         <Route path='/clients' element={<PrivateRoute />}>
           <Route index element={<Clients />} />
         </Route>
-        <Route path='/inventory' element={<PrivateRoute />}>
+        <Route path='/services' element={<PrivateRoute />}>
           <Route index element={<Inventory />} />
         </Route>
         <Route path='/reports' element={<PrivateRoute />}>

@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-type ModalName = 'booking' | 'staff' | 'client' | 'product' | 'payment' | 'deleteClient' | 'editClient';
+type ModalName = 'booking' | 'staff' | 'client' | 'product' | 'payment' | 'deleteClient' | 'editClient' | 'service' | 'deleteService' | 'editService';
 
 interface ClientToDelete {
   id: number;
@@ -15,6 +15,20 @@ interface ClientToEdit {
   phone: string;
 }
 
+interface ServiceToDelete {
+  id: number;
+  name: string;
+}
+
+interface ServiceToEdit {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  duration_minutes: number;
+  is_active: boolean;
+}
+
 interface ModalState {
   booking: boolean;
   staff: boolean;
@@ -23,8 +37,13 @@ interface ModalState {
   payment: boolean;
   deleteClient: boolean;
   editClient: boolean;
+  service: boolean;
+  deleteService: boolean;
+  editService: boolean;
   clientToDelete: ClientToDelete | null;
   clientToEdit: ClientToEdit | null;
+  serviceToDelete: ServiceToDelete | null;
+  serviceToEdit: ServiceToEdit | null;
 }
 
 const initialState: ModalState = {
@@ -35,8 +54,13 @@ const initialState: ModalState = {
   payment: false,
   deleteClient: false,
   editClient: false,
+  service: false,
+  deleteService: false,
+  editService: false,
   clientToDelete: null,
   clientToEdit: null,
+  serviceToDelete: null,
+  serviceToEdit: null,
 };
 
 const modalSlice = createSlice({
@@ -58,8 +82,14 @@ const modalSlice = createSlice({
     setClientToEdit(state, action: PayloadAction<ClientToEdit | null>) {
       state.clientToEdit = action.payload;
     },
+    setServiceToDelete(state, action: PayloadAction<ServiceToDelete | null>) {
+      state.serviceToDelete = action.payload;
+    },
+    setServiceToEdit(state, action: PayloadAction<ServiceToEdit | null>) {
+      state.serviceToEdit = action.payload;
+    },
   },
 });
 
-export const { openModal, closeModal, setModal, setClientToDelete, setClientToEdit } = modalSlice.actions;
+export const { openModal, closeModal, setModal, setClientToDelete, setClientToEdit, setServiceToDelete, setServiceToEdit } = modalSlice.actions;
 export default modalSlice.reducer;

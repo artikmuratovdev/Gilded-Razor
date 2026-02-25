@@ -23,7 +23,7 @@ export const menuItems = [
   },
   { id: 'staff', label: 'Jamoa', icon: Users, path: '/staff' },
   { id: 'clients', label: 'Mijozlar', icon: UserCheck, path: '/clients' },
-  { id: 'inventory', label: 'Ombor', icon: Package, path: '/inventory' },
+  { id: 'services', label: 'Xizmatlar', icon: Package, path: '/services' },
   { id: 'reports', label: 'Hisobotlar', icon: BarChart3, path: '/reports' },
   { id: 'settings', label: 'Sozlamalar', icon: Settings, path: '/settings' },
 ];
@@ -50,10 +50,10 @@ export const setMenuLabel = (page: string) => {
         title: 'Mijozlar',
         description: "Mijozlar bazangizni ko'ring va boshqaring.",
       };
-    case 'inventory':
+    case 'services':
       return {
-        title: 'Ombor',
-        description: "Omboringizdagi mahsulotlarni ko'ring va boshqaring.",
+        title: 'Xizmatlar',
+        description: "Xizmatlarni ko'ring va boshqaring.",
       };
     case 'reports':
       return {

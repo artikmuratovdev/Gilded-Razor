@@ -38,12 +38,21 @@ const staffSchema = z.object({
   commission: z.number().min(0).max(100),
 });
 
+const serviceSchema = z.object({
+  name: z.string().min(2, 'Xizmat nomi talab qilinadi'),
+  description: z.string().min(5, 'Tavsif kamida 5 belgidan iborat bo\'lishi kerak'),
+  price: z.string().min(1, 'Narx talab qilinadi'),
+  duration_minutes: z.number().min(1, 'Davomiylik talab qilinadi'),
+  is_active: z.boolean().optional(),
+});
+
 // --- Types ---
 
 export type BookingForm = z.infer<typeof bookingSchema>;
 export type ProductForm = z.infer<typeof productSchema>;
 export type ClientForm = z.infer<typeof clientSchema>;
 export type StaffForm = z.infer<typeof staffSchema>;
+export type ServiceForm = z.infer<typeof serviceSchema>;
 
 // --- Custom Hook ---
 
@@ -94,7 +103,18 @@ const useModalForms = () => {
     },
   });
 
-  return { bookingForm, productForm, clientForm, staffForm };
+  const serviceForm = useForm<ServiceForm>({
+    resolver: zodResolver(serviceSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      price: '',
+      duration_minutes: 30,
+      is_active: true,
+    },
+  });
+
+  return { bookingForm, productForm, clientForm, staffForm, serviceForm };
 };
 
 export default useModalForms;
