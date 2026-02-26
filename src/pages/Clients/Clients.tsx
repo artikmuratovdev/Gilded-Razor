@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent } from '../../components/ui/Card';
 import { ClientsFilters } from './ClientsFilters';
@@ -12,11 +11,15 @@ export const Clients = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [page,setPage] = useState<number>(1);
 
-  const {data} = usePaginatedClients({page,searchQuery});
+  const {data, isLoading} = usePaginatedClients({page,searchQuery});
 
-  if(!data) return <div className='flex justify-center items-center'>
-    <Spinner className="size-10" />
-  </div>
+  if(isLoading || !data) {
+    return (
+      <div className='flex h-screen items-center justify-center'>
+        <Spinner className='h-8 w-8 text-primary' />
+      </div>
+    );
+  }
 
   return (
     <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>

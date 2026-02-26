@@ -1,27 +1,9 @@
 import { useGetAppoitmentsQuery } from '@/app/api/appoitmentsApi/appoitmentsApi';
-type PaginatedAppointments = {
-  page: number;
-  searchQuery: string;
-  page_size?: number;
-};
+import { createPaginatedHook } from './createPaginatedHook';
 
-const usePaginatedAppointments = ({
-  page,
-  searchQuery,
-  page_size = 10,
-}: PaginatedAppointments) => {
-  const { data } = useGetAppoitmentsQuery({
-    page,
-    page_size,
-    search: searchQuery,
-  });
-  const { data: nextData } = useGetAppoitmentsQuery({
-    page: page + 1,
-    page_size,
-    search: searchQuery,
-  });
-
-  return { data, nextData };
-};
+const usePaginatedAppointments = createPaginatedHook(
+  useGetAppoitmentsQuery,
+  10,
+);
 
 export default usePaginatedAppointments;

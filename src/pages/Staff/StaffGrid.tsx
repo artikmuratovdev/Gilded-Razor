@@ -1,16 +1,31 @@
-import type { Staff } from '@/types';
+import type { GetStaffRes } from '@/app/api/staffApi/type';
 import { Clock, Scissors } from 'lucide-react';
 import { Link } from 'react-router';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
-import { cn, formatCurrency } from '../../lib/utils';
+import { cn } from '../../lib/utils';
+
+type StaffItem = GetStaffRes['data'][number];
 
 interface StaffGridProps {
-  staffMembers: Staff[];
+  staffMembers: StaffItem[];
+  isLoading?: boolean;
 }
 
-export const StaffGrid = ({ staffMembers }: StaffGridProps) => {
+export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
+  if (isLoading) {
+    return (
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6'>
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className='rounded-2xl bg-surface/40 border border-white/5 h-64 animate-pulse'
+          />
+        ))}
+      </div>
+    );
+  }
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6'>
       {staffMembers.map((staff) => (
@@ -29,14 +44,14 @@ export const StaffGrid = ({ staffMembers }: StaffGridProps) => {
                 <div
                   className={cn(
                     'absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-surface flex items-center justify-center',
-                    staff.status === 'Available'
+                    staff.status === 'active'
                       ? 'bg-green-500'
-                      : staff.status === 'In Session'
+                      : staff.status === 'busy'
                         ? 'bg-blue-500'
                         : 'bg-gray-500',
                   )}
                 >
-                  {staff.status === 'In Session' && (
+                  {staff.status === 'busy' && (
                     <Scissors className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-white' />
                   )}
                 </div>
@@ -44,26 +59,20 @@ export const StaffGrid = ({ staffMembers }: StaffGridProps) => {
               <div className='text-right'>
                 <Badge
                   variant={
-                    staff.status === 'Available'
+                    staff.status === 'active'
                       ? 'success'
-                      : staff.status === 'In Session'
+                      : staff.status === 'busy'
                         ? 'info'
                         : 'default'
                   }
                   className='mb-2 text-[9px] sm:text-[10px]'
                 >
-                  {staff.status === 'Available'
-                    ? 'MAVJUD'
-                    : staff.status === 'In Session'
-                      ? 'SESSIYADA'
-                      : 'TANAFFUSDA'}
+                  {staff.status_display ?? staff.status}
                 </Badge>
                 <p className='text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase'>
                   Bugungi Daromad
                 </p>
-                <p className='text-base sm:text-lg font-bold text-white'>
-                  {formatCurrency(staff.todayRevenue)}
-                </p>
+                <p className='text-base sm:text-lg font-bold text-white'>—</p>
               </div>
             </div>
 
@@ -72,25 +81,17 @@ export const StaffGrid = ({ staffMembers }: StaffGridProps) => {
                 {staff.name}
               </h3>
               <p className='text-xs sm:text-sm text-primary font-medium'>
-                {staff.role}
+                {staff.specialization_display ?? staff.specialization}
               </p>
             </div>
 
             <div className='bg-surface-light rounded-xl p-2.5 sm:p-3 mb-4 border border-white/5'>
               <p className='text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase mb-1'>
-                {staff.status === 'Available'
-                  ? 'Keyingi Uchrashuv'
-                  : staff.status === 'In Session'
-                    ? 'Joriy Sessiya'
-                    : 'Holat Eslatmasi'}
+                Holat
               </p>
               <div className='flex justify-between items-center gap-2'>
                 <span className='text-xs sm:text-sm font-medium text-white truncate'>
-                  {staff.status === 'Available'
-                    ? '10:30 AM • Robert B.'
-                    : staff.status === 'In Session'
-                      ? '10:15 da Tugaydi'
-                      : '15 daqiqadan keyin'}
+                  {staff.status_display ?? staff.status}
                 </span>
                 {staff.status === 'Available' && (
                   <Badge
@@ -108,7 +109,7 @@ export const StaffGrid = ({ staffMembers }: StaffGridProps) => {
                     Fade Cut
                   </Badge>
                 )}
-                {staff.status === 'On Break' && (
+                {staff.status === 'busy' && (
                   <Clock className='w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400' />
                 )}
               </div>

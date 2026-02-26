@@ -20,19 +20,19 @@ export const appoitmentsApi = baseApi.injectEndpoints({
     }),
     addAppoitment: builder.mutation<AddAppoitmentRes, AddAppoitmentReq>({
       query: (body) => ({
-        url: '/appoitments',
+        url: '/appointments/',
         method: 'POST',
         body,
       }),
       invalidatesTags: [API_TAGS.APPOITMENTS],
     }),
     getOneAppoitment: builder.query<GetOneAppoitmentRes, number>({
-      query: (id) => `/appoitments/${id}`,
+      query: (id) => `/appointments/${id}`,
       providesTags: [API_TAGS.APPOITMENTS],
     }),
     updateAppoitment: builder.mutation<AddAppoitmentRes, { id: number; body: EditForm }>({
       query: ({ id, body }) => ({
-        url: `/appoitments/${id}`,
+        url: `/appointments/${id}`,
         method: 'PATCH',
         body,
       }),
@@ -40,14 +40,14 @@ export const appoitmentsApi = baseApi.injectEndpoints({
     }),
     deleteAppoitment: builder.mutation<void, number>({
       query: (id) => ({
-        url: `/appoitments/${id}`,
+        url: `/appointments/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: [API_TAGS.APPOITMENTS],
     }),
     setStatusAppointment: builder.mutation({
       query: ({ id, body }) => ({
-        url: `/appoitments/${id}/set_status`,
+        url: `/appointments/${id}/set_status`,
         method: 'PATCH',
         body,
       }),

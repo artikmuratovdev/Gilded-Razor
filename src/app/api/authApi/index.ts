@@ -6,6 +6,20 @@ import type {
   User,
 } from './types';
 
+// Function to save token immediately after login
+const saveAuthToken = (token: string) => {
+  try {
+    const CACHE_KEY = 'rtk_cache';
+    const TOKEN_KEY = 'auth_token';
+    const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+    cache[TOKEN_KEY] = token;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+    console.log('✅ Token saved successfully');
+  } catch (error) {
+    console.error('❌ Error saving token:', error);
+  }
+};
+
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
@@ -14,6 +28,16 @@ export const authApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      transformResponse: (response: LoginResponse) => {
+        // Extract and save token immediately
+        const token = response?.data?.access_token;
+        if (token) {
+          saveAuthToken(token);
+        } else {
+          console.error('❌ No access_token found in login response');
+        }
+        return response;
+      },
     }),
     refreshToken: builder.mutation<RefreshTokenResponse, string>({
       query: (body) => ({

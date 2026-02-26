@@ -40,8 +40,8 @@ export function LoginForm({
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      phone_number: '+998901234567',
-      password: 'rdqglpqvvhyl',
+      phone_number: import.meta.env.VITE_LOGIN || '',
+      password: import.meta.env.VITE_PASSWORD || '',
     },
   });
 
@@ -61,7 +61,7 @@ export function LoginForm({
         className={cn('flex flex-col gap-6 w-full max-w-md', className)}
         {...props}
       >
-        <Card>
+        <Card className='py-6'>
           <CardHeader>
             <CardTitle>Login to your account</CardTitle>
             <CardDescription>

@@ -13,7 +13,7 @@ import type { GetClientsRes } from '@/app/api/serviceApi/type';
 export const Inventory = () => {
   const [page] = useState<number>(1);
   const [searchQuery] = useState<string>('');
-  const {data} = usePaginatedService({page,searchQuery});
+  const {data, isLoading} = usePaginatedService({page,searchQuery});
   const dispatch = useDispatch();
 
   const handleAddService = () => {
@@ -39,9 +39,13 @@ export const Inventory = () => {
 
   console.log(data?.data);
 
-  if(!data) return <div className='flex justify-center items-center'>
-    <Spinner className="size-10" />
-  </div>
+  if(isLoading || !data) {
+    return (
+      <div className='flex h-screen items-center justify-center'>
+        <Spinner className='h-8 w-8 text-primary' />
+      </div>
+    );
+  }
 
   return (
     <div className='space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>

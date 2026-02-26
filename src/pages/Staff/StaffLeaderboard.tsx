@@ -1,12 +1,14 @@
-import type { Staff } from '@/types';
+import type { GetStaffRes } from '@/app/api/staffApi/type';
 import { Star } from 'lucide-react';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
 import { cn } from '../../lib/utils';
 
+type StaffItem = GetStaffRes['data'][number];
+
 interface StaffLeaderboardProps {
-  staffMembers: Staff[];
+  staffMembers: StaffItem[];
 }
 
 export const StaffLeaderboard = ({ staffMembers }: StaffLeaderboardProps) => {
@@ -40,7 +42,7 @@ export const StaffLeaderboard = ({ staffMembers }: StaffLeaderboardProps) => {
           {staffMembers.map((staff, idx) => (
             <div
               key={staff.id}
-              className='p-4 flex flex-col gap-3 hover:bg-white/[0.02] transition-colors'
+              className='p-4 flex flex-col gap-3 hover:bg-white/2 transition-colors'
             >
               <div className='flex justify-between items-start'>
                 <div className='flex items-center gap-3'>
@@ -85,7 +87,7 @@ export const StaffLeaderboard = ({ staffMembers }: StaffLeaderboardProps) => {
                     Reyting
                   </p>
                   <p className='text-xs font-bold text-primary flex items-center justify-center gap-1'>
-                    {staff.rating.toFixed(1)}{' '}
+                    {parseFloat(staff.rating).toFixed(1)}{' '}
                     <Star className='w-2.5 h-2.5 fill-current' />
                   </p>
                 </div>
@@ -104,7 +106,7 @@ export const StaffLeaderboard = ({ staffMembers }: StaffLeaderboardProps) => {
         <div className='hidden sm:block overflow-x-auto'>
           <table className='w-full text-left'>
             <thead>
-              <tr className='border-b border-white/5 text-xs text-gray-500 font-bold uppercase tracking-wider bg-white/[0.01]'>
+              <tr className='border-b border-white/5 text-xs text-gray-500 font-bold uppercase tracking-wider bg-white/1'>
                 <th className='p-4 pl-6'>Reyting va Sartarosh</th>
                 <th className='p-4'>Bronlar</th>
                 <th className='p-4'>O'rt. Reyting</th>
@@ -141,7 +143,7 @@ export const StaffLeaderboard = ({ staffMembers }: StaffLeaderboardProps) => {
                   <td className='p-4 text-sm text-gray-300'>48</td>
                   <td className='p-4 text-sm font-bold text-primary'>
                     <div className='flex items-center gap-1'>
-                      {staff.rating.toFixed(1)}{' '}
+                      {parseFloat(staff.rating).toFixed(1)}{' '}
                       <Star className='w-3 h-3 fill-current' />
                     </div>
                   </td>

@@ -27,6 +27,7 @@ import {
   EditAppointmentModal,
 } from './AppointmentModals';
 import { AppointmentsToolbar } from './AppointmentsToolbar';
+import { Spinner } from '@/components/ui/spinner';
 
 export const Appointments = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -39,7 +40,7 @@ export const Appointments = () => {
   >(null);
   const [page, setPage] = useState(1);
 
-  const { data: appointmentsData } = usePaginatedAppointments({
+  const { data: appointmentsData, isLoading } = usePaginatedAppointments({
     page,
     searchQuery,
     page_size: 10,
@@ -48,7 +49,13 @@ export const Appointments = () => {
   console.log(appointmentsData?.pagination);
   console.log('editTarget', editTarget);
 
-  if (!appointmentsData) return <div>Loading...</div>;
+  if (isLoading || !appointmentsData) {
+    return (
+      <div className='flex h-screen items-center justify-center'>
+        <Spinner className='h-8 w-8 text-primary' />
+      </div>
+    );
+  }
 
   return (
     <div

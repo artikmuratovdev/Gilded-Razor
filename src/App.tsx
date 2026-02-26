@@ -6,7 +6,7 @@ import { Clients } from './pages/Clients/Clients';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Inventory } from './pages/Inventory/Services';
 import { LoginForm } from './pages/LoginPage/LoginPage';
-import { Reports } from './pages/Reports/index';
+import { Reports } from './pages/Reports/Reports';
 import { Settings } from './pages/Settings/index';
 import { StaffPage } from './pages/Staff/Staff';
 import { StaffProfile } from './pages/Staff/StaffProfile';

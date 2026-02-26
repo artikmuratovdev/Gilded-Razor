@@ -28,17 +28,18 @@ const updateCache = (url: string, data: any) => {
     const cache = loadCache();
 
     cache[url] = data;
+    // Extract token from various possible locations in the response
     const token =
       data?.token ||
       data?.accessToken ||
       data?.access_token ||
       data?.data?.token ||
-      data?.data?.access_token;
+      data?.data?.access_token ||
+      data?.data?.data?.access_token;
 
     if (token && typeof token === 'string') {
       cache[TOKEN_KEY] = token;
-    } else {
-      console.warn('⚠️ No token found in response data');
+      console.log('✅ Token extracted and saved from response');
     }
 
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
