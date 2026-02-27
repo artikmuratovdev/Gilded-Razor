@@ -1,11 +1,14 @@
 import type { GetStaffRes } from "@/app/api/staffApi/type";
-import { Clock, Scissors } from "lucide-react";
 import { Link } from "react-router";
 import { Badge } from "../../components/ui/Badge";
 import { Button } from "../../components/ui/Button";
 import { Card, CardContent } from "../../components/ui/Card";
-import { cn } from "../../lib/utils";
-import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
 
 type StaffItem = GetStaffRes["data"][number];
 
@@ -36,15 +39,15 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
         >
           <CardContent className="p-4 sm:p-6">
             <div className="flex justify-between items-start mb-4 sm:mb-6">
-              <div className="relative">
-                <Avatar size="lg">
-                  <AvatarImage
-                    src={staff.avatar || "https://github.com/maxleiter.png"}
-                    alt={staff.name || "@maxleiter"}
-                  />
-                  <AvatarFallback>{staff.name}</AvatarFallback>
-                  <AvatarBadge className="bg-green-600 dark:bg-green-800" />
-                </Avatar>
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                />
+                <AvatarFallback>{staff.name}</AvatarFallback>
+                <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+              </Avatar>
+              {/* <div className="relative">
                 <div
                   className={cn(
                     "absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-surface flex items-center justify-center",
@@ -59,15 +62,17 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
                     <Scissors className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                   )}
                 </div>
-              </div>
+              </div> */}
               <div className="text-right">
                 <Badge
                   variant={
-                    staff.status === "active"
+                    staff.status === 'available'
                       ? "success"
-                      : staff.status === "busy"
-                        ? "info"
-                        : "default"
+                      : staff.status === 'off_duty'
+                        ? "danger"
+                      : staff.status === 'in_session'
+                        ? "gold"
+                        : 'info'
                   }
                   className="mb-2 text-[9px] sm:text-[10px]"
                 >
@@ -76,7 +81,6 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
                 <p className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase">
                   Bugungi Daromad
                 </p>
-                <p className="text-base sm:text-lg font-bold text-white">—</p>
               </div>
             </div>
 
@@ -89,7 +93,7 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
               </p>
             </div>
 
-            <div className="bg-surface-light rounded-xl p-2.5 sm:p-3 mb-4 border border-white/5">
+            {/* <div className="bg-surface-light rounded-xl p-2.5 sm:p-3 mb-4 border border-white/5">
               <p className="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase mb-1">
                 Holat
               </p>
@@ -117,18 +121,12 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
                   <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
                 )}
               </div>
-            </div>
+            </div> */}
 
-            <div className="grid grid-cols-2 gap-2 sm:gap-3">
-              <Button
-                variant="outline"
-                className="w-full text-[10px] sm:text-xs h-8 sm:h-9"
-              >
-                Jadval
-              </Button>
+            <div className="grid grid-cols-1 gap-2 sm:gap-3">
               <Link to={`/staff/${staff.id}`} className="w-full">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   className="w-full text-[10px] sm:text-xs h-8 sm:h-9"
                 >
                   Profil

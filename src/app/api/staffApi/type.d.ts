@@ -6,7 +6,7 @@ export type GetStaffRes = {
     name: string;
     specialization: string;
     specialization_display: string;
-    status: string;
+    status: 'available' | 'in_session' | 'on_break' | 'off_duty';
     status_display: string;
     rating: string;
     is_active: boolean;

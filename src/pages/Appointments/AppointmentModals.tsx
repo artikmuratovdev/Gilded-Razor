@@ -7,11 +7,9 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox';
-import { data as appointmentsData } from '@/constants/appointments';
-import { staffMembers as barbers } from '@/constants/barber';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Scissors, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
@@ -19,6 +17,9 @@ import { Modal } from '../../components/ui/Modal';
 import { useUpdateAppoitmentMutation } from '@/app/api/appoitmentsApi/appoitmentsApi';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import z from 'zod';
+import { useGetAllStaffQuery } from '@/app/api/staffApi/staffApi';
+import { useGetClientsQuery } from '@/app/api/clientsApi/clientsApi';
+import { useGetServiceQuery } from '@/app/api/serviceApi/serviceApi';
 
 export const editAppointmentSchema = z.object({
   client: z.string().min(1, 'Mijoz tanlanishi shart'),
@@ -33,43 +34,14 @@ export const editAppointmentSchema = z.object({
 
 export type EditForm = z.infer<typeof editAppointmentSchema>;
 
-// --- Constants ---
-
-const SERVICES = [
-  ...new Set(appointmentsData.map((a) => a.service)),
-  'Klassik Soch Olish',
-  'Issiq Sochiq Bilan Soqol Olish',
-  'Soqol Shakllantirish',
-  'Tez Yuz Parvarishi',
-  'Fade & Beard',
-  'Kids Cut',
-  'Royal Shave',
-  'Buzz Cut',
-  'Coloring',
-  'Haircut',
-].filter((v, i, a) => a.indexOf(v) === i);
-
-const CLIENTS = [
-  ...new Set(appointmentsData.map((a) => a.client)),
-  'James Wilson',
-  'Elena R.',
-  'Robert Brown',
-  'Mike K.',
-  'Sarah M.',
-  'David L.',
-].filter((v, i, a) => a.indexOf(v) === i);
-
-// --- Schema ---
-
-
-
 // --- Combobox Field Wrapper ---
 
 interface ComboboxFieldProps {
   label: string;
-  value: string;
+  value: string;           // ID stored in form
   onChange: (val: string) => void;
   options: { label: string; value: string }[];
+  onSearch?: (query: string) => void;
   placeholder?: string;
   error?: string;
 }
@@ -79,21 +51,27 @@ const ComboboxField = ({
   value,
   onChange,
   options,
+  onSearch,
   placeholder = 'Qidiring...',
   error,
 }: ComboboxFieldProps) => {
   const [inputVal, setInputVal] = useState('');
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // When selected value or options change, show the label for the selected ID
   useEffect(() => {
     const found = options.find((o) => o.value === value);
-    setInputVal(found ? found.label : value);
+    if (found) setInputVal(found.label);
   }, [value, options]);
 
-  const filtered = inputVal
-    ? options.filter((o) =>
-        o.label.toLowerCase().includes(inputVal.toLowerCase()),
-      )
-    : options;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const q = e.target.value;
+    setInputVal(q);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onSearch?.(q);
+    }, 300);
+  };
 
   return (
     <div>
@@ -101,19 +79,21 @@ const ComboboxField = ({
         {label}
       </label>
       <Combobox
+        filter={null}
         value={value}
         onValueChange={(v) => {
-          onChange(v as string);
-          const found = options.find((o) => o.value === v);
-          setInputVal(found ? found.label : (v as string));
+          const id = v as string;
+          onChange(id);
+          const found = options.find((o) => o.value === id);
+          setInputVal(found ? found.label : '');
+          onSearch?.('');
         }}
       >
-        {/* Full-width custom input wrapper */}
         <div className='relative w-full flex items-center h-11 rounded-xl bg-surface-light border border-white/10 px-3 focus-within:border-primary/50 transition-colors'>
           <ComboboxInput
             placeholder={placeholder}
             value={inputVal}
-            onChange={(e) => setInputVal(e.target.value)}
+            onChange={handleInputChange}
             showTrigger={false}
             showClear={false}
             className='w-full [&>div]:w-full [&>div]:border-0 [&>div]:shadow-none [&>div]:bg-transparent [&>div]:h-auto [&>div]:rounded-none [&_input]:w-full [&_input]:bg-transparent [&_input]:border-0 [&_input]:text-white [&_input]:placeholder-gray-500 [&_input]:text-sm [&_input]:outline-none [&_input]:shadow-none [&_input]:h-auto [&_input]:p-0 [&_input]:ring-0'
@@ -124,6 +104,7 @@ const ComboboxField = ({
               onClick={() => {
                 onChange('');
                 setInputVal('');
+                onSearch?.('');
               }}
               className='text-gray-500 hover:text-white transition-colors ml-2 shrink-0'
             >
@@ -133,19 +114,16 @@ const ComboboxField = ({
         </div>
         <ComboboxContent className='bg-surface border-white/10 text-white z-200'>
           <ComboboxList>
-            {filtered.length > 0 ? (
-              filtered.map((opt) => (
-                <ComboboxItem
-                  key={opt.value}
-                  value={opt.value}
-                  className='text-gray-300 hover:text-white focus:text-white focus:bg-white/5 data-highlighted:bg-white/5 data-highlighted:text-white rounded-md'
-                >
-                  {opt.label}
-                </ComboboxItem>
-              ))
-            ) : (
-              <ComboboxEmpty>Topilmadi</ComboboxEmpty>
-            )}
+            <ComboboxEmpty>Topilmadi</ComboboxEmpty>
+            {options.map((opt) => (
+              <ComboboxItem
+                key={opt.value}
+                value={opt.value}
+                className='text-gray-300 hover:text-white focus:text-white focus:bg-white/5 data-highlighted:bg-white/5 data-highlighted:text-white rounded-md'
+              >
+                {opt.label}
+              </ComboboxItem>
+            ))}
           </ComboboxList>
         </ComboboxContent>
       </Combobox>
@@ -176,58 +154,71 @@ export const EditAppointmentModal = ({
       date: '',
       start_time: '',
       end_time: '',
-      status: 'Pending',
+      status: 'pending',
       price: 0,
     },
   });
 
+  // Search states for each combobox
+  const [clientSearch, setClientSearch] = useState('');
+  const [barberSearch, setBarberSearch] = useState('');
+  const [serviceSearch, setServiceSearch] = useState('');
+
+  // API queries with search params
+  const { data: barberData } = useGetAllStaffQuery({ search: barberSearch, page_size: 50 });
+  const { data: clientData } = useGetClientsQuery({ search: clientSearch, page_size: 50 });
+  const { data: serviceData } = useGetServiceQuery({ search: serviceSearch, page_size: 50 });
+
+  // Build options: value = ID (string), label = display name
+  const barberOptions = (barberData?.data ?? []).map((b) => ({
+    label: b.name,
+    value: String(b.id),
+  }));
+  const clientOptions = (clientData?.data ?? []).map((c) => ({
+    label: `${c.first_name} ${c.last_name}`,
+    value: String(c.id),
+  }));
+  const serviceOptions = (serviceData?.data ?? []).map((s) => ({
+    label: s.name,
+    value: String(s.id),
+  }));
+
   useEffect(() => {
     if (appointment && isOpen) {
-      // datetime'ni date va time'larga ajratish
-      const date = appointment.date;
-      const start_time = appointment.start_time;
-      const end_time = appointment.end_time;
-
       form.reset({
         client: String(appointment.client_id),
         barber: String(appointment.staff_member_id),
         service: String(appointment.service_id),
-        date: date,
-        start_time: start_time,
-        end_time: end_time,
+        date: appointment.date,
+        start_time: appointment.start_time,
+        end_time: appointment.end_time,
         status: appointment.status,
         price: Number(appointment.price),
       });
     }
   }, [appointment, isOpen]);
-  const [updateAppointment] = useUpdateAppoitmentMutation(); 
+
+  const [updateAppointment] = useUpdateAppoitmentMutation();
   const handleRequest = useHandleRequest();
 
   const onSubmit = (data: EditForm) => {
-    if(!appointment) return
-    // ID larni number formatiga o'tkazish
+    if (!appointment) return;
     const updateData = {
       ...data,
       client: Number(data.client),
       staff_member: Number(data.barber),
       service: Number(data.service),
     };
-    // barber fieldini o'chirib, staff_member ni qoldirish
     const { barber, ...finalData } = updateData as any;
-    console.log('Edit appointment:', finalData);
     handleRequest({
-      request : async () => await updateAppointment({id:appointment.id,body:finalData}),
+      request: async () => await updateAppointment({ id: appointment.id, body: finalData }),
       onSuccess: (res) => {
-        console.log(res.data)
-      }
-    })
+        console.log(res.data);
+      },
+    });
     onClose();
     form.reset();
   };
-
-  const barberOptions = barbers.map((b) => ({ label: b.name, value: b.id }));
-  const clientOptions = CLIENTS.map((c) => ({ label: c, value: c }));
-  const serviceOptions = SERVICES.map((s) => ({ label: s, value: s }));
 
   return (
     <Modal
@@ -248,6 +239,7 @@ export const EditAppointmentModal = ({
             value={form.watch('client')}
             onChange={(v) => form.setValue('client', v, { shouldValidate: true })}
             options={clientOptions}
+            onSearch={setClientSearch}
             placeholder='Mijozni qidiring...'
             error={form.formState.errors.client?.message}
           />
@@ -256,6 +248,7 @@ export const EditAppointmentModal = ({
             value={form.watch('barber')}
             onChange={(v) => form.setValue('barber', v, { shouldValidate: true })}
             options={barberOptions}
+            onSearch={setBarberSearch}
             placeholder='Sartarosh tanlang...'
             error={form.formState.errors.barber?.message}
           />
@@ -266,10 +259,9 @@ export const EditAppointmentModal = ({
           <ComboboxField
             label='Xizmat'
             value={form.watch('service')}
-            onChange={(v) =>
-              form.setValue('service', v, { shouldValidate: true })
-            }
+            onChange={(v) => form.setValue('service', v, { shouldValidate: true })}
             options={serviceOptions}
+            onSearch={setServiceSearch}
             placeholder='Xizmat tanlang...'
             error={form.formState.errors.service?.message}
           />

@@ -44,7 +44,6 @@ const updateCache = (url: string, data: LoginResponse) => {
     if (refreshToken && typeof refreshToken === 'string') {
       cache[REFRESH_TOKEN_KEY] = refreshToken;
     }
-
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
   } catch (error) {
     console.error('❌ Cache`ni yangilashda xatolik:', error);
@@ -84,8 +83,7 @@ const isTokenNotValid = (result: any): boolean => {
   const errorData = result?.error?.data;
   return (
     result?.error?.status === 401 ||
-    errorData?.error?.details?.code === 'token_not_valid' ||
-    errorData?.success === false
+    errorData?.error?.details?.code === 'token_not_valid'
   );
 };
 

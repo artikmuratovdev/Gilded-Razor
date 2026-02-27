@@ -22,6 +22,7 @@ export type GetClientsReq = {
   page_size?: number;
   date_from?: string;
   datetime_from?: string;
+  is_active?: boolean;
 };
 
 export type GetClientsRes = {

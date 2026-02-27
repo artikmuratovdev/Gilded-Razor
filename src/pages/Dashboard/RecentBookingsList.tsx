@@ -54,8 +54,6 @@ const BookingRow = ({ booking }: { booking: AppoitmentRes['data'][0] }) => (
             ? "Kutilmoqda"
             : booking.status === "confirmed"
               ? "Tasdiqlangan"
-              : booking.status === "check-In"
-                ? "Keldi"
                 : booking.status}
       </Badge>
     </div>

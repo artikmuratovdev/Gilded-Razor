@@ -56,4 +56,4 @@ export const appoitmentsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAppoitmentsQuery, useAddAppoitmentMutation, useGetOneAppoitmentQuery, useUpdateAppoitmentMutation, useDeleteAppoitmentMutation } = appoitmentsApi;
+export const { useGetAppoitmentsQuery, useAddAppoitmentMutation, useGetOneAppoitmentQuery, useUpdateAppoitmentMutation, useDeleteAppoitmentMutation, useSetStatusAppointmentMutation } = appoitmentsApi;

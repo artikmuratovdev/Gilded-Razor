@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import usePaginatedAppointments from '@/hooks/usePaginatedAppointments';
 import useSetDate from '@/hooks/useSetDate';
+import { useSetStatusAppointmentMutation } from '@/app/api/appoitmentsApi/appoitmentsApi';
+import { toast } from 'sonner';
 import {
   CheckCircle,
   Clock,
@@ -33,6 +35,7 @@ import { format } from 'date-fns';
 export const Appointments = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [editTarget, setEditTarget] = useState<AppoitmentRes['data'][0] | null>(
     null,
   );
@@ -41,11 +44,23 @@ export const Appointments = () => {
   >(null);
   const [page, setPage] = useState(1);
 
+  const [setStatus] = useSetStatusAppointmentMutation();
+
+  const handleSetStatus = async (id: number, status: 'confirmed' | 'cancelled') => {
+    try {
+      await setStatus({ id, body: { status } }).unwrap();
+      toast.success(status === 'confirmed' ? 'Tasdiqlandi' : 'Bekor qilindi');
+    } catch {
+      toast.error('Xatolik yuz berdi');
+    }
+  };
+
   const { data: appointmentsData, isLoading } = usePaginatedAppointments({
     page,
     searchQuery,
     page_size: 10,
-    date_from:format(selectedDate,'yyyy-MM-dd')
+    date_from: format(selectedDate, 'yyyy-MM-dd'),
+    status: statusFilter || undefined,
   });
 
   console.log(appointmentsData?.pagination);
@@ -71,6 +86,8 @@ export const Appointments = () => {
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
           onSearchChange={setSearchQuery}
+          statusFilter={statusFilter}
+          onStatusChange={(s) => { setStatusFilter(s); setPage(1); }}
         />
       </div>
 
@@ -284,18 +301,14 @@ export const Appointments = () => {
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
-                                    onClick={() =>
-                                      console.log('Tasdiqlash:', appt.id)
-                                    }
+                                    onClick={() => handleSetStatus(appt.id, 'confirmed')}
                                   >
                                     <CheckCircle className='h-4 w-4 text-green-400' />
                                     Tasdiqlash
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
-                                    onClick={() =>
-                                      console.log('Bekor qilish:', appt.id)
-                                    }
+                                    onClick={() => handleSetStatus(appt.id, 'cancelled')}
                                   >
                                     <XCircle className='h-4 w-4 text-yellow-400' />
                                     Bekor qilish

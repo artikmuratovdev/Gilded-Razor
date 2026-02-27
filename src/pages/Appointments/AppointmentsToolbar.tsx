@@ -4,7 +4,7 @@ import {
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
-  Filter,
+  ChevronDown,
   Search,
   X,
 } from 'lucide-react';
@@ -16,12 +16,25 @@ interface AppointmentsToolbarProps {
   selectedDate: Date;
   onDateChange: (date: Date) => void;
   onSearchChange: (query: string) => void;
+  statusFilter: string;
+  onStatusChange: (status: string) => void;
 }
+
+const STATUS_OPTIONS = [
+  { value: '', label: 'Barchasi' },
+  { value: 'pending', label: 'Kutilmoqda' },
+  { value: 'confirmed', label: 'Tasdiqlangan' },
+  { value: 'cancelled', label: 'Bekor qilingan' },
+  { value: 'completed', label: 'Bajarilgan' },
+  { value: 'no_show', label: 'Kelmagan' },
+] as const;
 
 export const AppointmentsToolbar = ({
   selectedDate,
   onDateChange,
   onSearchChange,
+  statusFilter,
+  onStatusChange,
 }: AppointmentsToolbarProps) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -121,61 +134,51 @@ export const AppointmentsToolbar = ({
 
         {/* Right: View Toggle */}
         <div className='flex items-center gap-2'>
-          <Button variant='secondary' className='gap-2 hidden lg:flex'>
-            <Filter className='h-4 w-4' /> Filter
-          </Button>
-
-          {/* <div className='bg-surface p-1 rounded-lg border border-white/5 flex text-xs font-medium w-full sm:w-auto overflow-x-auto'>
-            <button
-              onClick={() => onViewChange('list')}
-              className={cn(
-                'flex-1 sm:flex-none px-3 py-1.5 rounded-md transition-all whitespace-nowrap',
-                view === 'list'
-                  ? 'bg-primary text-background shadow-sm font-bold'
-                  : 'text-gray-400 hover:text-white',
-              )}
+          <div className='relative'>
+            <select
+              value={statusFilter}
+              onChange={(e) => onStatusChange(e.target.value)}
+              className='appearance-none h-9 pl-3 pr-8 rounded-xl border border-white/10 bg-surface text-sm text-gray-300 focus:outline-none focus:border-primary transition-colors cursor-pointer hover:border-white/20'
             >
-              Ro'yxat
-            </button>
-            <button
-              onClick={() => onViewChange('day')}
-              className={cn(
-                'flex-1 sm:flex-none px-3 py-1.5 rounded-md transition-all whitespace-nowrap',
-                view === 'day'
-                  ? 'bg-primary text-background shadow-sm font-bold'
-                  : 'text-gray-400 hover:text-white',
-              )}
-            >
-              Kun
-            </button>
-            <button
-              onClick={() => onViewChange('week')}
-              className={cn(
-                'flex-1 sm:flex-none px-3 py-1.5 rounded-md transition-all whitespace-nowrap',
-                view === 'week'
-                  ? 'bg-primary text-background shadow-sm font-bold'
-                  : 'text-gray-400 hover:text-white',
-              )}
-            >
-              Hafta
-            </button>
-          </div> */}
+              {STATUS_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value} className='bg-surface text-gray-200'>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className='pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400' />
+          </div>
         </div>
       </div>
 
-      {/* Search Bar - Full width on mobile */}
-      <div className='flex items-center bg-surface px-3 py-2.5 rounded-xl border border-white/5 focus-within:border-primary transition-all w-full'>
-        <Search className='h-4 w-4 text-gray-500 shrink-0' />
-        <input
-          type='text'
-          value={search}
-          onChange={handleSearch}
-          placeholder='Mijoz yoki xizmat bo`yicha qidirish...'
-          className='bg-transparent border-none outline-none text-sm ml-2 w-full text-gray-200 placeholder-gray-500'
-        />
-        <Button variant='ghost' size='icon' className='h-6 w-6 lg:hidden'>
-          <Filter className='h-4 w-4 text-gray-400' />
-        </Button>
+      {/* Search + Status Filter Row */}
+      <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2'>
+        <div className='flex items-center bg-surface px-3 py-2.5 rounded-xl border border-white/5 focus-within:border-primary transition-all flex-1'>
+          <Search className='h-4 w-4 text-gray-500 shrink-0' />
+          <input
+            type='text'
+            value={search}
+            onChange={handleSearch}
+            placeholder='Mijoz yoki xizmat bo`yicha qidirish...'
+            className='bg-transparent border-none outline-none text-sm ml-2 w-full text-gray-200 placeholder-gray-500'
+          />
+        </div>
+
+        {/* Status filter select (mobile — full width, desktop — auto) */}
+        <div className='relative sm:hidden'>
+          <select
+            value={statusFilter}
+            onChange={(e) => onStatusChange(e.target.value)}
+            className='appearance-none w-full h-10 pl-3 pr-8 rounded-xl border border-white/10 bg-surface text-sm text-gray-300 focus:outline-none focus:border-primary transition-colors cursor-pointer'
+          >
+            {STATUS_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value} className='bg-surface text-gray-200'>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className='pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400' />
+        </div>
       </div>
 
       {/* Calendar Popover */}
