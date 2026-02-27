@@ -46,7 +46,7 @@ export type AddAppoitmentReq = {
   start_time: string;
   end_time: string;
   price: string;
-  status?: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pnding'
+  status?: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pending'
   notes?: string;
 };
 
@@ -59,7 +59,7 @@ export type AddAppoitmentRes = {
   start_time: string;
   end_time: string;
   price: string;
-  status: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pnding'
+  status: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pending'
   notes: string;
 };
 
@@ -80,7 +80,7 @@ export type GetOneAppoitmentRes = {
     name: string;
     specialization: string;
     specialization_display: string;
-    status: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pnding'
+    status: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pending'
     status_display: string;
     rating: string;
     is_active: boolean;
@@ -100,7 +100,7 @@ export type GetOneAppoitmentRes = {
   start_time: string;
   end_time: string;
   price: string;
-  status: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pnding'
+  status: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pending'
   status_display: string;
   notes: string;
   created_at: string;

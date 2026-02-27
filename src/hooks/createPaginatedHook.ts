@@ -35,7 +35,7 @@ export function createPaginatedHook<TData>(
     page_size?: number;
     date_from?: string;
     datetime_from?: string;
-    status?: string;
+    status?: "cancelled" | "completed" | "confirmed" | "no_show" | "pending" | string;
   }) {
     const params: GetClientsReq = { page, page_size, search: searchQuery, date_from, datetime_from, status };
     const nextParams: GetClientsReq = {

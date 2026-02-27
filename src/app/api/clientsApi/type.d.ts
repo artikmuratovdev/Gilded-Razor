@@ -18,25 +18,26 @@ export type MutationRes = {
 
 export type GetClientsReq = {
   search?: string;
+  searchQuery?:string;
   page?: number;
   page_size?: number;
   date_from?: string;
   datetime_from?: string;
   is_active?: boolean;
+  status?: "cancelled" | "completed" | "confirmed" | "no_show" | "pending" | string;
 };
 
 export type GetClientsRes = {
   success: boolean;
   message: string;
-  data: 
-    {
-      id: number;
-      first_name: string;
-      last_name: string;
-      full_name: string;
-      phone: string;
-      is_active: boolean;
-    }[];
+  data: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    full_name: string;
+    phone: string;
+    is_active: boolean;
+  }[];
   pagination: {
     count: number;
     total_pages: number;

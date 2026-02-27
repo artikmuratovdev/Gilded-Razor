@@ -10,7 +10,7 @@ const bookingSchema = z.object({
   start_time: z.string().min(1, 'Boshlanish vaqti talab qilinadi'),
   end_time: z.string().min(1, 'Tugash vaqti talab qilinadi'),
   price: z.number().min(1, 'Narx talab qilinadi'),
-  status: z.string().optional(),
+  status: z.enum(['cancelled' , 'completed' , 'confirmed' , 'no_show' , 'pending']),
   notes: z.string().optional(),
 });
 

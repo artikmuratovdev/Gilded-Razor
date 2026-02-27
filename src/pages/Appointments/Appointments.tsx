@@ -35,7 +35,7 @@ import { format } from 'date-fns';
 export const Appointments = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pending' | string>('');
   const [editTarget, setEditTarget] = useState<AppoitmentRes['data'][0] | null>(
     null,
   );
