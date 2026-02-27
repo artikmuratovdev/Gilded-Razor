@@ -3,6 +3,8 @@ export type AppoitmentReq = {
   search?: string;
   page?: number;
   page_size?: number;
+  date_from?:string;
+  datetime_from?:string;
 };
 
 export type AppoitmentRes = {
@@ -14,8 +16,11 @@ export type AppoitmentRes = {
     start_time: string;
     end_time: string;
     client_name: string;
+    client_id: number;
     service_name: string;
+    service_id: id;
     staff_member_name: string;
+    staff_member_id: number;
     price: string;
     status: string;
     status_display: string;

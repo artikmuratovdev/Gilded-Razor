@@ -1,5 +1,5 @@
 import { useMeQuery } from '@/app/api/authApi';
-import { clearAuthTokens, getTokenFromCache } from '@/app/api/baseApi/baseApi';
+import { getTokenFromCache } from '@/app/api/baseApi/baseApi';
 import { Loader2 } from 'lucide-react';
 import { Navigate, Outlet } from 'react-router';
 
@@ -26,7 +26,7 @@ export const PrivateRoute = () => {
 
   // If no token, error, or no user data, redirect to login
   if (!token || isError || !userData) {
-    clearAuthTokens();
+    // clearAuthTokens();
     return <Navigate to='/login' replace />;
   }
 

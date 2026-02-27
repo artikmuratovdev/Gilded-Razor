@@ -1,12 +1,13 @@
-import type { GetStaffRes } from '@/app/api/staffApi/type';
-import { Clock, Scissors } from 'lucide-react';
-import { Link } from 'react-router';
-import { Badge } from '../../components/ui/Badge';
-import { Button } from '../../components/ui/Button';
-import { Card, CardContent } from '../../components/ui/Card';
-import { cn } from '../../lib/utils';
+import type { GetStaffRes } from "@/app/api/staffApi/type";
+import { Clock, Scissors } from "lucide-react";
+import { Link } from "react-router";
+import { Badge } from "../../components/ui/Badge";
+import { Button } from "../../components/ui/Button";
+import { Card, CardContent } from "../../components/ui/Card";
+import { cn } from "../../lib/utils";
+import { Avatar, AvatarBadge, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-type StaffItem = GetStaffRes['data'][number];
+type StaffItem = GetStaffRes["data"][number];
 
 interface StaffGridProps {
   staffMembers: StaffItem[];
@@ -16,116 +17,119 @@ interface StaffGridProps {
 export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
   if (isLoading) {
     return (
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6'>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className='rounded-2xl bg-surface/40 border border-white/5 h-64 animate-pulse'
+            className="rounded-2xl bg-surface/40 border border-white/5 h-64 animate-pulse"
           />
         ))}
       </div>
     );
   }
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6'>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       {staffMembers.map((staff) => (
         <Card
           key={staff.id}
-          className='overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40'
+          className="overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40"
         >
-          <CardContent className='p-4 sm:p-6'>
-            <div className='flex justify-between items-start mb-4 sm:mb-6'>
-              <div className='relative'>
-                <img
-                  src={staff.avatar}
-                  alt={staff.name}
-                  className='w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-white/5'
-                />
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex justify-between items-start mb-4 sm:mb-6">
+              <div className="relative">
+                <Avatar size="lg">
+                  <AvatarImage
+                    src={staff.avatar || "https://github.com/maxleiter.png"}
+                    alt={staff.name || "@maxleiter"}
+                  />
+                  <AvatarFallback>{staff.name}</AvatarFallback>
+                  <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+                </Avatar>
                 <div
                   className={cn(
-                    'absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-surface flex items-center justify-center',
-                    staff.status === 'active'
-                      ? 'bg-green-500'
-                      : staff.status === 'busy'
-                        ? 'bg-blue-500'
-                        : 'bg-gray-500',
+                    "absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-surface flex items-center justify-center",
+                    staff.status === "active"
+                      ? "bg-green-500"
+                      : staff.status === "busy"
+                        ? "bg-blue-500"
+                        : "bg-gray-500",
                   )}
                 >
-                  {staff.status === 'busy' && (
-                    <Scissors className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-white' />
+                  {staff.status === "busy" && (
+                    <Scissors className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                   )}
                 </div>
               </div>
-              <div className='text-right'>
+              <div className="text-right">
                 <Badge
                   variant={
-                    staff.status === 'active'
-                      ? 'success'
-                      : staff.status === 'busy'
-                        ? 'info'
-                        : 'default'
+                    staff.status === "active"
+                      ? "success"
+                      : staff.status === "busy"
+                        ? "info"
+                        : "default"
                   }
-                  className='mb-2 text-[9px] sm:text-[10px]'
+                  className="mb-2 text-[9px] sm:text-[10px]"
                 >
                   {staff.status_display ?? staff.status}
                 </Badge>
-                <p className='text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase'>
+                <p className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase">
                   Bugungi Daromad
                 </p>
-                <p className='text-base sm:text-lg font-bold text-white'>—</p>
+                <p className="text-base sm:text-lg font-bold text-white">—</p>
               </div>
             </div>
 
-            <div className='mb-4 sm:mb-6'>
-              <h3 className='text-base sm:text-lg font-bold text-white truncate'>
+            <div className="mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-bold text-white truncate">
                 {staff.name}
               </h3>
-              <p className='text-xs sm:text-sm text-primary font-medium'>
+              <p className="text-xs sm:text-sm text-primary font-medium">
                 {staff.specialization_display ?? staff.specialization}
               </p>
             </div>
 
-            <div className='bg-surface-light rounded-xl p-2.5 sm:p-3 mb-4 border border-white/5'>
-              <p className='text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase mb-1'>
+            <div className="bg-surface-light rounded-xl p-2.5 sm:p-3 mb-4 border border-white/5">
+              <p className="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase mb-1">
                 Holat
               </p>
-              <div className='flex justify-between items-center gap-2'>
-                <span className='text-xs sm:text-sm font-medium text-white truncate'>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-xs sm:text-sm font-medium text-white truncate">
                   {staff.status_display ?? staff.status}
                 </span>
-                {staff.status === 'Available' && (
+                {staff.status === "Available" && (
                   <Badge
-                    variant='gold'
-                    className='text-[8px] sm:text-[9px] whitespace-nowrap px-1.5'
+                    variant="gold"
+                    className="text-[8px] sm:text-[9px] whitespace-nowrap px-1.5"
                   >
                     Hot Shave
                   </Badge>
                 )}
-                {staff.status === 'In Session' && (
+                {staff.status === "In Session" && (
                   <Badge
-                    variant='info'
-                    className='text-[8px] sm:text-[9px] whitespace-nowrap px-1.5'
+                    variant="info"
+                    className="text-[8px] sm:text-[9px] whitespace-nowrap px-1.5"
                   >
                     Fade Cut
                   </Badge>
                 )}
-                {staff.status === 'busy' && (
-                  <Clock className='w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400' />
+                {staff.status === "busy" && (
+                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
                 )}
               </div>
             </div>
 
-            <div className='grid grid-cols-2 gap-2 sm:gap-3'>
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <Button
-                variant='outline'
-                className='w-full text-[10px] sm:text-xs h-8 sm:h-9'
+                variant="outline"
+                className="w-full text-[10px] sm:text-xs h-8 sm:h-9"
               >
                 Jadval
               </Button>
-              <Link to={`/staff/${staff.id}`} className='w-full'>
+              <Link to={`/staff/${staff.id}`} className="w-full">
                 <Button
-                  variant='ghost'
-                  className='w-full text-[10px] sm:text-xs h-8 sm:h-9'
+                  variant="ghost"
+                  className="w-full text-[10px] sm:text-xs h-8 sm:h-9"
                 >
                   Profil
                 </Button>

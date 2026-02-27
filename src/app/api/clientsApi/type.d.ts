@@ -20,6 +20,8 @@ export type GetClientsReq = {
   search?: string;
   page?: number;
   page_size?: number;
+  date_from?: string;
+  datetime_from?: string;
 };
 
 export type GetClientsRes = {

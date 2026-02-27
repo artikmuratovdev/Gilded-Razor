@@ -14,7 +14,6 @@ type PaginationType = {
   next: boolean;
 };
 const Pagination = ({ page, setPage, prev, next }: PaginationType) => {
-  console.log(prev, next);
   return (
     <div className="flex items-center justify-between p-3">
       <PaginationComponent className="justify-end">

@@ -12,9 +12,9 @@ import type { EditForm } from '@/pages/Appointments/AppointmentModals';
 export const appoitmentsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAppoitments: builder.query<AppoitmentRes, AppoitmentReq>({
-      query: ({ ordering, search, page, page_size }) => ({
+      query: (params) => ({
         url: '/appointments/',
-        params: { ordering, search, page, page_size },
+        params
       }),
       providesTags: [API_TAGS.APPOITMENTS],
     }),

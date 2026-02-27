@@ -1,5 +1,4 @@
 import type { RootState } from '@/app/store';
-import { staffMembers } from '@/constants/barber';
 import { AlertTriangle, CreditCard, Package, Scissors, Search, UserPlus, Wrench } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -18,6 +17,7 @@ import {
   ComboboxItem,
   ComboboxEmpty,
 } from '../../ui/combobox';
+import { useGetAllStaffQuery } from '@/app/api/staffApi/staffApi';
 
 // --- Schemas ---
 const Modals = () => {
@@ -62,9 +62,7 @@ const Modals = () => {
   } = useSelector((state: RootState) => state.modal);
 
   // Get data from Redux cache (prefetched in Dashboard)
-  const { data: clientsData } = useGetClientsQuery({ page: 1, page_size: 1000 });
-  const { data: servicesData } = useGetServiceQuery({ page: 1, page_size: 1000 });
-
+  
   // State for Combobox search and selected values
   const [clientSearch, setClientSearch] = useState('');
   const [serviceSearch, setServiceSearch] = useState('');
@@ -72,26 +70,25 @@ const Modals = () => {
   const [selectedClientName, setSelectedClientName] = useState('');
   const [selectedServiceName, setSelectedServiceName] = useState('');
   const [selectedStaffName, setSelectedStaffName] = useState('');
+  
+  const { data: clientsData } = useGetClientsQuery({ page: 1, page_size: 100 , search:clientSearch});
+  const { data: servicesData } = useGetServiceQuery({ page: 1, page_size: 100 , search:serviceSearch});
+  const { data: staffData } = useGetAllStaffQuery({ page: 1, page_size: 100 , search:staffSearch});
 
-  // Auto-format time input (add colon automatically)
-  const handleTimeInput = (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'start_time' | 'end_time') => {
-    let value = e.target.value;
-    
-    // Remove all non-digit characters
-    const digits = value.replace(/\D/g, '');
-    
-    // Format: automatically add colon after 2 digits
-    if (digits.length === 0) {
-      value = '';
-    } else if (digits.length <= 2) {
-      value = digits;
-    } else if (digits.length <= 4) {
-      value = digits.slice(0, 2) + ':' + digits.slice(2);
-    } else {
-      value = digits.slice(0, 2) + ':' + digits.slice(2, 4);
+  // Handle start time change and auto-set end time to +40 minutes
+  const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    bookingForm.setValue('start_time', value);
+    if (value) {
+      const [hours, minutes] = value.split(':').map(Number);
+      const totalMinutes = hours * 60 + minutes + 40;
+      const endHours = Math.floor(totalMinutes / 60) % 24;
+      const endMinutes = totalMinutes % 60;
+      bookingForm.setValue(
+        'end_time',
+        `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`,
+      );
     }
-    
-    bookingForm.setValue(fieldName, value);
   };
 
   // Filter options based on search
@@ -103,9 +100,9 @@ const Modals = () => {
     service.name.toLowerCase().includes(serviceSearch.toLowerCase())
   ) || [];
 
-  const filteredStaff = staffMembers.filter(staff =>
+  const filteredStaff = staffData?.data?.filter(staff =>
     staff.name.toLowerCase().includes(staffSearch.toLowerCase())
-  );
+  ) || [];
 
   // --- Form Hooks ---
 
@@ -118,7 +115,7 @@ const Modals = () => {
         date: '',
         start_time: '',
         end_time: '',
-        price: '',
+        price: 0,
         status: 'pending',
         notes: '',
       });
@@ -175,6 +172,7 @@ const Modals = () => {
                 Mijoz
               </label>
               <Combobox
+                filter={null}
                 value={bookingForm.watch('client')?.toString() || ''}
                 onValueChange={(value) => {
                   if (value) {
@@ -197,7 +195,7 @@ const Modals = () => {
                       bookingForm.setValue('client', 0);
                     }
                   }}
-                  className='w-full'
+                  className='p-0 bg-transparent shadow-none'
                 />
                 <ComboboxContent>
                   <ComboboxList>
@@ -221,11 +219,12 @@ const Modals = () => {
                 Sartarosh
               </label>
               <Combobox
+                filter={null}
                 value={bookingForm.watch('staff_member')?.toString() || ''}
                 onValueChange={(value) => {
                   if (value) {
                     const staffId = parseInt(value.split('-')[0]);
-                    const staff = filteredStaff.find((s) => s.id === value.split('-')[0]);
+                    const staff = filteredStaff.find((s) => s.id === staffId);
                     if (staff) {
                       bookingForm.setValue('staff_member', staffId);
                       setSelectedStaffName(staff.name);
@@ -270,6 +269,7 @@ const Modals = () => {
                 Xizmat
               </label>
               <Combobox
+                filter={null}
                 value={bookingForm.watch('service')?.toString() || ''}
                 onValueChange={(value) => {
                   if (value) {
@@ -313,14 +313,23 @@ const Modals = () => {
             </div>
             <div>
               <Input
-                label='Narx'
-                placeholder='0.00'
-                {...bookingForm.register('price')}
+              label='Narx'
+              placeholder='0.00'
+              type='number'
+              step='0.01'
+              min='0'
+              {...bookingForm.register('price', { 
+                valueAsNumber: true,
+                min: {
+                value: 0,
+                message: 'Narx manfiy bo\'lishi mumkin emas'
+                }
+              })}
               />
               {bookingForm.formState.errors.price && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {bookingForm.formState.errors.price.message}
-                </p>
+              <p className='text-red-500 text-xs mt-1'>
+                {bookingForm.formState.errors.price.message}
+              </p>
               )}
             </div>
           </div>
@@ -341,14 +350,11 @@ const Modals = () => {
             <div>
               <Input
                 label='Boshlanish vaqti'
-                type='text'
-                placeholder='0900 yoki 09:00'
-                maxLength={5}
-                pattern='([01][0-9]|2[0-3]):[0-5][0-9]'
-                title='24 soatlik formatda kiriting (00:00 - 23:59)'
+                type='time'
+                lang='en-GB'
                 className='scheme-dark'
                 value={bookingForm.watch('start_time') || ''}
-                onChange={(e) => handleTimeInput(e, 'start_time')}
+                onChange={handleStartTimeChange}
               />
               {bookingForm.formState.errors.start_time && (
                 <p className='text-red-500 text-xs mt-1'>
@@ -359,14 +365,11 @@ const Modals = () => {
             <div>
               <Input
                 label='Tugash vaqti'
-                type='text'
-                placeholder='1800 yoki 18:00'
-                maxLength={5}
-                pattern='([01][0-9]|2[0-3]):[0-5][0-9]'
-                title='24 soatlik formatda kiriting (00:00 - 23:59)'
+                type='time'
+                lang='en-GB'
                 className='scheme-dark'
                 value={bookingForm.watch('end_time') || ''}
-                onChange={(e) => handleTimeInput(e, 'end_time')}
+                onChange={(e) => bookingForm.setValue('end_time', e.target.value)}
               />
               {bookingForm.formState.errors.end_time && (
                 <p className='text-red-500 text-xs mt-1'>

@@ -4,8 +4,9 @@ export type LoginRequest = {
   password: string;
 };
 export type LoginResponse = {
+  success: boolean;
+  message: string;
   data: {
-    success: boolean;
     user: User;
     access_token: string;
     refresh_token: string;

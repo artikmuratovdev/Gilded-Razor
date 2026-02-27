@@ -26,16 +26,22 @@ export function createPaginatedHook<TData>(
     page,
     searchQuery,
     page_size = defaultPageSize,
+    date_from,
+    datetime_from
   }: {
     page: number;
     searchQuery?: string;
     page_size?: number;
+    date_from?: string;
+    datetime_from?: string;
   }) {
-    const params: GetClientsReq = { page, page_size, search: searchQuery };
+    const params: GetClientsReq = { page, page_size, search: searchQuery ,date_from,datetime_from};
     const nextParams: GetClientsReq = {
       page: page + 1,
       page_size,
       search: searchQuery,
+      date_from,
+      datetime_from
     };
 
     const current = useQueryHook(params);

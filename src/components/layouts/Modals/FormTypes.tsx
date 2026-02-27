@@ -9,7 +9,7 @@ const bookingSchema = z.object({
   date: z.string().min(1, 'Sana talab qilinadi'),
   start_time: z.string().min(1, 'Boshlanish vaqti talab qilinadi'),
   end_time: z.string().min(1, 'Tugash vaqti talab qilinadi'),
-  price: z.string().min(1, 'Narx talab qilinadi'),
+  price: z.number().min(1, 'Narx talab qilinadi'),
   status: z.string().optional(),
   notes: z.string().optional(),
 });
@@ -66,7 +66,7 @@ const useModalForms = () => {
       date: '',
       start_time: '',
       end_time: '',
-      price: '',
+      price: 0,
       status: 'pending',
       notes: '',
     },

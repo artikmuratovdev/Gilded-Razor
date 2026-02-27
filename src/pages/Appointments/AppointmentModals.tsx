@@ -21,9 +21,9 @@ import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import z from 'zod';
 
 export const editAppointmentSchema = z.object({
-  client: z.string().min(2, 'Mijoz ismi talab qilinadi'),
+  client: z.string().min(1, 'Mijoz tanlanishi shart'),
   barber: z.string().min(1, 'Sartarosh tanlanishi shart'),
-  service: z.string().min(2, 'Xizmat talab qilinadi'),
+  service: z.string().min(1, 'Xizmat tanlanishi shart'),
   date: z.string().min(1, 'Sana talab qilinadi'),
   start_time: z.string().min(1, 'Boshlanish vaqti talab qilinadi'),
   end_time: z.string().min(1, 'Tugash vaqti talab qilinadi'),
@@ -189,9 +189,9 @@ export const EditAppointmentModal = ({
       const end_time = appointment.end_time;
 
       form.reset({
-        client: appointment.client_name,
-        barber: appointment.staff_member_name,
-        service: appointment.service_name,
+        client: String(appointment.client_id),
+        barber: String(appointment.staff_member_id),
+        service: String(appointment.service_id),
         date: date,
         start_time: start_time,
         end_time: end_time,
@@ -205,9 +205,18 @@ export const EditAppointmentModal = ({
 
   const onSubmit = (data: EditForm) => {
     if(!appointment) return
-    console.log('Edit appointment:', data);
+    // ID larni number formatiga o'tkazish
+    const updateData = {
+      ...data,
+      client: Number(data.client),
+      staff_member: Number(data.barber),
+      service: Number(data.service),
+    };
+    // barber fieldini o'chirib, staff_member ni qoldirish
+    const { barber, ...finalData } = updateData as any;
+    console.log('Edit appointment:', finalData);
     handleRequest({
-      request : async () => await updateAppointment({id:appointment.id,body:data}),
+      request : async () => await updateAppointment({id:appointment.id,body:finalData}),
       onSuccess: (res) => {
         console.log(res.data)
       }

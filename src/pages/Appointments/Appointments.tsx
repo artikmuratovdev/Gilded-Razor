@@ -28,6 +28,7 @@ import {
 } from './AppointmentModals';
 import { AppointmentsToolbar } from './AppointmentsToolbar';
 import { Spinner } from '@/components/ui/spinner';
+import { format } from 'date-fns';
 
 export const Appointments = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -44,10 +45,13 @@ export const Appointments = () => {
     page,
     searchQuery,
     page_size: 10,
+    date_from:format(selectedDate,'yyyy-MM-dd')
   });
 
   console.log(appointmentsData?.pagination);
   console.log('editTarget', editTarget);
+  console.log('Date', format(selectedDate,'yyyy-MM-dd'));
+  console.log('Date', selectedDate);
 
   if (isLoading || !appointmentsData) {
     return (
@@ -161,7 +165,7 @@ export const Appointments = () => {
                         <Button
                           variant='secondary'
                           className='flex-1 h-9 px-3 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1.5'
-                          // onClick={() => setDeleteTarget(appt)}
+                          onClick={() => setDeleteTarget(appt)}
                         >
                           <Trash2 className='h-3.5 w-3.5' />
                           O'chirish
@@ -299,7 +303,7 @@ export const Appointments = () => {
                                   <DropdownMenuSeparator className='bg-white/5 my-1' />
                                   <DropdownMenuItem
                                     className='flex items-center gap-2 px-3 py-2 cursor-pointer text-red-400 hover:text-red-300 focus:text-red-300 focus:bg-red-500/10 rounded-lg'
-                                    // onClick={() => setDeleteTarget(appt)}
+                                    onClick={() => setDeleteTarget(appt)}
                                   >
                                     <Trash2 className='h-4 w-4' />
                                     O'chirish

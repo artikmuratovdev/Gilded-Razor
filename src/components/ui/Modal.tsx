@@ -19,14 +19,22 @@ export const Modal = ({
   children,
   icon,
 }: ModalProps): JSX.Element | null => {
-  console.log("isOpen",isOpen)
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.body.removeAttribute('data-scroll-locked');
+      document.documentElement.style.overflow = '';
+      document.documentElement.removeAttribute('data-scroll-locked');
     }
 
     return () => {
       document.body.style.overflow = '';
+      document.body.removeAttribute('data-scroll-locked');
+      document.documentElement.style.overflow = '';
+      document.documentElement.removeAttribute('data-scroll-locked');
     };
   }, [isOpen]);
 
@@ -39,13 +47,13 @@ export const Modal = ({
           {/* Backdrop */}
           <div
             className='absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity'
-            onClick={() => {onClose();document.body.style.overflow = 'auto';}}
+            onClick={onClose}
           />
 
           {/* Content */}
           <div className='relative w-full max-w-lg transform rounded-2xl bg-surface border border-white/10 shadow-2xl transition-all animate-in fade-in zoom-in-95 duration-200'>
             <button
-              onClick={() => {onClose();document.body.style.overflow = 'auto';}}
+              onClick={onClose}
               className='absolute right-4 top-4 rounded-full p-2 text-gray-400 hover:bg-white/5 hover:text-white transition-colors'
             >
               <X className='h-5 w-5' />

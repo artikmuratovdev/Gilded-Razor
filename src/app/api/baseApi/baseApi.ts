@@ -7,10 +7,15 @@ import {
   type FetchArgs,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
+import type { LoginResponse, RefreshTokenResponse } from '../authApi/types';
 
 // Constants
 const CACHE_KEY = 'rtk_cache';
 const TOKEN_KEY = 'auth_token';
+const REFRESH_TOKEN_KEY = 'refresh_token';
+
+// Prevent simultaneous refresh calls
+let isRefreshing = false;
 
 // Load full cache
 const loadCache = (): Record<string, any> => {
@@ -23,23 +28,21 @@ const loadCache = (): Record<string, any> => {
   }
 };
 
-const updateCache = (url: string, data: any) => {
+const updateCache = (url: string, data: LoginResponse) => {
   try {
     const cache = loadCache();
 
     cache[url] = data;
     // Extract token from various possible locations in the response
-    const token =
-      data?.token ||
-      data?.accessToken ||
-      data?.access_token ||
-      data?.data?.token ||
-      data?.data?.access_token ||
-      data?.data?.data?.access_token;
+    const token = data?.data?.access_token;
+    const refreshToken = data?.data?.refresh_token;
 
     if (token && typeof token === 'string') {
       cache[TOKEN_KEY] = token;
       console.log('✅ Token extracted and saved from response');
+    }
+    if (refreshToken && typeof refreshToken === 'string') {
+      cache[REFRESH_TOKEN_KEY] = refreshToken;
     }
 
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
@@ -63,6 +66,29 @@ export const getTokenFromCache = (): string | null => {
   return cache[TOKEN_KEY] ?? null;
 };
 
+export const getRefreshTokenFromCache = (): string | null => {
+  const cache = loadCache();
+  return cache[REFRESH_TOKEN_KEY] ?? null;
+};
+
+const saveNewTokens = (access: string, refresh?: string) => {
+  try {
+    const cache = loadCache();
+    cache[TOKEN_KEY] = access;
+    if (refresh) cache[REFRESH_TOKEN_KEY] = refresh;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+  } catch {}
+};
+
+const isTokenNotValid = (result: any): boolean => {
+  const errorData = result?.error?.data;
+  return (
+    result?.error?.status === 401 ||
+    errorData?.error?.details?.code === 'token_not_valid' ||
+    errorData?.success === false
+  );
+};
+
 const customBaseQuery: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -82,12 +108,49 @@ const customBaseQuery: BaseQueryFn<
 
   const result = await baseQuery(args, api, extraOptions);
 
-  if (!('error' in result) && result.data) {
-    const responseData = result.data as any;
+  // Token invalid — try refresh
+  if (isTokenNotValid(result) && !isRefreshing) {
+    const refreshToken = getRefreshTokenFromCache();
+    if (refreshToken) {
+      isRefreshing = true;
+      try {
+        const refreshResult = await fetchBaseQuery({ baseUrl: SERVER_URL })(
+          {
+            url: 'auth/token/refresh/',
+            method: 'POST',
+            body: { refresh: refreshToken },
+          },
+          api,
+          extraOptions,
+        );
+
+        const refreshData = refreshResult.data as RefreshTokenResponse | undefined;
+        if (refreshData?.access_token) {
+          saveNewTokens(refreshData.access_token, refreshData.refresh_token);
+          console.log('✅ Token refreshed successfully');
+          // Retry original request with new token
+          isRefreshing = false;
+          return await baseQuery(args, api, extraOptions);
+        } else {
+          // Refresh failed — clear tokens
+          clearAuthTokens();
+        }
+      } catch {
+        clearAuthTokens();
+      } finally {
+        isRefreshing = false;
+      }
+    } else {
+      clearAuthTokens();
+    }
+  }
+
+  if (!result.error && result.data) {
+    const responseData = result.data as LoginResponse;
     const isSuccessResponse = responseData?.success !== false;
 
     if (isSuccessResponse) {
-      updateCache(url, result.data);
+      updateCache(url, responseData);
     } else {
       console.error(`⚠️ Skipping cache for error response: ${url}`);
     }
