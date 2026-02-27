@@ -12,8 +12,8 @@ import { Search } from 'lucide-react';
 interface ClientsFiltersProps { 
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  statusFilter: string;
-  setStatusFilter: (status: string) => void;
+  statusFilter: 'all' | 'true' | 'false';
+  setStatusFilter: (status: 'all' | 'true' | 'false') => void;
 }
 
 export const ClientsFilters = ({
@@ -36,7 +36,7 @@ export const ClientsFilters = ({
       </div>
       <div className='flex flex-row gap-2 w-full md:w-auto'>
         <div className='flex-1 md:w-48'>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as 'all' | 'true' | 'false')}>
             <SelectTrigger className='w-full bg-surface-light border-white/5'>
               <SelectValue placeholder='Filtr' />
             </SelectTrigger>

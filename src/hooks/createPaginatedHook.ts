@@ -28,6 +28,7 @@ export function createPaginatedHook<TData>(
     page_size = defaultPageSize,
     date_from,
     datetime_from,
+    is_active,
     status,
   }: {
     page: number;
@@ -35,9 +36,10 @@ export function createPaginatedHook<TData>(
     page_size?: number;
     date_from?: string;
     datetime_from?: string;
+    is_active?:boolean;
     status?: "cancelled" | "completed" | "confirmed" | "no_show" | "pending" | string;
   }) {
-    const params: GetClientsReq = { page, page_size, search: searchQuery, date_from, datetime_from, status };
+    const params: GetClientsReq = { page, page_size, search: searchQuery, date_from, datetime_from, status ,is_active};
     const nextParams: GetClientsReq = {
       page: page + 1,
       page_size,
@@ -45,6 +47,7 @@ export function createPaginatedHook<TData>(
       date_from,
       datetime_from,
       status,
+      is_active
     };
 
     const current = useQueryHook(params);

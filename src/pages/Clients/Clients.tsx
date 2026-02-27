@@ -8,10 +8,12 @@ import { Spinner } from '@/components/ui/spinner';
 
 export const Clients = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'true' | 'false'>('all');
   const [page,setPage] = useState<number>(1);
 
-  const {data, isLoading} = usePaginatedClients({page,searchQuery});
+  const is_active = statusFilter === 'all' ? undefined : statusFilter === 'true';
+
+  const {data, isLoading} = usePaginatedClients({page, searchQuery, is_active});
 
   if(isLoading || !data) {
     return (
@@ -28,9 +30,9 @@ export const Clients = () => {
         <CardContent className='p-0'>
           <ClientsFilters
             searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
+            setSearchQuery={(q) => { setSearchQuery(q); setPage(1); }}
             statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
+            setStatusFilter={(s) => { setStatusFilter(s); setPage(1); }}
           />
           <ClientsTable data={data.data} />
           <Pagination

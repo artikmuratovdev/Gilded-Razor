@@ -223,14 +223,14 @@ export const Appointments = () => {
                             key={appt.id}
                             className='group hover:bg-white/2  transition-colors'
                           >
-                            <td className='p-4 pl-6'>
+                            <td className='p-4'>
                               <div className='flex flex-col'>
-                                <span className='font-bold text-white'>
-                                  {useSetDate(appt.date)}
-                                </span>
-                                <span className='text-xs text-primary font-medium flex items-center gap-1'>
-                                  <Clock className='w-3 h-3' />{' '}
+                                <span className='font-bold text-primary flex items-center gap-2 mb-1'>
+                                  <Clock className='w-3 h-3' />
                                   {appt.start_time.slice(0, 5)}
+                                </span>
+                                <span className='text-xs text-white font-medium flex items-center gap-1'>
+                                  {useSetDate(appt.date)}
                                 </span>
                               </div>
                             </td>
