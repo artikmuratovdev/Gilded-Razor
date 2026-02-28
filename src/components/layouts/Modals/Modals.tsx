@@ -316,15 +316,13 @@ const Modals = () => {
               label='Narx'
               placeholder='0.00'
               type='number'
-              step='0.01'
+              step='1'
               min='0'
-              {...bookingForm.register('price', { 
-                valueAsNumber: true,
-                min: {
-                value: 0,
-                message: 'Narx manfiy bo\'lishi mumkin emas'
-                }
-              })}
+              value={bookingForm.watch('price') || ''}
+              onChange={(e) => {
+                const val = e.target.value;
+                bookingForm.setValue('price', val ? parseFloat(val) : 0);
+              }}
               />
               {bookingForm.formState.errors.price && (
               <p className='text-red-500 text-xs mt-1'>
