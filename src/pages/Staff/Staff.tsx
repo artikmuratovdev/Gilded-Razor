@@ -30,7 +30,7 @@ export const StaffPage = () => {
             <button
               onClick={() => setPage((p) => p - 1)}
               disabled={!hasPrev || isFetching}
-              className='px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 hover:text-white border border-white/10 hover:border-white/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors'
+              className='px-3 py-1.5 rounded-lg text-xs font-semibold text-white border border-white/10 hover:border-white/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors not-disabled:bg-primary hover:bg-primary/90 '
             >
               ← Oldingi
             </button>
@@ -40,7 +40,7 @@ export const StaffPage = () => {
             <button
               onClick={() => setPage((p) => p + 1)}
               disabled={!hasNext || isFetching}
-              className='px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 hover:text-white border border-white/10 hover:border-white/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors'
+              className='px-3 py-1.5 rounded-lg text-xs font-semibold text-white border border-white/10 hover:border-white/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors not-disabled:bg-primary hover:bg-primary/90 '
             >
               Keyingi →
             </button>

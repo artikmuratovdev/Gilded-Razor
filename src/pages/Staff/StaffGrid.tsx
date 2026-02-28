@@ -47,22 +47,6 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
                 <AvatarFallback>{staff.name}</AvatarFallback>
                 <AvatarBadge className="bg-green-600 dark:bg-green-800" />
               </Avatar>
-              {/* <div className="relative">
-                <div
-                  className={cn(
-                    "absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-surface flex items-center justify-center",
-                    staff.status === "active"
-                      ? "bg-green-500"
-                      : staff.status === "busy"
-                        ? "bg-blue-500"
-                        : "bg-gray-500",
-                  )}
-                >
-                  {staff.status === "busy" && (
-                    <Scissors className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
-                  )}
-                </div>
-              </div> */}
               <div className="text-right">
                 <Badge
                   variant={
@@ -93,36 +77,6 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
               </p>
             </div>
 
-            {/* <div className="bg-surface-light rounded-xl p-2.5 sm:p-3 mb-4 border border-white/5">
-              <p className="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase mb-1">
-                Holat
-              </p>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-xs sm:text-sm font-medium text-white truncate">
-                  {staff.status_display ?? staff.status}
-                </span>
-                {staff.status === "Available" && (
-                  <Badge
-                    variant="gold"
-                    className="text-[8px] sm:text-[9px] whitespace-nowrap px-1.5"
-                  >
-                    Hot Shave
-                  </Badge>
-                )}
-                {staff.status === "In Session" && (
-                  <Badge
-                    variant="info"
-                    className="text-[8px] sm:text-[9px] whitespace-nowrap px-1.5"
-                  >
-                    Fade Cut
-                  </Badge>
-                )}
-                {staff.status === "busy" && (
-                  <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
-                )}
-              </div>
-            </div> */}
-
             <div className="grid grid-cols-1 gap-2 sm:gap-3">
               <Link to={`/staff/${staff.id}`} className="w-full">
                 <Button
@@ -136,22 +90,6 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
           </CardContent>
         </Card>
       ))}
-
-      {/* Add New Card */}
-      {/* <button
-        onClick={onAddStaff}
-        className='rounded-2xl border border-dashed border-white/10 bg-surface/30 hover:bg-surface/50 hover:border-primary/50 transition-all flex flex-col items-center justify-center p-6 text-center group cursor-pointer h-full min-h-[220px] sm:min-h-[280px]'
-      >
-        <div className='w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors mb-3 sm:mb-4'>
-          <Plus className='w-5 h-5 sm:w-6 sm:h-6 text-gray-400 group-hover:text-primary' />
-        </div>
-        <h3 className='text-base sm:text-lg font-bold text-white group-hover:text-primary transition-colors'>
-          Jamoaga Qo'shish
-        </h3>
-        <p className='text-[10px] sm:text-sm text-gray-500 mt-1 sm:mt-2'>
-          Sartaroshxona jamoangizni kengaytiring
-        </p>
-      </button> */}
     </div>
   );
 };

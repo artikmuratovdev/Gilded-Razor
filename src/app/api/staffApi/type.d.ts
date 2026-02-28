@@ -6,11 +6,14 @@ export type GetStaffRes = {
     name: string;
     specialization: string;
     specialization_display: string;
-    status: 'available' | 'in_session' | 'on_break' | 'off_duty';
+    status: "available" | "in_session" | "on_break" | "off_duty";
     status_display: string;
     rating: string;
     is_active: boolean;
-    avatar: string;
+    avatar: string | null;
+    bookings: number;
+    income: number | null;
+    efficiency: string;
   }[];
   pagination: {
     count: number;
@@ -23,25 +26,24 @@ export type GetStaffRes = {
   timestamp: Date;
 };
 
-export type GetStaffByIdRes = 
-{
+export type GetStaffByIdRes = {
   success: boolean;
   message: string;
   data: {
     user: number;
-  name: string;
-  specialization: string;
-  specialization_display: string;
-  phone: string;
-  commission_rate: string;
-  status: string;
-  status_display: string;
-  rating: string;
-  is_active: boolean;
-  avatar: string;
-  today_revenue: number;
-  created_at: Date;
-  updated_at: Date;
+    name: string;
+    specialization: string;
+    specialization_display: string;
+    phone: string;
+    commission_rate: string;
+    status: string;
+    status_display: string;
+    rating: string;
+    is_active: boolean;
+    avatar: string;
+    today_revenue: number;
+    created_at: Date;
+    updated_at: Date;
   };
   pagination: {
     count: number;
