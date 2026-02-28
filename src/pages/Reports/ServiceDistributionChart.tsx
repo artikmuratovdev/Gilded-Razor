@@ -42,7 +42,7 @@ export const ServiceDistributionChart = ({
                   cy='50%'
                   innerRadius={80}
                   outerRadius={120}
-                  fill='#8884d8'
+                  fill='#fff'
                   paddingAngle={5}
                   dataKey='value'
                   stroke='none'
@@ -58,9 +58,10 @@ export const ServiceDistributionChart = ({
                   contentStyle={{
                     backgroundColor: '#2a261a',
                     borderColor: 'rgba(255,255,255,0.1)',
-                    color: '#fff',
                     borderRadius: '8px',
                   }}
+                  labelStyle={{ color: '#ffffff' }}
+                  itemStyle={{ color: '#ffffff' }}
                 />
               </PieChart>
             </ResponsiveContainer>

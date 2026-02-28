@@ -53,7 +53,7 @@ export const StaffPage = () => {
 
       {/* Leaderboard Table */}
       <div className='pt-2'>
-        <StaffLeaderboard staffMembers={staffList} />
+        <StaffLeaderboard />
       </div>
     </div>
   );

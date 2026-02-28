@@ -2,7 +2,6 @@ import { openModal } from '@/app/slices/modalSlice';
 import { setMenuLabel } from '@/constants/menuItems';
 import {
   Bell,
-  Download,
   Menu,
   Plus,
   Search,
@@ -84,12 +83,12 @@ export const MainLayout = () => {
             dispatch(openModal('client'));
           },
         };
-      case 'reports':
-        return {
-          label: 'PDF Eksport',
-          icon: Download,
-          onClick: () => console.log('Exporting report...'),
-        };
+      // case 'reports':
+      //   return {
+      //     label: 'PDF Eksport',
+      //     icon: Download,
+      //     onClick: () => console.log('Exporting report...'),
+      //   };
       default:
         return null;
     }

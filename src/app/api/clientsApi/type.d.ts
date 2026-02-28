@@ -25,6 +25,7 @@ export type GetClientsReq = {
   datetime_from?: string;
   is_active?: boolean;
   status?: "cancelled" | "completed" | "confirmed" | "no_show" | "pending" | string;
+  ordering?:string
 };
 
 export type GetClientsRes = {

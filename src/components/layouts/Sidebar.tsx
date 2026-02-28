@@ -1,5 +1,4 @@
 import { menuItems } from '@/constants/menuItems';
-import { Settings } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 interface SidebarProps {
@@ -9,7 +8,6 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
-  // managementItems array is removed as per the instruction's code edit
 
   return (
     <aside
@@ -60,18 +58,18 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
                 )}
               />
               <span className='font-medium text-sm'>{item.label}</span>
-              {item.id === 'appointments' && ( // Re-add badge for appointments if needed, based on original code
+              {/* {item.id === 'appointments' && ( // Re-add badge for appointments if needed, based on original code
                 <span className='ml-auto bg-primary text-background font-bold text-[10px] px-2 py-0.5 rounded-full'>
                   12
                 </span>
-              )}
+              )} */}
             </button>
           ),
         )}
       </nav>
 
       {/* Settings */}
-      <div className='p-4 border-t border-white/5'>
+      {/* <div className='p-4 border-t border-white/5'>
         <button
           onClick={() => onNavigate('settings')}
           className={cn(
@@ -91,7 +89,7 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
           />
           <span className='font-medium text-sm'>Sozlamalar</span>
         </button>
-      </div>
+      </div> */}
     </aside>
   );
 };

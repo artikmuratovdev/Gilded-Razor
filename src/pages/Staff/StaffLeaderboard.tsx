@@ -1,45 +1,28 @@
-import type { GetStaffRes } from '@/app/api/staffApi/type';
 import { Star } from 'lucide-react';
 import { Badge } from '../../components/ui/Badge';
-import { Button } from '../../components/ui/Button';
 import { Card, CardContent } from '../../components/ui/Card';
 import { cn } from '../../lib/utils';
+import usePaginatedStaffs from '@/hooks/usePaginatedStaffs';
+import { Spinner } from '@/components/ui/spinner';
 
-type StaffItem = GetStaffRes['data'][number];
+export const StaffLeaderboard = () => {
+  const {data , isLoading} = usePaginatedStaffs({page:1,ordering:"-rating"})
+  console.log(data);
 
-interface StaffLeaderboardProps {
-  staffMembers: StaffItem[];
-}
-
-export const StaffLeaderboard = ({ staffMembers }: StaffLeaderboardProps) => {
+  if(isLoading) return <Spinner className='size-8' />
+  if(!data) return;
   return (
     <Card className='overflow-hidden'>
       <div className='p-4 sm:p-6 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'>
         <h3 className='font-bold text-white text-base sm:text-lg'>
           Haftalik Ko'rsatkich Reytingi
         </h3>
-        <div className='flex gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 hide-scrollbar'>
-          <Button
-            variant='secondary'
-            size='sm'
-            className='rounded-full text-[10px] sm:text-xs whitespace-nowrap px-3'
-          >
-            Oxirgi 7 Kun
-          </Button>
-          <Button
-            variant='secondary'
-            size='sm'
-            className='rounded-full text-[10px] sm:text-xs whitespace-nowrap px-3'
-          >
-            Hisobotni Yuklash
-          </Button>
-        </div>
       </div>
 
       <CardContent className='p-0'>
         {/* Mobile Leaderboard Cards */}
         <div className='sm:hidden divide-y divide-white/5'>
-          {staffMembers.map((staff, idx) => (
+          {data.data.map((staff, idx) => (
             <div
               key={staff.id}
               className='p-4 flex flex-col gap-3 hover:bg-white/2 transition-colors'
@@ -115,7 +98,7 @@ export const StaffLeaderboard = ({ staffMembers }: StaffLeaderboardProps) => {
               </tr>
             </thead>
             <tbody className='divide-y divide-white/5'>
-              {staffMembers.map((staff, idx) => (
+              {data.data.map((staff, idx) => (
                 <tr
                   key={staff.id}
                   className='hover:bg-white/5 transition-colors group'

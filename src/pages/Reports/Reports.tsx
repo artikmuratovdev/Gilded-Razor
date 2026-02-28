@@ -60,7 +60,7 @@ export const Reports = () => {
               <SelectValue placeholder='Davrni tanlang' />
             </SelectTrigger>
             <SelectContent className='bg-surface border-white/10 text-white'>
-              <SelectItem value='1months'>Oxirgi 1 Oy</SelectItem>
+              <SelectItem value='1month'>Oxirgi 1 Oy</SelectItem>
               <SelectItem value='3months'>Oxirgi 3 Oy</SelectItem>
               <SelectItem value='6months'>Oxirgi 6 Oy</SelectItem>
               <SelectItem value='1year'>Oxirgi 1 Yil</SelectItem>
