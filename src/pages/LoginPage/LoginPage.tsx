@@ -1,4 +1,6 @@
 import { useLoginMutation } from '@/app/api/authApi';
+import { useAppDispatch } from '@/app/hooks';
+import { setAuthenticated } from '@/app/slices/authSlice';
 import { Button } from '@/components/ui/Button';
 import {
   Card,
@@ -32,6 +34,7 @@ export function LoginForm({
   const [login] = useLoginMutation();
   const handleRequest = useHandleRequest();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -48,12 +51,17 @@ export function LoginForm({
   const onSubmit = async (data: LoginFormValues) => {
     await handleRequest({
       request: async () => login(data),
-      onSuccess: () => navigate('/dashboard'),
+      onSuccess: () => {
+        // Redux state'ni yangilash — PrivateRoute darhol re-render bo'ladi
+        dispatch(setAuthenticated(true));
+        navigate('/dashboard');
+      },
       onError: (error) => {
         console.log(error?.error?.message || error);
       },
     });
   };
+
 
   return (
     <div className='min-h-screen flex items-center justify-center p-4'>
