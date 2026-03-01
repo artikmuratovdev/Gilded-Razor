@@ -287,14 +287,26 @@ export const Appointments = () => {
                                 {appt.status_display}
                               </Badge>
                             </td>
-                            <td className='p-4 text-right'>
+                            <td className='p-4 text-right flex justify-end'>
                               {/* Desktop Dropdown */}
+                              <Button
+                                    className='h-8 w-8 text-gray-400 hover:text-white bg-accent/30 data-[state=open]:text-white hover:bg-accent'
+                                    onClick={() => handleSetStatus(appt.id, 'confirmed')}
+                                  >
+                                    <CheckCircle className='h-4 w-4 text-green-400' />
+                                  </Button>
+                                  <Button
+                                    className='h-8 w-8 text-gray-400 hover:text-white bg-accent/30 data-[state=open]:text-white hover:bg-accent'
+                                    onClick={() => handleSetStatus(appt.id, 'cancelled')}
+                                  >
+                                    <XCircle className='h-4 w-4 text-red-400' />
+                                  </Button>
                               <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
                                   <Button
                                     variant='ghost'
                                     size='icon'
-                                    className='h-8 w-8 ml-auto text-gray-400 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white'
+                                    className='h-8 w-8 text-gray-400 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white'
                                   >
                                     <MoreHorizontal className='h-4 w-4' />
                                   </Button>
