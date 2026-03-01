@@ -42,8 +42,6 @@ function App() {
       </Route>
       <Route path='*' element={<Navigate to='/dashboard' replace />} />
     </Routes>
-
-    // access_token expired bo'lganda me response error qaytaryapti . Keyin login orqali kelgan yangi access_token auth_token sifatida qayta rtk cache ga qo'shilmayapti faqat 5 yoki 6 marta uringandan keyin qo'shilyapti . Shu muammoni hal qil
   );
 }
 

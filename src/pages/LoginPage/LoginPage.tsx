@@ -1,6 +1,5 @@
 import { useLoginMutation } from '@/app/api/authApi';
-import { useAppDispatch } from '@/app/hooks';
-import { setAuthenticated } from '@/app/slices/authSlice';
+import { getAccessToken } from '@/app/tokenManager';
 import { Button } from '@/components/ui/Button';
 import {
   Card,
@@ -15,7 +14,7 @@ import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
+import { Navigate } from 'react-router';
 import z from 'zod';
 
 const loginSchema = z.object({
@@ -34,8 +33,12 @@ export function LoginForm({
 }: React.ComponentProps<'div'>) {
   const [login] = useLoginMutation();
   const handleRequest = useHandleRequest();
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const token = getAccessToken();
+
+  // Agar allaqachon token bor bo'lsa — dashboard ga yo'naltir
+  if (token) {
+    return <Navigate to='/dashboard' replace />;
+  }
 
   const {
     control,
@@ -53,9 +56,10 @@ export function LoginForm({
   const onSubmit = async (data: LoginFormValues) => {
     await handleRequest({
       request: async () => login(data),
-      onSuccess: async () => {
-        dispatch(setAuthenticated(true));
-        await navigate('/dashboard');
+      onSuccess: () => {
+        // Login muvaffaqiyatli — sahifani to'liq reload qilish
+        // Bu yangi token bilan barcha komponentlar qayta yuklanishini ta'minlaydi
+        window.location.href = '/dashboard';
       },
       onError: (error) => {
         console.log(error?.error?.message || error);

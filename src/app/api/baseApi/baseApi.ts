@@ -7,7 +7,6 @@ import {
   getRefreshToken,
   saveTokens,
 } from '@/app/tokenManager';
-import { logout } from '@/app/slices/authSlice';
 import {
   type BaseQueryFn,
   createApi,
@@ -66,7 +65,7 @@ const customBaseQuery: BaseQueryFn<
       const refreshToken = getRefreshToken();
       if (!refreshToken) {
         clearTokens();
-        api.dispatch(logout());
+        window.location.href = '/login';
         return false;
       }
 
@@ -91,11 +90,11 @@ const customBaseQuery: BaseQueryFn<
         }
 
         clearTokens();
-        api.dispatch(logout());
+        window.location.href = '/login';
         return false;
       } catch {
         clearTokens();
-        api.dispatch(logout());
+        window.location.href = '/login';
         return false;
       }
     })();
