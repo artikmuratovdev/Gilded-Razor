@@ -190,8 +190,8 @@ export const EditAppointmentModal = ({
         barber: String(appointment.staff_member_id),
         service: String(appointment.service_id),
         date: appointment.date,
-        start_time: appointment.start_time,
-        end_time: appointment.end_time,
+        start_time: appointment.start_time?.slice(0, 5) ?? '',
+        end_time: appointment.end_time?.slice(0, 5) ?? '',
         status: appointment.status,
         price: Number(appointment.price),
       });

@@ -5,6 +5,7 @@ export type AppoitmentReq = {
   page_size?: number;
   date_from?:string;
   datetime_from?:string;
+  datetime_to?:string;
   status?: string;
 };
 
