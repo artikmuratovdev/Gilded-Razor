@@ -10,10 +10,11 @@ import {
   CardTitle,
 } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import z from 'zod';
 
@@ -37,6 +38,7 @@ export function LoginForm({
   const dispatch = useAppDispatch();
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -80,13 +82,18 @@ export function LoginForm({
               className='flex flex-col gap-4'
               onSubmit={handleSubmit(onSubmit)}
             >
-              <Input
-                label='Telefon raqam'
-                id='phone'
-                type='tel'
-                placeholder='+998901234567'
-                {...register('phone_number')}
-                error={errors.phone_number?.message}
+              <Controller
+                name='phone_number'
+                control={control}
+                render={({ field }) => (
+                  <PhoneInput
+                    label='Telefon raqam'
+                    id='phone'
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.phone_number?.message}
+                  />
+                )}
               />
               <Input
                 label='Parol'

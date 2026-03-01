@@ -28,13 +28,17 @@ const clientSchema = z.object({
   email: z.string().email("Noto'g'ri email format").or(z.literal("")),
   phone: z
     .string()
-    .min(10, "Telefon raqami kamida 10 ta belgidan iborat bo'lishi kerak"),
+    .min(13, "To'liq telefon raqam kiriting")
+    .regex(/^\+998\d{9}$/, 'Format: +998XXXXXXXXX'),
 });
 
 const staffSchema = z.object({
   name: z.string().min(2, 'Ism talab qilinadi'),
   role: z.string().min(1, 'Lavozim talab qilinadi'),
-  phone: z.string().min(10, "To'g'ri telefon raqam talab qilinadi"),
+  phone: z
+    .string()
+    .min(13, "To'liq telefon raqam kiriting")
+    .regex(/^\+998\d{9}$/, 'Format: +998XXXXXXXXX'),
   commission: z.number().min(0).max(100),
 });
 

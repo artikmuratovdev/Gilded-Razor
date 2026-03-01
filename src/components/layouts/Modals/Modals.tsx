@@ -1,9 +1,11 @@
 import type { RootState } from '@/app/store';
 import { AlertTriangle, CreditCard, Package, Scissors, Search, UserPlus, Wrench } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Controller } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { Button } from '../../ui/Button';
 import { Input, Select } from '../../ui/Input';
+import { PhoneInput } from '../../ui/PhoneInput';
 import { Modal } from '../../ui/Modal';
 import useModalForms from './FormTypes';
 import useModalActions from './SubmitFunctions';
@@ -543,16 +545,18 @@ const Modals = () => {
             )}
           </div>
           <div>
-            <Input
-              label='Telefon Raqam'
-              placeholder='+998 (90) 000-0000'
-              {...clientForm.register('phone')}
+            <Controller
+              name='phone'
+              control={clientForm.control}
+              render={({ field }) => (
+                <PhoneInput
+                  label='Telefon Raqam'
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={clientForm.formState.errors.phone?.message}
+                />
+              )}
             />
-            {clientForm.formState.errors.phone && (
-              <p className='text-red-500 text-xs mt-1'>
-                {clientForm.formState.errors.phone.message}
-              </p>
-            )}
           </div>
 
           <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
@@ -618,16 +622,18 @@ const Modals = () => {
             )}
           </div>
           <div>
-            <Input
-              label='Telefon Raqam'
-              placeholder='+998 (90) 000-0000'
-              {...clientForm.register('phone')}
+            <Controller
+              name='phone'
+              control={clientForm.control}
+              render={({ field }) => (
+                <PhoneInput
+                  label='Telefon Raqam'
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={clientForm.formState.errors.phone?.message}
+                />
+              )}
             />
-            {clientForm.formState.errors.phone && (
-              <p className='text-red-500 text-xs mt-1'>
-                {clientForm.formState.errors.phone.message}
-              </p>
-            )}
           </div>
 
           <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
@@ -687,16 +693,18 @@ const Modals = () => {
           </div>
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
-              <Input
-                label='Telefon Raqam'
-                placeholder='(555) 000-0000'
-                {...staffForm.register('phone')}
+              <Controller
+                name='phone'
+                control={staffForm.control}
+                render={({ field }) => (
+                  <PhoneInput
+                    label='Telefon Raqam'
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={staffForm.formState.errors.phone?.message}
+                  />
+                )}
               />
-              {staffForm.formState.errors.phone && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {staffForm.formState.errors.phone.message}
-                </p>
-              )}
             </div>
             <div>
               <Input
