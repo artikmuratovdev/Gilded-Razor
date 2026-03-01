@@ -680,9 +680,11 @@ const Modals = () => {
                 {...staffForm.register('role')}
               >
                 <option value=''>Tanlang</option>
-                <option>Bosh Sartarosh</option>
-                <option>Kichik Sartarosh</option>
-                <option>Stilist</option>
+                <option value='master_barber'>Master Barber</option>
+                <option value='barber'>Barber</option>
+                <option value='stylist'>Stylist</option>
+                <option value='colorist'>Colorist</option>
+                <option value='receptionist'>Receptionist</option>
               </Select>
               {staffForm.formState.errors.role && (
                 <p className='text-red-500 text-xs mt-1'>
