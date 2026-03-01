@@ -116,7 +116,7 @@ const useModalActions = ({
       date: data.date,
       start_time: data.start_time,
       end_time: data.end_time,
-      price: data.price.toLocaleString(),
+      price: data.price.toString(),
       status: data.status,
       notes: data.notes,
     };

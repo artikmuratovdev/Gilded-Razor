@@ -663,7 +663,7 @@ const Modals = () => {
             <div>
               <Input
                 label='Xodim Ismi'
-                placeholder='Masalan: Jasur Karimov'
+                placeholder='Jasur Karimov'
                 icon={<UserPlus className='h-4 w-4' />}
                 {...staffForm.register('name')}
               />

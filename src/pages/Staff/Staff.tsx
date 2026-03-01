@@ -2,7 +2,6 @@ import usePaginatedStaffs from '@/hooks/usePaginatedStaffs';
 import { useState } from 'react';
 import { StaffGrid } from './StaffGrid';
 import { StaffLeaderboard } from './StaffLeaderboard';
-import { StaffStats } from './StaffStats';
 
 export const StaffPage = () => {
   const [page, setPage] = useState(1);
@@ -19,7 +18,7 @@ export const StaffPage = () => {
   return (
     <div className='space-y-6 sm:space-y-8 animate-in fade-in zoom-in-95 duration-500'>
       {/* Top Stats */}
-      <StaffStats />
+      {/* <StaffStats /> */}
 
       <div className='flex items-center justify-between'>
         <h2 className='text-lg sm:text-xl font-bold text-white'>
