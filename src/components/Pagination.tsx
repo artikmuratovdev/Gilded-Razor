@@ -10,8 +10,8 @@ import {
 type PaginationType = {
   page: number;
   setPage: (page: number) => void;
-  prev: boolean;
-  next: boolean;
+  prev: string | null;
+  next: string | null;
 };
 const Pagination = ({ page, setPage, prev, next }: PaginationType) => {
   return (
@@ -23,7 +23,8 @@ const Pagination = ({ page, setPage, prev, next }: PaginationType) => {
               onClick={() => {
                 if (prev) setPage(page - 1);
               }}
-              disabled={!prev}
+              disabled={prev === null}
+              className={prev === null ? 'opacity-50 pointer-events-none' : ''}
             />
           </PaginationItem>
           {page > 2 && (
@@ -52,7 +53,9 @@ const Pagination = ({ page, setPage, prev, next }: PaginationType) => {
           )}
             <PaginationItem>
               <PaginationNext
-                onClick={() => {if(next)setPage(page + 1)}}
+                onClick={() => { if (next) setPage(page + 1); }}
+                disabled={next === null}
+                className={next === null ? 'opacity-50 pointer-events-none' : ''}
               />
             </PaginationItem>
         </PaginationContent>

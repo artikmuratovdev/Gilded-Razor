@@ -17,6 +17,8 @@ import type {
   ServiceForm,
 } from './FormTypes';
 import type { RootState } from '@/app/store';
+import type { CreateStaffReq } from '@/app/api/staffApi/type';
+import { useCreateStaffMutation } from '@/app/api/staffApi/staffApi';
 
 interface ModalForms {
   bookingForm: UseFormReturn<BookingForm>;
@@ -43,6 +45,7 @@ const useModalActions = ({
   const [createService] = useCreateServiceMutation();
   const [deleteService] = useDeleteServiceMutation();
   const [updateService] = useUpdateServiceMutation();
+  const [createStaff] = useCreateStaffMutation();
   const clientToDelete = useSelector((state: RootState) => state.modal.clientToDelete);
   const clientToEdit = useSelector((state: RootState) => state.modal.clientToEdit);
   const serviceToDelete = useSelector((state: RootState) => state.modal.serviceToDelete);
@@ -157,8 +160,20 @@ const useModalActions = ({
 
   const onStaffSubmit = (data: StaffForm) => {
     console.log('Staff submitted:', data);
-    handleCloseStaff();
-    staffForm.reset();
+    const payload: CreateStaffReq = {
+      name: data.name,
+      specialization: data.role,
+      phone: data.phone,
+      commission_rate: data.commission.toString(),
+    };
+    handleRequest({
+      request: async () => await createStaff(payload),
+      onSuccess: (res: MutationRes) => {
+        console.log('Staff created successfully:', res);
+        handleCloseStaff();
+        staffForm.reset();
+      },
+    });
   };
 
   const onDeleteSubmit = () => {

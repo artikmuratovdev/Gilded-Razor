@@ -15,7 +15,8 @@ export const Clients = () => {
 
   const {data, isLoading} = usePaginatedClients({page, searchQuery, is_active});
 
-  if(isLoading || !data) {
+  if(!data) return;
+  if(isLoading) {
     return (
       <div className='flex h-screen items-center justify-center'>
         <Spinner className='h-8 w-8 text-primary' />
@@ -38,8 +39,8 @@ export const Clients = () => {
           <Pagination
               page={page}
               setPage={setPage}
-              prev={!!data?.pagination?.previous}
-              next={!!data?.pagination?.next}
+              prev={data?.pagination?.previous}
+              next={data?.pagination?.next}
             />
         </CardContent>
       </Card>

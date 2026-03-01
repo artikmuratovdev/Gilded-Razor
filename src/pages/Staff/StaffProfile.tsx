@@ -1,23 +1,128 @@
-import { useGetStaffByIdQuery } from '@/app/api/staffApi/staffApi';
+import {
+  useDeleteStaffMutation,
+  useGetStaffByIdQuery,
+  useUpdateStaffMutation,
+} from '@/app/api/staffApi/staffApi';
+import type { CreateStaffReq } from '@/app/api/staffApi/type';
+import type { MutationRes } from '@/app/api/clientsApi/type';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
+import { Input, Select } from '@/components/ui/Input';
+import { Modal } from '@/components/ui/Modal';
+import { PhoneInput } from '@/components/ui/PhoneInput';
+import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  AlertTriangle,
   ArrowLeft,
   Calendar,
+  Edit,
   Phone,
   Scissors,
   Star,
+  Trash2,
   TrendingUp,
   User,
 } from 'lucide-react';
-import { Link, useParams } from 'react-router';
+import { Controller, useForm } from 'react-hook-form';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
+import z from 'zod';
+import { useState, useEffect } from 'react';
+
+// --- Staff edit form schema ---
+const editStaffSchema = z.object({
+  name: z.string().min(2, 'Ism talab qilinadi'),
+  specialization: z.string().min(1, 'Lavozim talab qilinadi'),
+  phone: z
+    .string()
+    .min(13, "To'liq telefon raqam kiriting")
+    .regex(/^\+998\d{9}$/, 'Format: +998XXXXXXXXX'),
+  commission_rate: z.string().min(1, 'Komissiya talab qilinadi'),
+});
+
+type EditStaffForm = z.infer<typeof editStaffSchema>;
 
 export const StaffProfile = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { data: res, isLoading, isError } = useGetStaffByIdQuery(id ?? '');
   const staff = res?.data;
+
+  const [deleteStaff] = useDeleteStaffMutation();
+  const [updateStaff] = useUpdateStaffMutation();
+  const handleRequest = useHandleRequest();
+
+  // Modal states
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  // Auto-open edit modal from URL param (?edit=true)
+  useEffect(() => {
+    if (searchParams.get('edit') === 'true' && staff) {
+      setIsEditOpen(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, staff, setSearchParams]);
+
+  // Edit form
+  const editForm = useForm<EditStaffForm>({
+    resolver: zodResolver(editStaffSchema),
+    defaultValues: {
+      name: '',
+      specialization: '',
+      phone: '',
+      commission_rate: '',
+    },
+  });
+
+  // Populate edit form when staff data loads or edit modal opens
+  useEffect(() => {
+    if (isEditOpen && staff) {
+      editForm.reset({
+        name: staff.name,
+        specialization: staff.specialization,
+        phone: staff.phone,
+        commission_rate: staff.commission_rate,
+      });
+    }
+  }, [isEditOpen, staff, editForm]);
+
+  // --- Handlers ---
+  const handleEditSubmit = (data: EditStaffForm) => {
+    if (!id) return;
+
+    const payload: Partial<CreateStaffReq> = {
+      name: data.name,
+      specialization: data.specialization,
+      phone: data.phone,
+      commission_rate: data.commission_rate,
+    };
+
+    handleRequest({
+      request: async () => await updateStaff({ id, body: payload }),
+      onSuccess: (res: MutationRes) => {
+        console.log('Staff updated successfully:', res);
+        setIsEditOpen(false);
+        editForm.reset();
+      },
+    });
+  };
+
+  const handleDeleteSubmit = () => {
+    if (!id) return;
+
+    handleRequest({
+      request: async () => await deleteStaff(id),
+      onSuccess: (res: MutationRes) => {
+        console.log('Staff deleted successfully:', res);
+        setIsDeleteOpen(false);
+        navigate('/staff');
+      },
+    });
+  };
 
   if (isLoading) {
     return (
@@ -66,17 +171,39 @@ export const StaffProfile = () => {
 
   return (
     <div className='space-y-6 animate-in fade-in zoom-in-95 duration-500'>
-      {/* Back button */}
-      <Link to='/staff'>
-        <Button
-          variant='outline'
-          size='sm'
-          className='gap-2 bg-[#D4AF35] hover:text-white -ml-1'
-        >
-          <ArrowLeft className='w-4 h-4' />
-          Barcha xodimlar
-        </Button>
-      </Link>
+      {/* Back button + Action buttons */}
+      <div className='flex items-center justify-between'>
+        <Link to='/staff'>
+          <Button
+            variant='outline'
+            size='sm'
+            className='gap-2 bg-[#D4AF35] hover:text-white -ml-1'
+          >
+            <ArrowLeft className='w-4 h-4' />
+            Barcha xodimlar
+          </Button>
+        </Link>
+        <div className='flex gap-2'>
+          <Button
+            variant='outline'
+            size='sm'
+            className='gap-2'
+            onClick={() => setIsEditOpen(true)}
+          >
+            <Edit className='w-4 h-4' />
+            Tahrirlash
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            className='gap-2 border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300'
+            onClick={() => setIsDeleteOpen(true)}
+          >
+            <Trash2 className='w-4 h-4' />
+            O'chirish
+          </Button>
+        </div>
+      </div>
 
       {/* Header card */}
       <Card className='overflow-hidden mt-4'>
@@ -228,6 +355,126 @@ export const StaffProfile = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit Staff Modal */}
+      <Modal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        title="Xodimni Tahrirlash"
+        description="Xodim ma'lumotlarini yangilang."
+        icon={<Edit className='text-primary h-8 w-8' />}
+      >
+        <form
+          onSubmit={editForm.handleSubmit(handleEditSubmit)}
+          className='space-y-2 sm:space-y-4'
+        >
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Input
+                label='Xodim Ismi'
+                placeholder='Jasur Karimov'
+                {...editForm.register('name')}
+              />
+              {editForm.formState.errors.name && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {editForm.formState.errors.name.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Select
+                label='Mutaxassislik / Lavozim'
+                icon={<Scissors className='h-4 w-4' />}
+                {...editForm.register('specialization')}
+              >
+                <option value=''>Tanlang</option>
+                <option value='master_barber'>Master Barber</option>
+                <option value='barber'>Barber</option>
+                <option value='stylist'>Stylist</option>
+                <option value='colorist'>Colorist</option>
+                <option value='receptionist'>Receptionist</option>
+              </Select>
+              {editForm.formState.errors.specialization && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {editForm.formState.errors.specialization.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Controller
+                name='phone'
+                control={editForm.control}
+                render={({ field }) => (
+                  <PhoneInput
+                    label='Telefon Raqam'
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={editForm.formState.errors.phone?.message}
+                  />
+                )}
+              />
+            </div>
+            <div>
+              <Input
+                label='Komissiya Stavkasi (%)'
+                placeholder='Masalan: 45'
+                {...editForm.register('commission_rate')}
+              />
+              {editForm.formState.errors.commission_rate && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {editForm.formState.errors.commission_rate.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={() => setIsEditOpen(false)}>
+              Bekor Qilish
+            </Button>
+            <Button variant='default' type='submit'>
+              Saqlash
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Staff Modal */}
+      <Modal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        title="Xodimni O'chirish"
+        description="Bu amalni ortga qaytarib bo'lmaydi. Xodim va unga tegishli barcha ma'lumotlar o'chiriladi."
+        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
+      >
+        <div className='space-y-4'>
+          <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
+            <p className='text-sm text-gray-300'>
+              <span className='font-semibold text-white'>
+                {staff.name}
+              </span>{' '}
+              nomli xodimni o'chirmoqchimisiz?
+            </p>
+          </div>
+
+          <div className='pt-3 flex justify-end gap-3 border-t border-white/5'>
+            <Button
+              variant='ghost'
+              onClick={() => setIsDeleteOpen(false)}
+            >
+              Bekor Qilish
+            </Button>
+            <Button
+              variant='default'
+              onClick={handleDeleteSubmit}
+              className='bg-red-600 hover:bg-red-700 text-white'
+            >
+              O'chirish
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

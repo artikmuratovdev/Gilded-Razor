@@ -77,13 +77,21 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-2 sm:gap-3">
-              <Link to={`/staff/${staff.id}`} className="w-full">
+            <div className='grid grid-cols-2 gap-2 sm:gap-3'>
+              <Link to={`/staff/${staff.id}`} className='w-full'>
                 <Button
-                  variant="outline"
-                  className="w-full text-[10px] sm:text-xs h-8 sm:h-9"
+                  variant='outline'
+                  className='w-full text-[10px] sm:text-xs h-8 sm:h-9'
                 >
                   Profil
+                </Button>
+              </Link>
+              <Link to={`/staff/${staff.id}?edit=true`} className='w-full'>
+                <Button
+                  variant='outline'
+                  className='w-full text-[10px] sm:text-xs h-8 sm:h-9'
+                >
+                  Tahrirlash
                 </Button>
               </Link>
             </div>

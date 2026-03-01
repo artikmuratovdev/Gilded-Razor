@@ -170,18 +170,34 @@ export const Appointments = () => {
                       </div>
 
                       {/* Mobile action buttons */}
-                      <div className='flex gap-2 pt-3 border-t border-white/5'>
+                      <div className='grid grid-cols-2 gap-2 pt-3 border-t border-white/5'>
                         <Button
                           variant='secondary'
-                          className='flex-1 h-9 text-xs gap-1.5'
-                          // onClick={() => setEditTarget(appt)}
+                          className='h-9 text-xs gap-1.5'
+                          onClick={() => handleSetStatus(appt.id, 'confirmed')}
+                        >
+                          <CheckCircle className='h-3.5 w-3.5 text-green-400' />
+                          Tasdiqlash
+                        </Button>
+                        <Button
+                          variant='secondary'
+                          className='h-9 text-xs gap-1.5'
+                          onClick={() => handleSetStatus(appt.id, 'cancelled')}
+                        >
+                          <XCircle className='h-3.5 w-3.5 text-yellow-400' />
+                          Bekor qilish
+                        </Button>
+                        <Button
+                          variant='secondary'
+                          className='h-9 text-xs gap-1.5'
+                          onClick={() => setEditTarget(appt)}
                         >
                           <Pencil className='h-3.5 w-3.5' />
                           Tahrirlash
                         </Button>
                         <Button
                           variant='secondary'
-                          className='flex-1 h-9 px-3 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1.5'
+                          className='h-9 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-1.5'
                           onClick={() => setDeleteTarget(appt)}
                         >
                           <Trash2 className='h-3.5 w-3.5' />
@@ -344,8 +360,8 @@ export const Appointments = () => {
             <Pagination
               page={page}
               setPage={setPage}
-              prev={!!appointmentsData?.pagination?.previous}
-              next={!!appointmentsData?.pagination?.next}
+              prev={appointmentsData?.pagination?.previous}
+              next={appointmentsData?.pagination?.next}
             />
           </Card>
 
