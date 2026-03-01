@@ -67,13 +67,22 @@ export const RecentBookingsList = () => {
     return new Date().toISOString();
   }, []);
 
+  const datetime_to = useMemo(() => {
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 0, 0);
+    return endOfDay.toISOString();
+  }, []);
+
   const { data ,isLoading} = useGetAppoitmentsQuery({
     page: 1,
     page_size: 10,
     datetime_from,
+    datetime_to
   });
 
-  console.log("QueryData", data);
+  console.log("QueryData", data?.data.length);
+  console.log("dateTimeFrom", datetime_from);
+  console.log("dateTimeTo", datetime_to);
   if(isLoading) return <p>Loading</p>
   if(!data) return;
   return (
@@ -93,9 +102,13 @@ export const RecentBookingsList = () => {
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar">
-            {data.data.slice(0, 4).map((booking) => (
+            {data.data.length > 0 ? data.data.slice(0, 4).map((booking) => (
               <BookingRow key={booking.id} booking={booking} />
-            ))}
+            )) : 
+            <div className="flex items-center justify-center h-full">
+              <p className="text-center text-gray-400 py-5">Bugunga uchrashuvlar mavjud emas</p>
+            </div>
+            }
           </div>
         </CardContent>
       </Card>
