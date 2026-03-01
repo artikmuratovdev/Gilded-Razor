@@ -51,10 +51,9 @@ export function LoginForm({
   const onSubmit = async (data: LoginFormValues) => {
     await handleRequest({
       request: async () => login(data),
-      onSuccess: () => {
-        // Redux state'ni yangilash — PrivateRoute darhol re-render bo'ladi
+      onSuccess: async () => {
         dispatch(setAuthenticated(true));
-        navigate('/dashboard');
+        await navigate('/dashboard');
       },
       onError: (error) => {
         console.log(error?.error?.message || error);
