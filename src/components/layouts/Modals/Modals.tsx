@@ -441,7 +441,7 @@ const Modals = () => {
             </div>
             <div>
               <Input
-                label='Narx ($)'
+                label='Narx'
                 type='number'
                 step='0.01'
                 placeholder='0.00'
@@ -752,7 +752,7 @@ const Modals = () => {
               <option>Sovg'a Kartasi</option>
             </Select>
             <Input
-              label='Jami Miqdor ($)'
+              label='Jami Miqdor'
               type='number'
               placeholder='0.00'
               className='text-right'

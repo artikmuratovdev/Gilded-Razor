@@ -328,7 +328,7 @@ export const EditAppointmentModal = ({
         {/* Narx — to'liq kenglik */}
         <div>
           <Input
-            label='Narx ($)'
+            label='Narx'
             type='number'
             step='0.01'
             placeholder='0.00'
