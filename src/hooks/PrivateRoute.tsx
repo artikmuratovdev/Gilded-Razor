@@ -17,7 +17,6 @@ export const PrivateRoute = () => {
     isError,
   } = useMeQuery(undefined, {
     skip: !isAuthenticated,
-    refetchOnMountOrArgChange: true,
   });
 
   // useMeQuery xato berganda isAuthenticated ni tozalash
