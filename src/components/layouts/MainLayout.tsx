@@ -119,7 +119,7 @@ export const MainLayout = () => {
       {/* Main Content */}
       <main className='flex-1 flex flex-col min-h-screen lg:pl-72 transition-all duration-300'>
         {/* Header */}
-        <header className='sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-white/5 px-6 py-4 flex items-center justify-between gap-4'>
+        <header className='sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-white/5 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3 sm:gap-4'>
           <button
             className='lg:hidden p-2 text-gray-400 hover:bg-white/5 rounded-lg'
             onClick={() => setIsSidebarOpen(true)}
@@ -165,7 +165,7 @@ export const MainLayout = () => {
         </header>
 
         {/* Page Content */}
-        <div className='p-6 lg:px-10 max-w-400 mx-auto w-full flex-1'>
+        <div className='p-4 sm:p-6 lg:px-10 max-w-400 mx-auto w-full flex-1'>
           <Outlet />
         </div>
         <Modals />

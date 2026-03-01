@@ -172,7 +172,7 @@ export const StaffProfile = () => {
   return (
     <div className='space-y-6 animate-in fade-in zoom-in-95 duration-500'>
       {/* Back button + Action buttons */}
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3'>
         <Link to='/staff'>
           <Button
             variant='outline'

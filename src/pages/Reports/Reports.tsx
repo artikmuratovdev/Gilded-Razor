@@ -39,23 +39,23 @@ export const Reports = () => {
 
   return (
     <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
-      <div className='flex justify-between items-center'>
+      <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4'>
         <div>
-          <h2 className='text-2xl font-bold text-white'>
+          <h2 className='text-xl sm:text-2xl font-bold text-white'>
             Tahlil va Hisobotlar
           </h2>
-          <p className='text-sm text-gray-400'>
+          <p className='text-xs sm:text-sm text-gray-400'>
             Biznesingiz samaradorlik ko'rsatkichlarini kuzating.
           </p>
         </div>
-        <div className='flex gap-2'>
+        <div className='flex gap-2 w-full sm:w-auto'>
           <Select
             value={selectedPeriod}
             onValueChange={(value) =>
               setSelectedPeriod(value as ReportsReq['period'])
             }
           >
-            <SelectTrigger className='w-45 bg-surface border-white/10 text-white'>
+            <SelectTrigger className='w-full sm:w-45 bg-surface border-white/10 text-white'>
               <CalendarDays className='mr-2 h-4 w-4 opacity-50' />
               <SelectValue placeholder='Davrni tanlang' />
             </SelectTrigger>
