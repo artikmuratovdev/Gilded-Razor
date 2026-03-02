@@ -30,6 +30,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
 import z from 'zod';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 // --- Staff edit form schema ---
 const editStaffSchema = z.object({
@@ -105,8 +106,13 @@ export const StaffProfile = () => {
       request: async () => await updateStaff({ id, body: payload }),
       onSuccess: (res: MutationRes) => {
         console.log('Staff updated successfully:', res);
+        toast.success('Xodim muvaffaqiyatli yangilandi');
         setIsEditOpen(false);
         editForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -118,8 +124,13 @@ export const StaffProfile = () => {
       request: async () => await deleteStaff(id),
       onSuccess: (res: MutationRes) => {
         console.log('Staff deleted successfully:', res);
+        toast.success('Xodim muvaffaqiyatli o\'chirildi');
         setIsDeleteOpen(false);
         navigate('/staff');
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -153,21 +164,19 @@ export const StaffProfile = () => {
   }
 
   const statusColor =
-    staff.status === 'active'
+    staff.status === 'available'
       ? 'bg-green-500'
-      : staff.status === 'busy'
-        ? 'bg-blue-500'
-        : 'bg-gray-500';
+      : staff.status === 'in_session'
+        ? 'bg-orange-500'
+        : 'bg-red-500';
 
-  const statusLabel =
-    staff.status_display ?? (staff.status === 'active' ? 'Faol' : 'Nofaol');
-
-  const badgeVariant =
-    staff.status === 'active'
-      ? 'success'
-      : staff.status === 'busy'
-        ? 'info'
-        : 'default';
+  const badgeVariant =staff.status === 'available'
+                      ? "success"
+                      : staff.status === 'off_duty'
+                        ? "danger"
+                      : staff.status === 'in_session'
+                        ? "gold"
+                        : 'info';
 
   return (
     <div className='space-y-6 animate-in fade-in zoom-in-95 duration-500'>
@@ -211,17 +220,11 @@ export const StaffProfile = () => {
           <div className='flex flex-col sm:flex-row gap-6 items-start'>
             {/* Avatar */}
             <div className='relative shrink-0'>
-              {staff.avatar ? (
                 <img
-                  src={staff.avatar}
+                  src={staff.avatar || "https://github.com/shadcn.png"}
                   alt={staff.name}
                   className='w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-2 border-white/10'
                 />
-              ) : (
-                <div className='w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-surface-light border-2 border-white/10 flex items-center justify-center'>
-                  <User className='w-10 h-10 text-gray-500' />
-                </div>
-              )}
               <div
                 className={cn(
                   'absolute -bottom-1.5 -right-1.5 w-5 h-5 rounded-full border-2 border-surface',
@@ -237,7 +240,7 @@ export const StaffProfile = () => {
                   {staff.name}
                 </h1>
                 <Badge variant={badgeVariant} className='text-[10px]'>
-                  {statusLabel.toUpperCase()}
+                  {staff.status_display ?? staff.status}
                 </Badge>
               </div>
               <p className='text-primary font-medium mb-4'>
@@ -335,7 +338,7 @@ export const StaffProfile = () => {
                 label: 'Mutaxassislik',
                 value: staff.specialization_display ?? staff.specialization,
               },
-              { label: 'Holat', value: statusLabel },
+              { label: 'Holat', value: staff.status_display ?? staff.status },
               {
                 label: 'Komissiya stavkasi',
                 value: `${staff.commission_rate}%`,

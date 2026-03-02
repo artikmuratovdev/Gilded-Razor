@@ -15,7 +15,9 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { Navigate } from 'react-router';
+import { useState } from 'react';
 import z from 'zod';
+import { toast } from 'sonner';
 
 const loginSchema = z.object({
   phone_number: z
@@ -34,11 +36,7 @@ export function LoginForm({
   const [login] = useLoginMutation();
   const handleRequest = useHandleRequest();
   const token = getAccessToken();
-
-  // Agar allaqachon token bor bo'lsa — dashboard ga yo'naltir
-  if (token) {
-    return <Navigate to='/dashboard' replace />;
-  }
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     control,
@@ -53,16 +51,20 @@ export function LoginForm({
     },
   });
 
+  if (token) {
+    return <Navigate to='/dashboard' replace />;
+  }
+
   const onSubmit = async (data: LoginFormValues) => {
     await handleRequest({
       request: async () => login(data),
       onSuccess: () => {
-        // Login muvaffaqiyatli — sahifani to'liq reload qilish
-        // Bu yangi token bilan barcha komponentlar qayta yuklanishini ta'minlaydi
+        toast.success('Login successful',{richColors:true});
         window.location.href = '/dashboard';
       },
       onError: (error) => {
         console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -75,10 +77,10 @@ export function LoginForm({
         {...props}
       >
         <Card className='py-6'>
-          <CardHeader>
-            <CardTitle>Login to your account</CardTitle>
-            <CardDescription>
-              Enter your email below to login to your account
+          <CardHeader className='flex flex-col items-center justify-center gap-3'>
+            <CardTitle className='w-11 h-11 rounded-full bg-linear-to-br from-primary to-amber-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20'>G</CardTitle>
+            <CardDescription className='font-bold text-xl tracking-tight text-white leading-tight'>
+              Gilded Razor
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -102,9 +104,30 @@ export function LoginForm({
               <Input
                 label='Parol'
                 id='password'
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 {...register('password')}
                 error={errors.password?.message}
+                rightIcon={
+                  <button
+                    type='button'
+                    onClick={() => setShowPassword((v) => !v)}
+                    className='text-gray-400 hover:text-white transition-colors focus:outline-none'
+                    aria-label={showPassword ? 'Parolni yashirish' : 'Parolni ko\'rsatish'}
+                  >
+                    {showPassword ? (
+                      <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+                        <path d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94'/>
+                        <path d='M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19'/>
+                        <line x1='1' y1='1' x2='23' y2='23'/>
+                      </svg>
+                    ) : (
+                      <svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+                        <path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/>
+                        <circle cx='12' cy='12' r='3'/>
+                      </svg>
+                    )}
+                  </button>
+                }
               />
               <div className='flex flex-col gap-3 pt-2'>
                 <Button

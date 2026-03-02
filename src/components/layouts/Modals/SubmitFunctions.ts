@@ -19,6 +19,7 @@ import type {
 import type { RootState } from '@/app/store';
 import type { CreateStaffReq } from '@/app/api/staffApi/type';
 import { useCreateStaffMutation } from '@/app/api/staffApi/staffApi';
+import { toast } from 'sonner';
 
 interface ModalForms {
   bookingForm: UseFormReturn<BookingForm>;
@@ -126,10 +127,15 @@ const useModalActions = ({
 
     handleRequest({
       request: async () => await createAppointment(payload),
-      onSuccess: (res: any) => {
-        console.log('Booking created successfully:', res);
+      onSuccess: (res: MutationRes) => {
+        console.log('Booking created successfully:', res.message);
+        toast.success('Bron muvaffaqiyatli yaratildi');
         handleCloseBooking();
         bookingForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -152,8 +158,13 @@ const useModalActions = ({
       request: async () => await createClient(payload),
       onSuccess: (res: MutationRes) => {
         console.log('Client created successfully:', res);
+        toast.success('Mijoz muvaffaqiyatli yaratildi');
         handleCloseClient();
         clientForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -170,8 +181,13 @@ const useModalActions = ({
       request: async () => await createStaff(payload),
       onSuccess: (res: MutationRes) => {
         console.log('Staff created successfully:', res);
+        toast.success('Xodim muvaffaqiyatli yaratildi');
         handleCloseStaff();
         staffForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -183,7 +199,12 @@ const useModalActions = ({
       request: async () => await deleteClient(String(clientToDelete.id)),
       onSuccess: (res: MutationRes) => {
         console.log('Client deleted successfully:', res);
+        toast.success(res.message || 'Mijoz muvaffaqiyatli o\'chirildi');
         handleCloseDeleteClient();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -202,8 +223,13 @@ const useModalActions = ({
       request: async () => await updateClient({ id: String(clientToEdit.id), body: payload }),
       onSuccess: (res: MutationRes) => {
         console.log('Client updated successfully:', res);
+        toast.success(res.message || 'Mijoz muvaffaqiyatli yangilandi');
         handleCloseEditClient();
         clientForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -221,8 +247,13 @@ const useModalActions = ({
       request: async () => await createService(payload),
       onSuccess: (res: any) => {
         console.log('Service created successfully:', res);
+        toast.success('Xizmat muvaffaqiyatli yaratildi');
         handleCloseService();
         serviceForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -234,7 +265,12 @@ const useModalActions = ({
       request: async () => await deleteService(String(serviceToDelete.id)),
       onSuccess: (res: MutationRes) => {
         console.log('Service deleted successfully:', res);
+        toast.success('Xizmat muvaffaqiyatli o\'chirildi');
         handleCloseDeleteService();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };
@@ -254,8 +290,13 @@ const useModalActions = ({
       request: async () => await updateService({ id: String(serviceToEdit.id), body: payload }),
       onSuccess: (res: MutationRes) => {
         console.log('Service updated successfully:', res);
+        toast.success('Xizmat muvaffaqiyatli yangilandi');
         handleCloseEditService();
         serviceForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
   };

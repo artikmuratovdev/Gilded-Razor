@@ -323,7 +323,7 @@ const Modals = () => {
               value={bookingForm.watch('price') || ''}
               onChange={(e) => {
                 const val = e.target.value;
-                bookingForm.setValue('price', val ? parseFloat(val) : 0);
+                bookingForm.setValue('price', val ? parseInt(val) : 0);
               }}
               />
               {bookingForm.formState.errors.price && (

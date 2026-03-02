@@ -13,6 +13,7 @@ import { StaffProfile } from './pages/Staff/StaffProfile';
 
 function App() {
   return (
+    <>
     <Routes>
       <Route path='/' element={<Navigate to='/dashboard' replace />} />
       <Route path='/login' element={<LoginForm />} />
@@ -42,6 +43,7 @@ function App() {
       </Route>
       <Route path='*' element={<Navigate to='/dashboard' replace />} />
     </Routes>
+    </>
   );
 }
 

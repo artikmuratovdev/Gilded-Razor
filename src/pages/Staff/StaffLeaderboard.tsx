@@ -90,7 +90,7 @@ export const StaffLeaderboard = () => {
                   <p className="text-[8px] text-gray-500 font-bold uppercase mb-0.5">
                     Daromad
                   </p>
-                  <p className="text-xs font-bold text-white">{staff.income != null ? `$${staff.income.toLocaleString()}` : '—'}</p>
+                  <p className="text-xs font-bold text-white">{staff.income != null ? `${staff.income.toString()} so'm` : '—'}</p>
                 </div>
               </div>
             </div>
@@ -145,7 +145,7 @@ export const StaffLeaderboard = () => {
                       <Star className="w-3 h-3 fill-current" />
                     </div>
                   </td>
-                  <td className="p-4 text-sm font-bold text-white">{staff.income != null ? `$${staff.income.toLocaleString()}` : '—'}</td>
+                  <td className="p-4 text-sm font-bold text-white">{staff.income != null ? `${staff.income.toString()} so'm` : '—'}</td>
                   <td className="p-4 pr-6 text-right">
                     <Badge variant="success">{staff.efficiency}</Badge>
                   </td>

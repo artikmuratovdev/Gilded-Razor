@@ -63,7 +63,7 @@ export const StaffGrid = ({ staffMembers, isLoading }: StaffGridProps) => {
                   {staff.status_display ?? staff.status}
                 </Badge>
                 <p className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase">
-                  Bugungi Daromad
+                  Bugungi Daromad - {staff.income != null ? `${staff.income.toString()} so'm` : "0 so'm"}
                 </p>
               </div>
             </div>

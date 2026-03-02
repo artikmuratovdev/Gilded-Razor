@@ -3,6 +3,7 @@ import { cn } from '../../lib/utils';
 export interface InputProps extends React.ComponentPropsWithoutRef<'input'> {
   label?: string;
   icon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   error?: string;
   ref?: React.Ref<HTMLInputElement>;
 }
@@ -12,6 +13,7 @@ export function Input({
   type,
   label,
   icon,
+  rightIcon,
   error,
   ref,
   ...props
@@ -35,11 +37,17 @@ export function Input({
             'flex h-12 w-full rounded-xl border border-white/5 bg-surface-light px-3 py-2 text-sm text-white shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-surface-light/80',
             error && 'border-red-500/50 focus-visible:ring-red-500',
             icon ? 'pl-10' : '',
+            rightIcon ? 'pr-10' : '',
             className,
           )}
           ref={ref}
           {...props}
         />
+        {rightIcon && (
+          <div className='absolute inset-y-0 right-0 pr-3 flex items-center'>
+            {rightIcon}
+          </div>
+        )}
       </div>
       {error && <p className='text-xs text-red-400 ml-1'>{error}</p>}
     </div>

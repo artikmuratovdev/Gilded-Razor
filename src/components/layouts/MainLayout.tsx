@@ -1,10 +1,8 @@
 import { openModal } from '@/app/slices/modalSlice';
 import { setMenuLabel } from '@/constants/menuItems';
 import {
-  Bell,
   Menu,
   Plus,
-  Search,
   UserPlus,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -138,7 +136,7 @@ export const MainLayout = () => {
           </div>
 
           <div className='flex items-center gap-4 ml-auto'>
-            <div className='hidden md:flex items-center bg-surface px-4 py-2.5 rounded-full border border-white/5 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary w-64 transition-all shadow-sm group'>
+            {/* <div className='hidden md:flex items-center bg-surface px-4 py-2.5 rounded-full border border-white/5 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary w-64 transition-all shadow-sm group'>
               <Search className='h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors' />
               <input
                 type='text'
@@ -150,7 +148,7 @@ export const MainLayout = () => {
             <button className='relative p-2.5 text-gray-400 hover:bg-white/5 rounded-full transition-colors'>
               <Bell className='h-6 w-6' />
               <span className='absolute top-2.5 right-3 w-2 h-2 bg-red-500 rounded-full border-2 border-background'></span>
-            </button>
+            </button> */}
 
             {headerAction && (
               <Button

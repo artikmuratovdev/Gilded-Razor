@@ -20,6 +20,7 @@ import z from 'zod';
 import { useGetAllStaffQuery } from '@/app/api/staffApi/staffApi';
 import { useGetClientsQuery } from '@/app/api/clientsApi/clientsApi';
 import { useGetServiceQuery } from '@/app/api/serviceApi/serviceApi';
+import { toast } from 'sonner';
 
 export const editAppointmentSchema = z.object({
   client: z.string().min(1, 'Mijoz tanlanishi shart'),
@@ -214,6 +215,11 @@ export const EditAppointmentModal = ({
       request: async () => await updateAppointment({ id: appointment.id, body: finalData }),
       onSuccess: (res) => {
         console.log(res.data);
+        toast.success('Bron muvaffaqiyatli yangilandi');
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
       },
     });
     onClose();
