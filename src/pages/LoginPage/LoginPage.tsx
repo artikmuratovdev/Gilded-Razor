@@ -1,5 +1,5 @@
 import { useLoginMutation } from '@/app/api/authApi';
-import { getAccessToken, saveTokens } from '@/app/tokenManager';
+import { getAccessToken } from '@/app/tokenManager';
 import { Button } from '@/components/ui/Button';
 import {
   Card,
@@ -57,15 +57,9 @@ export function LoginForm({
 
   const onSubmit = async (data: LoginFormValues) => {
     await handleRequest({
-      request: async () => login(data).unwrap(),
-      onSuccess: (res: any) => {
-        const token = res?.data?.access_token;
-        const refreshToken = res?.data?.refresh_token;
-        if (token) {
-          saveTokens(token, refreshToken);
-        }
+      request: async () => login(data),
+      onSuccess: () => {
         window.location.href = '/dashboard';
-        toast.success('Login successful',{richColors:true});
       },
       onError: (error) => {
         console.log(error?.error?.message || error);
