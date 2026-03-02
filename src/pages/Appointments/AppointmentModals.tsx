@@ -348,11 +348,11 @@ export const EditAppointmentModal = ({
           )}
         </div>
 
-        <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-          <Button variant='ghost' type='button' onClick={onClose}>
+        <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+          <Button variant='ghost' type='button' onClick={onClose} className='w-full sm:w-auto'>
             Bekor Qilish
           </Button>
-          <Button variant='default' type='submit'>
+          <Button variant='default' type='submit' className='w-full sm:w-auto'>
             Saqlash
           </Button>
         </div>
@@ -395,15 +395,15 @@ export const DeleteAppointmentModal = ({
         <div className='bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-sm text-red-300'>
           Bu amal qaytarib bo'lmaydi. Bron butunlay o'chiriladi.
         </div>
-        <div className='pt-2 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-          <Button variant='ghost' type='button' onClick={onClose}>
+        <div className='pt-2 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+          <Button variant='ghost' type='button' onClick={onClose} className='w-full sm:w-auto'>
             Bekor Qilish
           </Button>
           <Button
             variant='default'
             type='button'
             onClick={handleDelete}
-            className='bg-red-500/90 hover:bg-red-500 text-white border-red-500/30'
+            className='w-full sm:w-auto bg-red-500/90 hover:bg-red-500 text-white border-red-500/30'
           >
             Ha, O'chirish
           </Button>

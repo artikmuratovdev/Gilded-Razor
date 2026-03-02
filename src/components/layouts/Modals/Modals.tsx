@@ -386,11 +386,11 @@ const Modals = () => {
             />
           </div>
 
-          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseBooking}>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseBooking} className='w-full sm:w-auto'>
               Bekor Qilish
             </Button>
-            <Button variant='default' type='submit'>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
               Bronni Tasdiqlash
             </Button>
           </div>
@@ -482,11 +482,11 @@ const Modals = () => {
               )}
             </div>
           </div>
-          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseProduct}>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseProduct} className='w-full sm:w-auto'>
               Bekor Qilish
             </Button>
-            <Button variant='default' type='submit'>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
               Mahsulotni Saqlash
             </Button>
           </div>
@@ -559,11 +559,11 @@ const Modals = () => {
             />
           </div>
 
-          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseClient}>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseClient} className='w-full sm:w-auto'>
               Bekor Qilish
             </Button>
-            <Button variant='default' type='submit'>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
               Profil Yaratish
             </Button>
           </div>
@@ -636,11 +636,11 @@ const Modals = () => {
             />
           </div>
 
-          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseEditClient}>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseEditClient} className='w-full sm:w-auto'>
               Bekor Qilish
             </Button>
-            <Button variant='default' type='submit'>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
               Saqlash
             </Button>
           </div>
@@ -722,11 +722,11 @@ const Modals = () => {
               )}
             </div>
           </div>
-          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseStaff}>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseStaff} className='w-full sm:w-auto'>
               Bekor Qilish
             </Button>
-            <Button variant='default' type='submit'>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
               Xodim Qo'shish
             </Button>
           </div>
@@ -774,14 +774,15 @@ const Modals = () => {
               <span className='text-primary'>$0.00</span>
             </div>
           </div>
-          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' onClick={handleClosePayment}>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' onClick={handleClosePayment} className='w-full sm:w-auto'>
               Bekor Qilish
             </Button>
             <Button variant='default' className='w-full sm:w-auto'>
               Kartani To'lash
             </Button>
           </div>
+
         </div>
       </Modal>
 
@@ -805,17 +806,18 @@ const Modals = () => {
             </div>
           )}
           
-          <div className='pt-3 flex justify-end gap-3 border-t border-white/5'>
+          <div className='pt-3 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
             <Button 
               variant='ghost' 
               onClick={handleCloseDeleteClient}
+              className='w-full sm:w-auto'
             >
               Bekor Qilish
             </Button>
             <Button 
               variant='default' 
               onClick={onDeleteSubmit}
-              className='bg-red-600 hover:bg-red-700 text-white'
+              className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
             >
               O'chirish
             </Button>
@@ -886,11 +888,11 @@ const Modals = () => {
               )}
             </div>
           </div>
-          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseService}>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseService} className='w-full sm:w-auto'>
               Bekor Qilish
             </Button>
-            <Button variant='default' type='submit'>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
               Xizmat Qo'shish
             </Button>
           </div>
@@ -960,11 +962,11 @@ const Modals = () => {
               )}
             </div>
           </div>
-          <div className='pt-3 sm:pt-5 flex justify-end gap-2 sm:gap-4 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseEditService}>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseEditService} className='w-full sm:w-auto'>
               Bekor Qilish
             </Button>
-            <Button variant='default' type='submit'>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
               Saqlash
             </Button>
           </div>
@@ -991,17 +993,18 @@ const Modals = () => {
             </div>
           )}
           
-          <div className='pt-3 flex justify-end gap-3 border-t border-white/5'>
+          <div className='pt-3 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
             <Button 
               variant='ghost' 
               onClick={handleCloseDeleteService}
+              className='w-full sm:w-auto'
             >
               Bekor Qilish
             </Button>
             <Button 
               variant='default' 
               onClick={onDeleteServiceSubmit}
-              className='bg-red-600 hover:bg-red-700 text-white'
+              className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
             >
               O'chirish
             </Button>
