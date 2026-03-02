@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import usePaginatedAppointments from '@/hooks/usePaginatedAppointments';
-import useSetDate from '@/hooks/useSetDate';
+import formatDate from '@/hooks/useSetDate';
 import { useSetStatusAppointmentMutation } from '@/app/api/appoitmentsApi/appoitmentsApi';
 import { toast } from 'sonner';
 import {
@@ -247,7 +247,7 @@ export const Appointments = () => {
                                   {appt.start_time.slice(0, 5)}
                                 </span>
                                 <span className='text-xs text-white font-medium flex items-center gap-1'>
-                                  {useSetDate(appt.date)}
+                                  {formatDate(appt.date)}
                                 </span>
                               </div>
                             </td>

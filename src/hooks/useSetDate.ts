@@ -1,4 +1,4 @@
-const useSetDate = (date:string) => {
+const formatDate = (date: string) => {
   const month: string = date.split('-')[1];
   const day: string = date.split('-')[2];
   const year: string = date.split('-')[0];
@@ -19,4 +19,5 @@ const useSetDate = (date:string) => {
   return `${day}-${months[month as keyof typeof months]}-${year}`;
 };
 
-export default useSetDate;
+export default formatDate;
+

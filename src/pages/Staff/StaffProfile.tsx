@@ -56,17 +56,17 @@ export const StaffProfile = () => {
   const [updateStaff] = useUpdateStaffMutation();
   const handleRequest = useHandleRequest();
 
-  // Modal states
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  // Modal states — isEditOpen starts true if ?edit=true is in URL
+  const [isEditOpen, setIsEditOpen] = useState(() => searchParams.get('edit') === 'true');
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // Auto-open edit modal from URL param (?edit=true)
+  // Clean up ?edit=true from URL on first render only
   useEffect(() => {
-    if (searchParams.get('edit') === 'true' && staff) {
-      setIsEditOpen(true);
+    if (searchParams.get('edit') === 'true') {
       setSearchParams({}, { replace: true });
     }
-  }, [searchParams, staff, setSearchParams]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Edit form
   const editForm = useForm<EditStaffForm>({
