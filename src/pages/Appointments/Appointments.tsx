@@ -27,6 +27,7 @@ import { formatCurrency } from '../../lib/utils';
 import {
   DeleteAppointmentModal,
   EditAppointmentModal,
+  type EditForm,
 } from './AppointmentModals';
 import { AppointmentsToolbar } from './AppointmentsToolbar';
 import { Spinner } from '@/components/ui/spinner';
@@ -46,10 +47,10 @@ export const Appointments = () => {
 
   const [setStatus] = useSetStatusAppointmentMutation();
 
-  const handleSetStatus = async (id: number, status: 'confirmed' | 'cancelled') => {
+  const handleSetStatus = async (id: number, status: EditForm['status']) => {
     try {
       await setStatus({ id, body: { status } }).unwrap();
-      toast.success(status === 'confirmed' ? 'Tasdiqlandi' : 'Bekor qilindi');
+      toast.success(status === 'confirmed' ? 'Tasdiqlandi' : status === 'cancelled' ? 'Bekor qilindi' : 'Kelmagan');
     } catch {
       toast.error('Xatolik yuz berdi');
     }
@@ -288,19 +289,6 @@ export const Appointments = () => {
                               </Badge>
                             </td>
                             <td className='p-4 text-right flex justify-end'>
-                              {/* Desktop Dropdown */}
-                              <Button
-                                    className='h-8 w-8 text-gray-400 hover:text-white bg-accent/30 data-[state=open]:text-white hover:bg-accent'
-                                    onClick={() => handleSetStatus(appt.id, 'confirmed')}
-                                  >
-                                    <CheckCircle className='h-4 w-4 text-green-400' />
-                                  </Button>
-                                  <Button
-                                    className='h-8 w-8 text-gray-400 hover:text-white bg-accent/30 data-[state=open]:text-white hover:bg-accent'
-                                    onClick={() => handleSetStatus(appt.id, 'cancelled')}
-                                  >
-                                    <XCircle className='h-4 w-4 text-red-400' />
-                                  </Button>
                               <DropdownMenu modal={false}>
                                 <DropdownMenuTrigger asChild>
                                   <Button
@@ -331,15 +319,29 @@ export const Appointments = () => {
                                     className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
                                     onClick={() => handleSetStatus(appt.id, 'confirmed')}
                                   >
-                                    <CheckCircle className='h-4 w-4 text-green-400' />
+                                    <CheckCircle className='h-4 w-4 text-blue-500' />
                                     Tasdiqlash
                                   </DropdownMenuItem>
                                   <DropdownMenuItem
                                     className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
                                     onClick={() => handleSetStatus(appt.id, 'cancelled')}
                                   >
-                                    <XCircle className='h-4 w-4 text-yellow-400' />
+                                    <XCircle className='h-4 w-4 text-red-400' />
                                     Bekor qilish
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
+                                    onClick={() => handleSetStatus(appt.id, 'no_show')}
+                                  >
+                                    <XCircle className='h-4 w-4 text-gray-400' />
+                                    Kelmagan
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    className='flex items-center gap-2 px-3 py-2 cursor-pointer text-gray-300 hover:text-white focus:text-white focus:bg-white/5 rounded-lg'
+                                    onClick={() => handleSetStatus(appt.id, 'completed')}
+                                  >
+                                    <CheckCircle className='h-4 w-4 text-green-400' />
+                                    Tugallangan
                                   </DropdownMenuItem>
                                   <DropdownMenuSeparator className='bg-white/5 my-1' />
                                   <DropdownMenuItem

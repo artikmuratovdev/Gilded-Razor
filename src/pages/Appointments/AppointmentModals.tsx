@@ -28,7 +28,7 @@ export const editAppointmentSchema = z.object({
   date: z.string().min(1, 'Sana talab qilinadi'),
   start_time: z.string().min(1, 'Boshlanish vaqti talab qilinadi'),
   end_time: z.string().min(1, 'Tugash vaqti talab qilinadi'),
-  status: z.string().min(1, 'Holat talab qilinadi'),
+  status: z.enum(['pending', 'confirmed', 'completed', 'cancelled', 'no_show']),
   price: z.number().min(0, "Narx manfiy bo'lmasligi kerak"),
 });
 
@@ -317,6 +317,7 @@ export const EditAppointmentModal = ({
             <option value='confirmed'>Tasdiqlangan</option>
             <option value='completed'>Yakunlangan</option>
             <option value='cancelled'>Bekor qilingan</option>
+            <option value='no_show'>Kelmagan</option>
           </Select>
           {form.formState.errors.status && (
             <p className='text-red-500 text-xs mt-1'>
