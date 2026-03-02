@@ -59,8 +59,8 @@ export function LoginForm({
     await handleRequest({
       request: async () => login(data),
       onSuccess: () => {
-        toast.success('Login successful',{richColors:true});
         window.location.href = '/dashboard';
+        toast.success('Login successful',{richColors:true});
       },
       onError: (error) => {
         console.log(error?.error?.message || error);
