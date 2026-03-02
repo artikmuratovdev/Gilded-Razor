@@ -14,7 +14,7 @@ import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { Navigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 import { useState } from 'react';
 import z from 'zod';
 import { toast } from 'sonner';
@@ -37,6 +37,7 @@ export function LoginForm({
   const handleRequest = useHandleRequest();
   const token = getAccessToken();
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const {
     control,
@@ -59,7 +60,7 @@ export function LoginForm({
     await handleRequest({
       request: async () => login(data),
       onSuccess: () => {
-        window.location.href = '/dashboard';
+        // navigate('/dashboard');
       },
       onError: (error) => {
         console.log(error?.error?.message || error);
