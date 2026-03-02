@@ -80,7 +80,7 @@ export function LoginForm({
           <CardHeader className='flex flex-col items-center justify-center gap-3'>
             <CardTitle className='w-11 h-11 rounded-full bg-linear-to-br from-primary to-amber-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20'>G</CardTitle>
             <CardDescription className='font-bold text-xl tracking-tight text-white leading-tight'>
-              Gilded Razor
+              Jasur Barber
             </CardDescription>
           </CardHeader>
           <CardContent>

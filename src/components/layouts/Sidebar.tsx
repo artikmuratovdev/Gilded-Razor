@@ -20,11 +20,11 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
       <div className='h-21 flex items-center px-8 border-b border-white/5'>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 rounded-full bg-linear-to-br from-primary to-amber-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20'>
-            G
+            J
           </div>
           <div>
             <h1 className='font-bold text-lg tracking-tight text-white'>
-              Gilded Razor
+              Jasur Barber
             </h1>
             <p className='text-[10px] font-bold uppercase tracking-widest text-gray-600'>
               Admin Paneli

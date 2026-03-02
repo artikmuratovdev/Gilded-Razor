@@ -19,7 +19,7 @@ export const GeneralSettings = () => {
       </CardHeader>
       <CardContent className='pt-6 space-y-6'>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-          <Input label="Do'kon Nomi" defaultValue='Gilded Razor' />
+          <Input label="Do'kon Nomi" defaultValue='Jasur Barber' />
           <Input label='Telefon Raqam' defaultValue='+1 (555) 000-0000' />
         </div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
