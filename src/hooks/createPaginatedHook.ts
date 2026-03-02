@@ -7,7 +7,10 @@ type QueryResult<TData> = {
   isError: boolean;
 };
 
-type QueryHook<TData> = (params: GetClientsReq) => QueryResult<TData>;
+type QueryHook<TData> = (
+  params: GetClientsReq,
+  options?: { skip?: boolean },
+) => QueryResult<TData>;
 
 /**
  * createPaginatedHook — umumiy paginated hook factory.
@@ -38,7 +41,7 @@ export function createPaginatedHook<TData>(
     date_from?: string;
     datetime_from?: string;
     is_active?:boolean;
-  ordering?:string
+    ordering?:string
     status?: "cancelled" | "completed" | "confirmed" | "no_show" | "pending" | string;
   }) {
     const params: GetClientsReq = { page, page_size, search: searchQuery, date_from, datetime_from, status ,is_active,ordering};
@@ -54,7 +57,12 @@ export function createPaginatedHook<TData>(
     };
 
     const current = useQueryHook(params);
-    const next = useQueryHook(nextParams);
+
+    // current response ichida pagination.next null bo'lmasa keyingi sahifani fetch qil
+    const paginatedData = current.data as { pagination?: { next?: string | null } } | undefined;
+    const hasNextPage = Boolean(paginatedData?.pagination?.next);
+
+    const next = useQueryHook(nextParams, { skip: !hasNextPage });
 
     return {
       data: current.data,
