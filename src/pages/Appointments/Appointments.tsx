@@ -50,7 +50,7 @@ export const Appointments = () => {
   const handleSetStatus = async (id: number, status: EditForm['status']) => {
     try {
       await setStatus({ id, body: { status } }).unwrap();
-      toast.success(status === 'confirmed' ? 'Tasdiqlandi' : status === 'cancelled' ? 'Bekor qilindi' : 'Kelmagan');
+      toast.success(status === 'confirmed' ? 'Tasdiqlandi' : status === 'cancelled' ? 'Bekor qilindi' : status === 'completed' ? 'Yakunlandi' : 'Kelmagan');
     } catch {
       toast.error('Xatolik yuz berdi');
     }
@@ -336,7 +336,7 @@ export const Appointments = () => {
                                     onClick={() => handleSetStatus(appt.id, 'completed')}
                                   >
                                     <CheckCircle className='h-4 w-4 text-green-400' />
-                                    Tugallangan
+                                    Yakunlash
                                   </DropdownMenuItem>
                                   <DropdownMenuSeparator className='bg-white/5 my-1' />
                                   <DropdownMenuItem

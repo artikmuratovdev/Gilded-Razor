@@ -6,7 +6,7 @@ export const dashboardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getOverview: builder.query<{data:Overview}, void>({
       query: () => '/dashboard/overview',
-      providesTags: [API_TAGS.DASHBOARD],
+      providesTags: [API_TAGS.APPOITMENTS,API_TAGS.CLIENTS,API_TAGS.SERVICES,API_TAGS.STAFFS],
     }),
     getChart: builder.query<Chart[], 'weekly' | 'monthly'>({
       query: (period: string) => ({
@@ -18,7 +18,7 @@ export const dashboardApi = baseApi.injectEndpoints({
         if (Array.isArray(response)) return response;
         return response?.data ?? response?.results ?? [];
       },
-      providesTags: [API_TAGS.DASHBOARD],
+      providesTags: [API_TAGS.APPOITMENTS,API_TAGS.CLIENTS,API_TAGS.SERVICES,API_TAGS.STAFFS],
     }),
   }),
 });
