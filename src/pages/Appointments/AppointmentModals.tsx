@@ -14,7 +14,10 @@ import { useForm } from 'react-hook-form';
 import { Button } from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
-import { useUpdateAppoitmentMutation } from '@/app/api/appoitmentsApi/appoitmentsApi';
+import {
+  useDeleteAppoitmentMutation,
+  useUpdateAppoitmentMutation,
+} from '@/app/api/appoitmentsApi/appoitmentsApi';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import z from 'zod';
 import { useGetAllStaffQuery } from '@/app/api/staffApi/staffApi';
@@ -374,9 +377,18 @@ export const DeleteAppointmentModal = ({
   onClose,
   appointment,
 }: DeleteAppointmentModalProps) => {
-  const handleDelete = () => {
-    console.log('Delete appointment:', appointment?.id);
-    onClose();
+  const [deleteAppointment, { isLoading: isDeleting }] = useDeleteAppoitmentMutation();
+
+  const handleDelete = async () => {
+    if (!appointment) return;
+
+    try {
+      await deleteAppointment(appointment.id).unwrap();
+      toast.success('Bron muvaffaqiyatli o‘chirildi');
+      onClose();
+    } catch {
+      toast.error('Bronni o‘chirishda xatolik yuz berdi');
+    }
   };
 
   return (
@@ -403,9 +415,10 @@ export const DeleteAppointmentModal = ({
             variant='default'
             type='button'
             onClick={handleDelete}
+            disabled={isDeleting}
             className='w-full sm:w-auto bg-red-500/90 hover:bg-red-500 text-white border-red-500/30'
           >
-            Ha, O'chirish
+            {isDeleting ? "O'chirilmoqda..." : "Ha, O'chirish"}
           </Button>
         </div>
       </div>

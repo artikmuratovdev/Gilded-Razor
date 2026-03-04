@@ -64,11 +64,6 @@ export const Appointments = () => {
     status: statusFilter || undefined,
   });
 
-  console.log(appointmentsData?.pagination);
-  console.log('editTarget', editTarget);
-  console.log('Date', format(selectedDate,'yyyy-MM-dd'));
-  console.log('Date', selectedDate);
-
   if (isLoading || !appointmentsData) {
     return (
       <div className='flex h-screen items-center justify-center'>
