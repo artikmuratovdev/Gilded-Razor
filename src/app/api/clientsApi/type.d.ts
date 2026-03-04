@@ -26,6 +26,7 @@ export type GetClientsReq = {
   is_active?: boolean;
   status?: "cancelled" | "completed" | "confirmed" | "no_show" | "pending" | string;
   ordering?:string
+  last_date?: "month" | "week" | "all";
 };
 
 export type GetClientsRes = {

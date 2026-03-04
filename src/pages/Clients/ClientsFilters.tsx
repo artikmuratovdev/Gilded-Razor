@@ -14,6 +14,8 @@ interface ClientsFiltersProps {
   setSearchQuery: (query: string) => void;
   statusFilter: 'all' | 'true' | 'false';
   setStatusFilter: (status: 'all' | 'true' | 'false') => void;
+  lastDateFilter: 'all' | 'month' | 'week';
+  setLastDateFilter: (date: 'all' | 'month' | 'week') => void;
 }
 
 export const ClientsFilters = ({
@@ -21,6 +23,8 @@ export const ClientsFilters = ({
   setSearchQuery,
   statusFilter,
   setStatusFilter,
+  lastDateFilter,
+  setLastDateFilter,
 }: ClientsFiltersProps) => {
   return (
     <div className='p-3 sm:p-4 border-b border-white/5 flex flex-col md:flex-row gap-3 sm:gap-4'>
@@ -38,7 +42,7 @@ export const ClientsFilters = ({
         <div className='flex-1 md:w-48'>
           <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as 'all' | 'true' | 'false')}>
             <SelectTrigger className='w-full bg-surface-light border-white/5'>
-              <SelectValue placeholder='Filtr' />
+              <SelectValue placeholder='Status' />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -46,6 +50,21 @@ export const ClientsFilters = ({
                 <SelectItem value='all'>Barchasi</SelectItem>
                 <SelectItem value='true'>Faol</SelectItem>
                 <SelectItem value='false'>Nofaol</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className='flex-1 md:w-48'>
+          <Select value={lastDateFilter} onValueChange={(v) => setLastDateFilter(v as 'all' | 'month' | 'week')}>
+            <SelectTrigger className='w-full bg-surface-light border-white/5'>
+              <SelectValue placeholder='Sana' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Sana</SelectLabel>
+                <SelectItem value='all'>Barchasi</SelectItem>
+                <SelectItem value='month'>Shu oy</SelectItem>
+                <SelectItem value='week'>Shu hafta</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>

@@ -9,11 +9,12 @@ import { Spinner } from '@/components/ui/spinner';
 export const Clients = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'true' | 'false'>('all');
+  const [lastDateFilter, setLastDateFilter] = useState<'all' | 'month' | 'week'>('all');
   const [page,setPage] = useState<number>(1);
 
   const is_active = statusFilter === 'all' ? undefined : statusFilter === 'true';
 
-  const {data, isLoading} = usePaginatedClients({page, searchQuery, is_active});
+  const {data, isLoading} = usePaginatedClients({page, searchQuery, is_active, last_date: lastDateFilter});
 
   if(!data) return;
   if(isLoading) {
@@ -34,6 +35,8 @@ export const Clients = () => {
             setSearchQuery={(q) => { setSearchQuery(q); setPage(1); }}
             statusFilter={statusFilter}
             setStatusFilter={(s) => { setStatusFilter(s); setPage(1); }}
+            lastDateFilter={lastDateFilter}
+            setLastDateFilter={(d: 'all' | 'month' | 'week') => { setLastDateFilter(d); setPage(1); }}
           />
           <ClientsTable data={data.data} />
           <Pagination
