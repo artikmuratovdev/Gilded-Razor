@@ -8,7 +8,7 @@ import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Expenses } from './pages/Expenses/Expenses';
 import DokonExpenses from './pages/Expenses/DokonExpenses';
 import QoshimchaExpenses from './pages/Expenses/QoshimchaExpenses';
-import { Inventory } from './pages/Inventory/Services';
+import { Inventory } from './pages/Services/Services';
 import { LoginForm } from './pages/LoginPage/LoginPage';
 import { Reports } from './pages/Reports/Reports';
 import { Settings } from './pages/Settings/index';
