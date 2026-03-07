@@ -1,7 +1,7 @@
-import { menuItems } from '@/constants/menuItems';
+import { expensesSubItems, menuItems, staffSubItems } from '@/constants/menuItems';
 import { cn } from '../../lib/utils';
 import { useState } from 'react';
-import { ChevronDown, Scissors, Baby, Sparkles, ShoppingBag, PlusCircle } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
 
 interface SidebarProps {
@@ -9,17 +9,6 @@ interface SidebarProps {
   onNavigate: (page: string) => void;
   isOpen: boolean;
 }
-
-const staffSubItems = [
-  { id: 'staff', label: 'Barbers', icon: Scissors, path: '/staff' },
-  { id: 'staff/kids', label: 'Kids', icon: Baby, path: '/staff/kids' },
-  { id: 'staff/masters', label: 'Masters', icon: Sparkles, path: '/staff/masters' },
-];
-
-const expensesSubItems = [
-  { id: 'expenses/dokon', label: "Do'kon", icon: ShoppingBag, path: '/expenses/dokon' },
-  { id: 'expenses/qoshimcha', label: "Qo'shimcha Xarajatlar", icon: PlusCircle, path: '/expenses/qoshimcha' },
-];
 
 export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
   const navigate = useNavigate();
@@ -35,16 +24,10 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
   const handleMainItemClick = (item: (typeof menuItems)[number]) => {
     if (item.id === 'staff') {
       setStaffOpen((prev) => !prev);
-      if (!staffOpen) {
-        navigate('/staff');
-      }
       return;
     }
     if (item.id === 'expenses') {
       setExpensesOpen((prev) => !prev);
-      if (!expensesOpen) {
-        navigate('/expenses/dokon');
-      }
       return;
     }
     onNavigate(item.id);
@@ -130,7 +113,10 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
                       return (
                         <button
                           key={sub.id}
-                          onClick={() => navigate(sub.path)}
+                          onClick={() => {
+                            navigate(sub.path);
+                            onNavigate(sub.id);
+                          }}
                           className={cn(
                             'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-150 group text-sm',
                             isSubActive
@@ -166,7 +152,10 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
                       return (
                         <button
                           key={sub.id}
-                          onClick={() => navigate(sub.path)}
+                          onClick={() => {
+                            navigate(sub.path);
+                            onNavigate(sub.id);
+                          }}
                           className={cn(
                             'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-150 group text-sm',
                             isSubActive

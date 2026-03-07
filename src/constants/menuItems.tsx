@@ -1,11 +1,16 @@
 import {
+  Baby,
   BarChart3,
   CalendarDays,
   CircleDollarSign,
   GraduationCap,
   LayoutDashboard,
   Package,
+  PlusCircle,
+  Scissors,
   Settings,
+  ShoppingBag,
+  Sparkles,
   UserCheck,
   Users,
 } from 'lucide-react';
@@ -30,6 +35,17 @@ export const menuItems = [
   { id: 'academy', label: 'Akademiya', icon: GraduationCap, path: '/academy' },
   { id: 'expenses', label: 'Xarajatlar', icon: CircleDollarSign, path: '/expenses' },
   { id: 'settings', label: 'Sozlamalar', icon: Settings, path: '/settings' },
+];
+
+export const staffSubItems = [
+  { id: 'staff', label: 'Barbers', icon: Scissors, path: '/staff' },
+  { id: 'staff/kids', label: 'Kids', icon: Baby, path: '/staff/kids' },
+  { id: 'staff/masters', label: 'Masters', icon: Sparkles, path: '/staff/masters' },
+];
+
+export const expensesSubItems = [
+  { id: 'expenses', label: "Do'kon", icon: ShoppingBag, path: '/expenses' },
+  { id: 'additional-expenses', label: "Qo'shimcha Xarajatlar", icon: PlusCircle, path: '/additional-expenses' },
 ];
 
 export const setMenuLabel = (page: string) => {
