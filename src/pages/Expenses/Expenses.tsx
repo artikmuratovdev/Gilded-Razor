@@ -30,12 +30,7 @@ const recentExpenses = [
 export const Expenses = () => {
   return (
     <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
-      {/* <div>
-        <h2 className='text-xl sm:text-2xl font-bold text-white'>Xarajatlar</h2>
-        <p className='text-xs sm:text-sm text-gray-400'>
-          Moliyaviy chiqimlarni kuzatish va tahlil qilish bo`limi.
-        </p>
-      </div> */}
+
 
       <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
         {expenseSummary.map((item) => (

@@ -18,7 +18,7 @@ export const RecentBookingsList = () => {
     return date.toISOString();
   }, []);
 
-  const { data ,isLoading} = useGetAppoitmentsQuery({
+  const { data , isLoading} = useGetAppoitmentsQuery({
     page: 1,
     page_size: 10,
     datetime_from,

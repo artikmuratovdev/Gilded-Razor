@@ -1,5 +1,8 @@
 import { menuItems } from '@/constants/menuItems';
 import { cn } from '../../lib/utils';
+import { useState } from 'react';
+import { ChevronDown, Scissors, Baby, Sparkles, ShoppingBag, PlusCircle } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router';
 
 interface SidebarProps {
   currentPage: string;
@@ -7,7 +10,45 @@ interface SidebarProps {
   isOpen: boolean;
 }
 
+const staffSubItems = [
+  { id: 'staff', label: 'Barbers', icon: Scissors, path: '/staff' },
+  { id: 'staff/kids', label: 'Kids', icon: Baby, path: '/staff/kids' },
+  { id: 'staff/masters', label: 'Masters', icon: Sparkles, path: '/staff/masters' },
+];
+
+const expensesSubItems = [
+  { id: 'expenses/dokon', label: "Do'kon", icon: ShoppingBag, path: '/expenses/dokon' },
+  { id: 'expenses/qoshimcha', label: "Qo'shimcha Xarajatlar", icon: PlusCircle, path: '/expenses/qoshimcha' },
+];
+
 export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isStaffActive = location.pathname.startsWith('/staff');
+  const isExpensesActive = location.pathname.startsWith('/expenses');
+
+  const [staffOpen, setStaffOpen] = useState(isStaffActive);
+  const [expensesOpen, setExpensesOpen] = useState(isExpensesActive);
+
+
+  const handleMainItemClick = (item: (typeof menuItems)[number]) => {
+    if (item.id === 'staff') {
+      setStaffOpen((prev) => !prev);
+      if (!staffOpen) {
+        navigate('/staff');
+      }
+      return;
+    }
+    if (item.id === 'expenses') {
+      setExpensesOpen((prev) => !prev);
+      if (!expensesOpen) {
+        navigate('/expenses/dokon');
+      }
+      return;
+    }
+    onNavigate(item.id);
+  };
 
   return (
     <aside
@@ -35,61 +76,121 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
 
       {/* Nav */}
       <nav className='flex-1 py-2 px-3 space-y-1 overflow-y-auto custom-scrollbar'>
-        {menuItems.slice(0,8).map(
-          (
-            item,
-          ) => (
-            <button
-              key={item.id}
-              onClick={() => onNavigate(item.id)}
-              className={cn(
-                'w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group',
-                currentPage === item.id
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-gray-500 hover:bg-white/5 hover:text-white',
-              )}
-            >
-              <item.icon
-                className={cn(
-                  'h-5 w-5',
-                  currentPage === item.id
-                    ? 'text-primary'
-                    : 'group-hover:text-primary transition-colors',
-                )}
-              />
-              <span className='font-medium text-sm'>{item.label}</span>
-              {/* {item.id === 'appointments' && ( // Re-add badge for appointments if needed, based on original code
-                <span className='ml-auto bg-primary text-background font-bold text-[10px] px-2 py-0.5 rounded-full'>
-                  12
-                </span>
-              )} */}
-            </button>
-          ),
-        )}
-      </nav>
+        {menuItems.slice(0, 8).map((item) => {
+          const isStaff = item.id === 'staff';
+          const isExpenses = item.id === 'expenses';
+          const isExpandable = isStaff || isExpenses;
+          const isParentActive = isStaff ? isStaffActive : isExpenses ? isExpensesActive : currentPage === item.id;
+          const isExpanded = isStaff ? staffOpen : isExpenses ? expensesOpen : false;
 
-      {/* Settings */}
-      {/* <div className='p-4 border-t border-white/5'>
-        <button
-          onClick={() => onNavigate('settings')}
-          className={cn(
-            'w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group',
-            currentPage === 'settings'
-              ? 'bg-primary/10 text-primary'
-              : 'text-gray-500 hover:bg-white/5 hover:text-white',
-          )}
-        >
-          <Settings
-            className={cn(
-              'h-5 w-5',
-              currentPage === 'settings'
-                ? 'text-primary'
-                : 'group-hover:text-primary transition-colors',
-            )}
-          />
-          <span className='font-medium text-sm'>Sozlamalar</span>
-        </button>
-      </div> */}
+          return (
+            <div key={item.id}>
+              <button
+                onClick={() => handleMainItemClick(item)}
+                className={cn(
+                  'w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group',
+                  isParentActive
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-gray-500 hover:bg-white/5 hover:text-white',
+                )}
+              >
+                <item.icon
+                  className={cn(
+                    'h-5 w-5',
+                    isParentActive
+                      ? 'text-primary'
+                      : 'group-hover:text-primary transition-colors',
+                  )}
+                />
+                <span className='font-medium text-sm flex-1 text-left'>{item.label}</span>
+                {isExpandable && (
+                  <ChevronDown
+                    className={cn(
+                      'h-4 w-4 transition-transform duration-200',
+                      isExpanded ? 'rotate-180' : 'rotate-0',
+                      isParentActive ? 'text-primary' : 'text-gray-500 group-hover:text-white',
+                    )}
+                  />
+                )}
+              </button>
+
+              {/* Sub-panel for Jamoa */}
+              {isStaff && (
+                <div
+                  className={cn(
+                    'overflow-hidden transition-all duration-300 ease-in-out',
+                    staffOpen ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0',
+                  )}
+                >
+                  <div className='ml-4 mt-0.5 space-y-0.5 border-l border-white/10 pl-3'>
+                    {staffSubItems.map((sub) => {
+                      const isSubActive = sub.id === 'staff'
+                        ? location.pathname === '/staff'
+                        : location.pathname === sub.path;
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => navigate(sub.path)}
+                          className={cn(
+                            'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-150 group text-sm',
+                            isSubActive
+                              ? 'bg-primary/10 text-primary'
+                              : 'text-gray-500 hover:bg-white/5 hover:text-white',
+                          )}
+                        >
+                          <sub.icon
+                            className={cn(
+                              'h-4 w-4 shrink-0',
+                              isSubActive ? 'text-primary' : 'group-hover:text-primary transition-colors',
+                            )}
+                          />
+                          <span className='font-medium'>{sub.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Sub-panel for Xarajatlar */}
+              {isExpenses && (
+                <div
+                  className={cn(
+                    'overflow-hidden transition-all duration-300 ease-in-out',
+                    expensesOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0',
+                  )}
+                >
+                  <div className='ml-4 mt-0.5 space-y-0.5 border-l border-white/10 pl-3'>
+                    {expensesSubItems.map((sub) => {
+                      const isSubActive = location.pathname === sub.path;
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => navigate(sub.path)}
+                          className={cn(
+                            'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-150 group text-sm',
+                            isSubActive
+                              ? 'bg-primary/10 text-primary'
+                              : 'text-gray-500 hover:bg-white/5 hover:text-white',
+                          )}
+                        >
+                          <sub.icon
+                            className={cn(
+                              'h-4 w-4 shrink-0',
+                              isSubActive ? 'text-primary' : 'group-hover:text-primary transition-colors',
+                            )}
+                          />
+                          <span className='font-medium'>{sub.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
     </aside>
   );
 };

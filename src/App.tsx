@@ -6,12 +6,16 @@ import { Academy } from './pages/Academy/Academy';
 import { Clients } from './pages/Clients/Clients';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Expenses } from './pages/Expenses/Expenses';
+import DokonExpenses from './pages/Expenses/DokonExpenses';
+import QoshimchaExpenses from './pages/Expenses/QoshimchaExpenses';
 import { Inventory } from './pages/Inventory/Services';
 import { LoginForm } from './pages/LoginPage/LoginPage';
 import { Reports } from './pages/Reports/Reports';
 import { Settings } from './pages/Settings/index';
 import { StaffPage } from './pages/Staff/Staff';
 import { StaffProfile } from './pages/Staff/StaffProfile';
+import Kids from './pages/Staff/Kids';
+import Masters from './pages/Staff/Masters';
 
 function App() {
   return (
@@ -29,6 +33,8 @@ function App() {
         <Route path='/staff' element={<PrivateRoute />}>
           <Route index element={<StaffPage />} />
           <Route path=':id' element={<StaffProfile />} />
+          <Route path='kids' element={<Kids />} />
+          <Route path='masters' element={<Masters />} />
         </Route>
         <Route path='/clients' element={<PrivateRoute />}>
           <Route index element={<Clients />} />
@@ -44,6 +50,8 @@ function App() {
         </Route>
         <Route path='/expenses' element={<PrivateRoute />}>
           <Route index element={<Expenses />} />
+          <Route path='dokon' element={<DokonExpenses />} />
+          <Route path='qoshimcha' element={<QoshimchaExpenses />} />
         </Route>
         <Route path='/settings' element={<PrivateRoute />}>
           <Route index element={<Settings />} />
