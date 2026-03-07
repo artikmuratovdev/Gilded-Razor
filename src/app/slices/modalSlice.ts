@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-type ModalName = 'booking' | 'staff' | 'client' | 'product' | 'payment' | 'deleteClient' | 'editClient' | 'service' | 'deleteService' | 'editService';
+type ModalName = 'booking' | 'staff' | 'client' | 'product' | 'payment' | 'deleteClient' | 'editClient' | 'service' | 'deleteService' | 'editService' | 'expense' | 'deleteExpense' | 'editExpense' | 'additionalExpense' | 'deleteAdditionalExpense' | 'editAdditionalExpense';
 
 interface ClientToDelete {
   id: number;
@@ -29,6 +29,31 @@ interface ServiceToEdit {
   is_active: boolean;
 }
 
+interface ExpenseToDelete {
+  id: number;
+  name: string;
+}
+
+interface ExpenseToEdit {
+  id: number;
+  name: string;
+  price: string;
+  description: string;
+  reminder_date: string;
+}
+
+interface AdditionalExpenseToDelete {
+  id: number;
+  name: string;
+}
+
+interface AdditionalExpenseToEdit {
+  id: number;
+  name: string;
+  price: string;
+  description: string;
+}
+
 interface ModalState {
   booking: boolean;
   staff: boolean;
@@ -40,10 +65,20 @@ interface ModalState {
   service: boolean;
   deleteService: boolean;
   editService: boolean;
+  expense: boolean;
+  deleteExpense: boolean;
+  editExpense: boolean;
+  additionalExpense: boolean;
+  deleteAdditionalExpense: boolean;
+  editAdditionalExpense: boolean;
   clientToDelete: ClientToDelete | null;
   clientToEdit: ClientToEdit | null;
   serviceToDelete: ServiceToDelete | null;
   serviceToEdit: ServiceToEdit | null;
+  expenseToDelete: ExpenseToDelete | null;
+  expenseToEdit: ExpenseToEdit | null;
+  additionalExpenseToDelete: AdditionalExpenseToDelete | null;
+  additionalExpenseToEdit: AdditionalExpenseToEdit | null;
 }
 
 const initialState: ModalState = {
@@ -57,10 +92,20 @@ const initialState: ModalState = {
   service: false,
   deleteService: false,
   editService: false,
+  expense: false,
+  deleteExpense: false,
+  editExpense: false,
+  additionalExpense: false,
+  deleteAdditionalExpense: false,
+  editAdditionalExpense: false,
   clientToDelete: null,
   clientToEdit: null,
   serviceToDelete: null,
   serviceToEdit: null,
+  expenseToDelete: null,
+  expenseToEdit: null,
+  additionalExpenseToDelete: null,
+  additionalExpenseToEdit: null,
 };
 
 const modalSlice = createSlice({
@@ -88,8 +133,20 @@ const modalSlice = createSlice({
     setServiceToEdit(state, action: PayloadAction<ServiceToEdit | null>) {
       state.serviceToEdit = action.payload;
     },
+    setExpenseToDelete(state, action: PayloadAction<ExpenseToDelete | null>) {
+      state.expenseToDelete = action.payload;
+    },
+    setExpenseToEdit(state, action: PayloadAction<ExpenseToEdit | null>) {
+      state.expenseToEdit = action.payload;
+    },
+    setAdditionalExpenseToDelete(state, action: PayloadAction<AdditionalExpenseToDelete | null>) {
+      state.additionalExpenseToDelete = action.payload;
+    },
+    setAdditionalExpenseToEdit(state, action: PayloadAction<AdditionalExpenseToEdit | null>) {
+      state.additionalExpenseToEdit = action.payload;
+    },
   },
 });
 
-export const { openModal, closeModal, setModal, setClientToDelete, setClientToEdit, setServiceToDelete, setServiceToEdit } = modalSlice.actions;
+export const { openModal, closeModal, setModal, setClientToDelete, setClientToEdit, setServiceToDelete, setServiceToEdit, setExpenseToDelete, setExpenseToEdit, setAdditionalExpenseToDelete, setAdditionalExpenseToEdit } = modalSlice.actions;
 export default modalSlice.reducer;

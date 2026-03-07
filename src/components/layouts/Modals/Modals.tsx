@@ -24,7 +24,7 @@ import { useGetAllStaffQuery } from '@/app/api/staffApi/staffApi';
 // --- Schemas ---
 const Modals = () => {
   const forms = useModalForms();
-  const { bookingForm, productForm, clientForm, staffForm, serviceForm } = forms;
+  const { bookingForm, productForm, clientForm, staffForm, serviceForm, expenseForm, additionalExpenseForm } = forms;
   const {
     handleCloseBooking,
     handleCloseClient,
@@ -36,6 +36,12 @@ const Modals = () => {
     handleCloseService,
     handleCloseDeleteService,
     handleCloseEditService,
+    handleCloseExpense,
+    handleCloseDeleteExpense,
+    handleCloseEditExpense,
+    handleCloseAdditionalExpense,
+    handleCloseDeleteAdditionalExpense,
+    handleCloseEditAdditionalExpense,
     onBookingSubmit,
     onClientSubmit,
     onProductSubmit,
@@ -45,6 +51,12 @@ const Modals = () => {
     onServiceSubmit,
     onDeleteServiceSubmit,
     onEditServiceSubmit,
+    onExpenseSubmit,
+    onDeleteExpenseSubmit,
+    onEditExpenseSubmit,
+    onAdditionalExpenseSubmit,
+    onDeleteAdditionalExpenseSubmit,
+    onEditAdditionalExpenseSubmit,
   } = useModalActions(forms);
   const {
     booking: newBooking,
@@ -61,6 +73,16 @@ const Modals = () => {
     serviceToDelete,
     editService,
     serviceToEdit,
+    expense: newExpense,
+    deleteExpense,
+    expenseToDelete,
+    editExpense,
+    expenseToEdit,
+    additionalExpense: newAdditionalExpense,
+    deleteAdditionalExpense,
+    additionalExpenseToDelete,
+    editAdditionalExpense,
+    additionalExpenseToEdit,
   } = useSelector((state: RootState) => state.modal);
 
   // Get data from Redux cache (prefetched in Dashboard)
@@ -153,6 +175,27 @@ const Modals = () => {
       });
     }
   }, [editService, serviceToEdit, serviceForm]);
+
+  useEffect(() => {
+    if (editExpense && expenseToEdit) {
+      expenseForm.reset({
+        name: expenseToEdit.name,
+        description: expenseToEdit.description,
+        price: expenseToEdit.price,
+        reminder_date: expenseToEdit.reminder_date,
+      });
+    }
+  }, [editExpense, expenseToEdit, expenseForm]);
+
+  useEffect(() => {
+    if (editAdditionalExpense && additionalExpenseToEdit) {
+      additionalExpenseForm.reset({
+        name: additionalExpenseToEdit.name,
+        description: additionalExpenseToEdit.description,
+        price: additionalExpenseToEdit.price,
+      });
+    }
+  }, [editAdditionalExpense, additionalExpenseToEdit, additionalExpenseForm]);
 
   return (
     <>
@@ -1004,6 +1047,348 @@ const Modals = () => {
             <Button 
               variant='default' 
               onClick={onDeleteServiceSubmit}
+              className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
+            >
+              O'chirish
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Add Expense Modal */}
+      <Modal
+        isOpen={newExpense}
+        onClose={handleCloseExpense}
+        title="Do'kon Xarajati Qo'shish"
+        description="Yangi do'kon xarajatini yarating."
+        icon={<Package className='text-primary h-8 w-8' />}
+      >
+        <form
+          onSubmit={expenseForm.handleSubmit(onExpenseSubmit)}
+          className='space-y-2 sm:space-y-4'
+        >
+          <div>
+            <Input
+              label='Xarajat Nomi'
+              placeholder="Masalan: Elektr energiyasi"
+              {...expenseForm.register('name')}
+            />
+            {expenseForm.formState.errors.name && (
+              <p className='text-red-500 text-xs mt-1'>
+                {expenseForm.formState.errors.name.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Ta'rif"
+              placeholder="Xarajat ta'rifini kiriting"
+              {...expenseForm.register('description')}
+            />
+            {expenseForm.formState.errors.description && (
+              <p className='text-red-500 text-xs mt-1'>
+                {expenseForm.formState.errors.description.message}
+              </p>
+            )}
+          </div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Input
+                label='Narx'
+                placeholder='50000'
+                {...expenseForm.register('price')}
+              />
+              {expenseForm.formState.errors.price && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {expenseForm.formState.errors.price.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                label='Eslatma Sanasi'
+                type='date'
+                {...expenseForm.register('reminder_date')}
+              />
+              {expenseForm.formState.errors.reminder_date && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {expenseForm.formState.errors.reminder_date.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseExpense} className='w-full sm:w-auto'>
+              Bekor Qilish
+            </Button>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
+              Xarajat Qo'shish
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Edit Expense Modal */}
+      <Modal
+        isOpen={editExpense}
+        onClose={handleCloseEditExpense}
+        title="Xarajatni Tahrirlash"
+        description="Xarajat ma'lumotlarini yangilang."
+        icon={<Package className='text-primary h-8 w-8' />}
+      >
+        <form
+          onSubmit={expenseForm.handleSubmit(onEditExpenseSubmit)}
+          className='space-y-2 sm:space-y-4'
+        >
+          <div>
+            <Input
+              label='Xarajat Nomi'
+              placeholder="Masalan: Elektr energiyasi"
+              {...expenseForm.register('name')}
+            />
+            {expenseForm.formState.errors.name && (
+              <p className='text-red-500 text-xs mt-1'>
+                {expenseForm.formState.errors.name.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Ta'rif"
+              placeholder="Xarajat ta'rifini kiriting"
+              {...expenseForm.register('description')}
+            />
+            {expenseForm.formState.errors.description && (
+              <p className='text-red-500 text-xs mt-1'>
+                {expenseForm.formState.errors.description.message}
+              </p>
+            )}
+          </div>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
+            <div>
+              <Input
+                label='Narx'
+                placeholder='50000'
+                {...expenseForm.register('price')}
+              />
+              {expenseForm.formState.errors.price && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {expenseForm.formState.errors.price.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                label='Eslatma Sanasi'
+                type='date'
+                {...expenseForm.register('reminder_date')}
+              />
+              {expenseForm.formState.errors.reminder_date && (
+                <p className='text-red-500 text-xs mt-1'>
+                  {expenseForm.formState.errors.reminder_date.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseEditExpense} className='w-full sm:w-auto'>
+              Bekor Qilish
+            </Button>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
+              Saqlash
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Expense Modal */}
+      <Modal
+        isOpen={deleteExpense}
+        onClose={handleCloseDeleteExpense}
+        title="Xarajatni O'chirish"
+        description="Bu amalni ortga qaytarib bo'lmaydi. Xarajat va unga tegishli barcha ma'lumotlar o'chiriladi."
+        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
+      >
+        <div className='space-y-4'>
+          {expenseToDelete && (
+            <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
+              <p className='text-sm text-gray-300'>
+                <span className='font-semibold text-white'>
+                  {expenseToDelete.name}
+                </span>{' '}
+                nomli xarajatni o'chirmoqchimisiz?
+              </p>
+            </div>
+          )}
+          
+          <div className='pt-3 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button 
+              variant='ghost' 
+              onClick={handleCloseDeleteExpense}
+              className='w-full sm:w-auto'
+            >
+              Bekor Qilish
+            </Button>
+            <Button 
+              variant='default' 
+              onClick={onDeleteExpenseSubmit}
+              className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
+            >
+              O'chirish
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Add Additional Expense Modal */}
+      <Modal
+        isOpen={newAdditionalExpense}
+        onClose={handleCloseAdditionalExpense}
+        title="Qo'shimcha Xarajat Qo'shish"
+        description="Yangi qo'shimcha xarajatni yarating."
+        icon={<Package className='text-primary h-8 w-8' />}
+      >
+        <form
+          onSubmit={additionalExpenseForm.handleSubmit(onAdditionalExpenseSubmit)}
+          className='space-y-2 sm:space-y-4'
+        >
+          <div>
+            <Input
+              label='Xarajat Nomi'
+              placeholder="Masalan: Transport xarajatlari"
+              {...additionalExpenseForm.register('name')}
+            />
+            {additionalExpenseForm.formState.errors.name && (
+              <p className='text-red-500 text-xs mt-1'>
+                {additionalExpenseForm.formState.errors.name.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Ta'rif"
+              placeholder="Xarajat ta'rifini kiriting"
+              {...additionalExpenseForm.register('description')}
+            />
+            {additionalExpenseForm.formState.errors.description && (
+              <p className='text-red-500 text-xs mt-1'>
+                {additionalExpenseForm.formState.errors.description.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label='Narx'
+              placeholder='50000'
+              {...additionalExpenseForm.register('price')}
+            />
+            {additionalExpenseForm.formState.errors.price && (
+              <p className='text-red-500 text-xs mt-1'>
+                {additionalExpenseForm.formState.errors.price.message}
+              </p>
+            )}
+          </div>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseAdditionalExpense} className='w-full sm:w-auto'>
+              Bekor Qilish
+            </Button>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
+              Xarajat Qo'shish
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Edit Additional Expense Modal */}
+      <Modal
+        isOpen={editAdditionalExpense}
+        onClose={handleCloseEditAdditionalExpense}
+        title="Qo'shimcha Xarajatni Tahrirlash"
+        description="Qo'shimcha xarajat ma'lumotlarini yangilang."
+        icon={<Package className='text-primary h-8 w-8' />}
+      >
+        <form
+          onSubmit={additionalExpenseForm.handleSubmit(onEditAdditionalExpenseSubmit)}
+          className='space-y-2 sm:space-y-4'
+        >
+          <div>
+            <Input
+              label='Xarajat Nomi'
+              placeholder="Masalan: Transport xarajatlari"
+              {...additionalExpenseForm.register('name')}
+            />
+            {additionalExpenseForm.formState.errors.name && (
+              <p className='text-red-500 text-xs mt-1'>
+                {additionalExpenseForm.formState.errors.name.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Ta'rif"
+              placeholder="Xarajat ta'rifini kiriting"
+              {...additionalExpenseForm.register('description')}
+            />
+            {additionalExpenseForm.formState.errors.description && (
+              <p className='text-red-500 text-xs mt-1'>
+                {additionalExpenseForm.formState.errors.description.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <Input
+              label='Narx'
+              placeholder='50000'
+              {...additionalExpenseForm.register('price')}
+            />
+            {additionalExpenseForm.formState.errors.price && (
+              <p className='text-red-500 text-xs mt-1'>
+                {additionalExpenseForm.formState.errors.price.message}
+              </p>
+            )}
+          </div>
+          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button variant='ghost' type='button' onClick={handleCloseEditAdditionalExpense} className='w-full sm:w-auto'>
+              Bekor Qilish
+            </Button>
+            <Button variant='default' type='submit' className='w-full sm:w-auto'>
+              Saqlash
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Delete Additional Expense Modal */}
+      <Modal
+        isOpen={deleteAdditionalExpense}
+        onClose={handleCloseDeleteAdditionalExpense}
+        title="Qo'shimcha Xarajatni O'chirish"
+        description="Bu amalni ortga qaytarib bo'lmaydi. Qo'shimcha xarajat va unga tegishli barcha ma'lumotlar o'chiriladi."
+        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
+      >
+        <div className='space-y-4'>
+          {additionalExpenseToDelete && (
+            <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
+              <p className='text-sm text-gray-300'>
+                <span className='font-semibold text-white'>
+                  {additionalExpenseToDelete.name}
+                </span>{' '}
+                nomli qo'shimcha xarajatni o'chirmoqchimisiz?
+              </p>
+            </div>
+          )}
+          
+          <div className='pt-3 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
+            <Button 
+              variant='ghost' 
+              onClick={handleCloseDeleteAdditionalExpense}
+              className='w-full sm:w-auto'
+            >
+              Bekor Qilish
+            </Button>
+            <Button 
+              variant='default' 
+              onClick={onDeleteAdditionalExpenseSubmit}
               className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
             >
               O'chirish

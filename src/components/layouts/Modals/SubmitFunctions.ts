@@ -4,7 +4,11 @@ import { useCreateClientMutation, useDeleteClientMutation, useUpdateClientMutati
 import type { CreateClientReq, MutationRes } from '@/app/api/clientsApi/type';
 import { useCreateServiceMutation, useDeleteServiceMutation, useUpdateServiceMutation } from '@/app/api/serviceApi/serviceApi';
 import type { CreateServiceReq } from '@/app/api/serviceApi/type';
-import { closeModal, setClientToDelete, setClientToEdit, setServiceToDelete, setServiceToEdit } from '@/app/slices/modalSlice';
+import { useAddExpensesMutation, useDeleteExpensesMutation, useUpdateExpensesMutation } from '@/app/api/Expenses/Expenses';
+import type { addExpensesReq } from '@/app/api/Expenses/type';
+import { useAddAdditionalExpensesMutation, useDeleteAdditionalExpensesMutation, useUpdateAdditionalExpensesMutation } from '@/app/api/additionalExpenses/additionalExpenses';
+import type { addAdditionalExpensesReq } from '@/app/api/additionalExpenses/type';
+import { closeModal, setClientToDelete, setClientToEdit, setServiceToDelete, setServiceToEdit, setExpenseToDelete, setExpenseToEdit, setAdditionalExpenseToDelete, setAdditionalExpenseToEdit } from '@/app/slices/modalSlice';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
 import type { UseFormReturn } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +19,8 @@ import type {
   ProductForm,
   StaffForm,
   ServiceForm,
+  ExpenseForm,
+  AdditionalExpenseForm,
 } from './FormTypes';
 import type { RootState } from '@/app/store';
 import type { CreateStaffReq } from '@/app/api/staffApi/type';
@@ -27,6 +33,8 @@ interface ModalForms {
   clientForm: UseFormReturn<ClientForm>;
   staffForm: UseFormReturn<StaffForm>;
   serviceForm: UseFormReturn<ServiceForm>;
+  expenseForm: UseFormReturn<ExpenseForm>;
+  additionalExpenseForm: UseFormReturn<AdditionalExpenseForm>;
 }
 
 const useModalActions = ({
@@ -35,6 +43,8 @@ const useModalActions = ({
   clientForm,
   staffForm,
   serviceForm,
+  expenseForm,
+  additionalExpenseForm,
 }: ModalForms) => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,10 +57,20 @@ const useModalActions = ({
   const [deleteService] = useDeleteServiceMutation();
   const [updateService] = useUpdateServiceMutation();
   const [createStaff] = useCreateStaffMutation();
+  const [createExpense] = useAddExpensesMutation();
+  const [deleteExpense] = useDeleteExpensesMutation();
+  const [updateExpense] = useUpdateExpensesMutation();
+  const [createAdditionalExpense] = useAddAdditionalExpensesMutation();
+  const [deleteAdditionalExpense] = useDeleteAdditionalExpensesMutation();
+  const [updateAdditionalExpense] = useUpdateAdditionalExpensesMutation();
   const clientToDelete = useSelector((state: RootState) => state.modal.clientToDelete);
   const clientToEdit = useSelector((state: RootState) => state.modal.clientToEdit);
   const serviceToDelete = useSelector((state: RootState) => state.modal.serviceToDelete);
   const serviceToEdit = useSelector((state: RootState) => state.modal.serviceToEdit);
+  const expenseToDelete = useSelector((state: RootState) => state.modal.expenseToDelete);
+  const expenseToEdit = useSelector((state: RootState) => state.modal.expenseToEdit);
+  const additionalExpenseToDelete = useSelector((state: RootState) => state.modal.additionalExpenseToDelete);
+  const additionalExpenseToEdit = useSelector((state: RootState) => state.modal.additionalExpenseToEdit);
 
   const clearParams = (keys: string[]) => {
     const params = new URLSearchParams(searchParams);
@@ -106,6 +126,34 @@ const useModalActions = ({
   const handleCloseEditService = () => {
     dispatch(closeModal('editService'));
     dispatch(setServiceToEdit(null));
+  };
+
+  const handleCloseExpense = () => {
+    dispatch(closeModal('expense'));
+  };
+
+  const handleCloseDeleteExpense = () => {
+    dispatch(closeModal('deleteExpense'));
+    dispatch(setExpenseToDelete(null));
+  };
+
+  const handleCloseEditExpense = () => {
+    dispatch(closeModal('editExpense'));
+    dispatch(setExpenseToEdit(null));
+  };
+
+  const handleCloseAdditionalExpense = () => {
+    dispatch(closeModal('additionalExpense'));
+  };
+
+  const handleCloseDeleteAdditionalExpense = () => {
+    dispatch(closeModal('deleteAdditionalExpense'));
+    dispatch(setAdditionalExpenseToDelete(null));
+  };
+
+  const handleCloseEditAdditionalExpense = () => {
+    dispatch(closeModal('editAdditionalExpense'));
+    dispatch(setAdditionalExpenseToEdit(null));
   };
 
   // --- Submit Handlers ---
@@ -301,6 +349,134 @@ const useModalActions = ({
     });
   };
 
+  const onExpenseSubmit = (data: ExpenseForm) => {
+    const payload: addExpensesReq = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      reminder_date: data.reminder_date,
+    };
+    
+    handleRequest({
+      request: async () => await createExpense(payload),
+      onSuccess: (res: MutationRes) => {
+        console.log('Expense created successfully:', res);
+        toast.success('Xarajat muvaffaqiyatli yaratildi');
+        handleCloseExpense();
+        expenseForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
+      },
+    });
+  };
+
+  const onDeleteExpenseSubmit = () => {
+    if (!expenseToDelete) return;
+    
+    handleRequest({
+      request: async () => await deleteExpense(expenseToDelete.id),
+      onSuccess: (res: MutationRes) => {
+        console.log('Expense deleted successfully:', res);
+        toast.success('Xarajat muvaffaqiyatli o\'chirildi');
+        handleCloseDeleteExpense();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
+      },
+    });
+  };
+
+  const onEditExpenseSubmit = (data: ExpenseForm) => {
+    if (!expenseToEdit) return;
+    
+    const payload: addExpensesReq = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+      reminder_date: data.reminder_date,
+    };
+    
+    handleRequest({
+      request: async () => await updateExpense({ id: String(expenseToEdit.id), body: payload }),
+      onSuccess: (res: MutationRes) => {
+        console.log('Expense updated successfully:', res);
+        toast.success('Xarajat muvaffaqiyatli yangilandi');
+        handleCloseEditExpense();
+        expenseForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
+      },
+    });
+  };
+
+  const onAdditionalExpenseSubmit = (data: AdditionalExpenseForm) => {
+    const payload: addAdditionalExpensesReq = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+    };
+    
+    handleRequest({
+      request: async () => await createAdditionalExpense(payload),
+      onSuccess: (res: MutationRes) => {
+        console.log('Additional expense created successfully:', res);
+        toast.success('Qo\'shimcha xarajat muvaffaqiyatli yaratildi');
+        handleCloseAdditionalExpense();
+        additionalExpenseForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
+      },
+    });
+  };
+
+  const onDeleteAdditionalExpenseSubmit = () => {
+    if (!additionalExpenseToDelete) return;
+    
+    handleRequest({
+      request: async () => await deleteAdditionalExpense(additionalExpenseToDelete.id),
+      onSuccess: (res: MutationRes) => {
+        console.log('Additional expense deleted successfully:', res);
+        toast.success('Qo\'shimcha xarajat muvaffaqiyatli o\'chirildi');
+        handleCloseDeleteAdditionalExpense();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
+      },
+    });
+  };
+
+  const onEditAdditionalExpenseSubmit = (data: AdditionalExpenseForm) => {
+    if (!additionalExpenseToEdit) return;
+    
+    const payload: addAdditionalExpensesReq = {
+      name: data.name,
+      description: data.description,
+      price: data.price,
+    };
+    
+    handleRequest({
+      request: async () => await updateAdditionalExpense({ id: String(additionalExpenseToEdit.id), body: payload }),
+      onSuccess: (res: MutationRes) => {
+        console.log('Additional expense updated successfully:', res);
+        toast.success('Qo\'shimcha xarajat muvaffaqiyatli yangilandi');
+        handleCloseEditAdditionalExpense();
+        additionalExpenseForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
+      },
+    });
+  };
+
   return {
     handleCloseBooking,
     handleCloseStaff,
@@ -312,6 +488,12 @@ const useModalActions = ({
     handleCloseService,
     handleCloseDeleteService,
     handleCloseEditService,
+    handleCloseExpense,
+    handleCloseDeleteExpense,
+    handleCloseEditExpense,
+    handleCloseAdditionalExpense,
+    handleCloseDeleteAdditionalExpense,
+    handleCloseEditAdditionalExpense,
     onBookingSubmit,
     onProductSubmit,
     onClientSubmit,
@@ -321,6 +503,12 @@ const useModalActions = ({
     onServiceSubmit,
     onDeleteServiceSubmit,
     onEditServiceSubmit,
+    onExpenseSubmit,
+    onDeleteExpenseSubmit,
+    onEditExpenseSubmit,
+    onAdditionalExpenseSubmit,
+    onDeleteAdditionalExpenseSubmit,
+    onEditAdditionalExpenseSubmit,
   };
 };
 

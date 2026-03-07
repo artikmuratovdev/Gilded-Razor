@@ -50,6 +50,19 @@ const serviceSchema = z.object({
   is_active: z.boolean().optional(),
 });
 
+const expenseSchema = z.object({
+  name: z.string().min(2, 'Xarajat nomi talab qilinadi'),
+  description: z.string().min(5, 'Tavsif kamida 5 belgidan iborat bo\'lishi kerak'),
+  price: z.string().min(1, 'Narx talab qilinadi'),
+  reminder_date: z.string().min(1, 'Eslatma sanasi talab qilinadi'),
+});
+
+const additionalExpenseSchema = z.object({
+  name: z.string().min(2, 'Xarajat nomi talab qilinadi'),
+  description: z.string().min(5, 'Tavsif kamida 5 belgidan iborat bo\'lishi kerak'),
+  price: z.string().min(1, 'Narx talab qilinadi'),
+});
+
 // --- Types ---
 
 export type BookingForm = z.infer<typeof bookingSchema>;
@@ -57,6 +70,8 @@ export type ProductForm = z.infer<typeof productSchema>;
 export type ClientForm = z.infer<typeof clientSchema>;
 export type StaffForm = z.infer<typeof staffSchema>;
 export type ServiceForm = z.infer<typeof serviceSchema>;
+export type ExpenseForm = z.infer<typeof expenseSchema>;
+export type AdditionalExpenseForm = z.infer<typeof additionalExpenseSchema>;
 
 // --- Custom Hook ---
 
@@ -118,7 +133,26 @@ const useModalForms = () => {
     },
   });
 
-  return { bookingForm, productForm, clientForm, staffForm, serviceForm };
+  const expenseForm = useForm<ExpenseForm>({
+    resolver: zodResolver(expenseSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      price: '',
+      reminder_date: '',
+    },
+  });
+
+  const additionalExpenseForm = useForm<AdditionalExpenseForm>({
+    resolver: zodResolver(additionalExpenseSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      price: '',
+    },
+  });
+
+  return { bookingForm, productForm, clientForm, staffForm, serviceForm, expenseForm, additionalExpenseForm };
 };
 
 export default useModalForms;
