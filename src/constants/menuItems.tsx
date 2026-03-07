@@ -1,6 +1,8 @@
 import {
   BarChart3,
   CalendarDays,
+  CircleDollarSign,
+  GraduationCap,
   LayoutDashboard,
   Package,
   Settings,
@@ -25,6 +27,8 @@ export const menuItems = [
   { id: 'clients', label: 'Mijozlar', icon: UserCheck, path: '/clients' },
   { id: 'services', label: 'Xizmatlar', icon: Package, path: '/services' },
   { id: 'reports', label: 'Hisobotlar', icon: BarChart3, path: '/reports' },
+  { id: 'academy', label: 'Akademiya', icon: GraduationCap, path: '/academy' },
+  { id: 'expenses', label: 'Xarajatlar', icon: CircleDollarSign, path: '/expenses' },
   { id: 'settings', label: 'Sozlamalar', icon: Settings, path: '/settings' },
 ];
 
@@ -59,6 +63,16 @@ export const setMenuLabel = (page: string) => {
       return {
         title: 'Hisobotlar',
         description: "Hisobotlarni ko'ring va boshqaring.",
+      };
+    case 'academy':
+      return {
+        title: 'Akademiya',
+        description: "Kurslar va darslarni ko'ring va boshqaring.",
+      };
+    case 'expenses':
+      return {
+        title: 'Xarajatlar',
+        description: "Moliyaviy xarajatlarni ko'ring va boshqaring.",
       };
     case 'settings':
       return {

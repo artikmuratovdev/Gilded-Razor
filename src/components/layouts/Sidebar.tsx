@@ -35,9 +35,9 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
 
       {/* Nav */}
       <nav className='flex-1 py-2 px-3 space-y-1 overflow-y-auto custom-scrollbar'>
-        {menuItems.slice(0,6).map(
+        {menuItems.slice(0,8).map(
           (
-            item, // Display first 5 items for 'Main Menu'
+            item,
           ) => (
             <button
               key={item.id}

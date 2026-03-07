@@ -2,8 +2,10 @@ import { Navigate, Route, Routes } from 'react-router';
 import { MainLayout } from './components/layouts/MainLayout';
 import { PrivateRoute } from './hooks/PrivateRoute';
 import { Appointments } from './pages/Appointments/Appointments';
+import { Academy } from './pages/Academy/Academy';
 import { Clients } from './pages/Clients/Clients';
 import { Dashboard } from './pages/Dashboard/Dashboard';
+import { Expenses } from './pages/Expenses/Expenses';
 import { Inventory } from './pages/Inventory/Services';
 import { LoginForm } from './pages/LoginPage/LoginPage';
 import { Reports } from './pages/Reports/Reports';
@@ -36,6 +38,12 @@ function App() {
         </Route>
         <Route path='/reports' element={<PrivateRoute />}>
           <Route index element={<Reports />} />
+        </Route>
+        <Route path='/academy' element={<PrivateRoute />}>
+          <Route index element={<Academy />} />
+        </Route>
+        <Route path='/expenses' element={<PrivateRoute />}>
+          <Route index element={<Expenses />} />
         </Route>
         <Route path='/settings' element={<PrivateRoute />}>
           <Route index element={<Settings />} />
