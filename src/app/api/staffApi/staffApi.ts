@@ -1,11 +1,11 @@
 import { API_TAGS } from '@/constants/ApiTags';
 import baseApi from '../baseApi/baseApi';
-import type { GetClientsReq, MutationRes } from '../clientsApi/type';
-import type { CreateStaffReq, GetStaffByIdRes, GetStaffRes } from './type';
+import type { MutationRes } from '../clientsApi/type';
+import type { CreateStaffReq, GetStaffByIdRes, GetStaffReq, GetStaffRes } from './type';
 
 const staffApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllStaff: builder.query<GetStaffRes, GetClientsReq>({
+    getAllStaff: builder.query<GetStaffRes, GetStaffReq>({
       query: (params) => ({ url: '/staff/', params }),
       providesTags: [API_TAGS.STAFFS],
     }),

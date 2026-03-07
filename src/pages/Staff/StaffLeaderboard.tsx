@@ -4,6 +4,7 @@ import { Card, CardContent } from "../../components/ui/Card";
 import { cn } from "../../lib/utils";
 import usePaginatedStaffs from "@/hooks/usePaginatedStaffs";
 import { Spinner } from "@/components/ui/spinner";
+import type { StaffSpecialization } from "@/app/api/staffApi/type";
 import {
   Avatar,
   AvatarBadge,
@@ -11,12 +12,16 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar";
 
-export const StaffLeaderboard = () => {
+interface StaffLeaderboardProps {
+  specialization?: StaffSpecialization;
+}
+
+export const StaffLeaderboard = ({ specialization }: StaffLeaderboardProps) => {
   const { data, isLoading } = usePaginatedStaffs({
     page: 1,
     ordering: "-rating",
+    specialization,
   });
-  console.log(data);
 
   if (isLoading) return <Spinner className="size-8" />;
   if (!data) return;
@@ -62,7 +67,7 @@ export const StaffLeaderboard = () => {
                     <h4 className="text-sm font-bold text-white">
                       {staff.name}
                     </h4>
-                    <p className="text-[10px] text-gray-500">Master Barber</p>
+                    <p className="text-[10px] text-gray-500">{staff.specialization_display ?? staff.specialization}</p>
                   </div>
                 </div>
                 <Badge variant="success" className="text-[10px]">
