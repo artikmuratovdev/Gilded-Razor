@@ -65,6 +65,16 @@ export const setMenuLabel = (page: string) => {
         title: 'Jamoa',
         description: "Xodimlar bazangizni ko'ring va boshqaring.",
       };
+    case 'staff/kids':
+      return {
+        title: 'Kids Jamoasi',
+        description: "Bolalar bo'yicha sartaroshlar ro'yxati va boshqaruvi.",
+      };
+    case 'staff/masters':
+      return {
+        title: 'Master Barberlar',
+        description: "Master barberlar ro'yxati va boshqaruvi.",
+      };
     case 'clients':
       return {
         title: 'Mijozlar',

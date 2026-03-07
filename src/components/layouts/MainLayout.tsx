@@ -64,6 +64,8 @@ export const MainLayout = () => {
           },
         };
       case 'staff':
+      case 'staff/kids':
+      case 'staff/masters':
         return {
           label: "Xodim Qo'shish",
           icon: UserPlus,

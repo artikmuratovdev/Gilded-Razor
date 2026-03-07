@@ -4,9 +4,9 @@ export type GetStaffRes = {
   data: {
     id: number;
     name: string;
-    specialization: "barber" | "kids" | "master_barber";
+    specialization: StaffSpecialization;
     specialization_display: string;
-    status: "available" | "in_session" | "on_break" | "off_duty";
+    status;
     status_display: string;
     rating: string;
     is_active: boolean;
@@ -58,13 +58,13 @@ export type GetStaffByIdRes = {
 
 export type CreateStaffReq = {
   name: string;
-  specialization: string;
-  phone: string;
+  specialization: StaffSpecialization;
+  phone_number: string;
   commission_rate: string;
 };
 
 export type StaffSpecialization = 'barber' | 'kids' | 'master_barber';
-
+type status = "available" | "in_session" | "on_break" | "off_duty"
 export type GetStaffReq = {
   search?: string;
   page?: number;
@@ -76,9 +76,9 @@ export type GetStaffReq = {
 export type UpdateStaffReq = {
   user: number;
   name: string;
-  specialization: "barber" | "kids" | "master_barber";
+  specialization: StaffSpecialization;
   commission_rate: string;
-  status:  "available" | "in_session" | "on_break" | "off_duty";
+  status;
   rating: string;
   is_active: boolean;
 };

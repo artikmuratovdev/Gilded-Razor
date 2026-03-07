@@ -20,6 +20,7 @@ import {
   ComboboxEmpty,
 } from '../../ui/combobox';
 import { useGetAllStaffQuery } from '@/app/api/staffApi/staffApi';
+import { useLocation } from 'react-router';
 
 // --- Schemas ---
 const Modals = () => {
@@ -84,6 +85,7 @@ const Modals = () => {
     editAdditionalExpense,
     additionalExpenseToEdit,
   } = useSelector((state: RootState) => state.modal);
+  const location = useLocation();
 
   // Get data from Redux cache (prefetched in Dashboard)
   
@@ -128,6 +130,13 @@ const Modals = () => {
     staff.name.toLowerCase().includes(staffSearch.toLowerCase())
   ) || [];
 
+  const forcedStaffRole =
+    location.pathname === '/staff/kids'
+      ? 'kids'
+      : location.pathname === '/staff/masters'
+        ? 'master_barber'
+        : undefined;
+
   // --- Form Hooks ---
 
   useEffect(() => {
@@ -152,6 +161,17 @@ const Modals = () => {
       setStaffSearch('');
     }
   }, [newBooking, bookingForm]);
+
+  useEffect(() => {
+    if (newStaff) {
+      staffForm.reset({
+        name: '',
+        specialization: forcedStaffRole ?? 'barber',
+        phone_number: '',
+        commission_rate: 45,
+      });
+    }
+  }, [newStaff, forcedStaffRole, staffForm]);
 
   useEffect(() => {
     if (editClient && clientToEdit) {
@@ -720,18 +740,22 @@ const Modals = () => {
               <Select
                 label='Mutaxassislik / Lavozim'
                 icon={<Scissors className='h-4 w-4' />}
-                {...staffForm.register('role')}
+                disabled={Boolean(forcedStaffRole)}
+                {...staffForm.register('specialization')}
               >
                 <option value=''>Tanlang</option>
                 <option value='master_barber'>Master Barber</option>
                 <option value='barber'>Barber</option>
-                <option value='stylist'>Stylist</option>
-                <option value='colorist'>Colorist</option>
-                <option value='receptionist'>Receptionist</option>
+                <option value='kids'>Kids</option>
               </Select>
-              {staffForm.formState.errors.role && (
+              {forcedStaffRole && (
+                <p className='text-xs text-gray-400 mt-1'>
+                  Bu sahifada mutaxassislik avtomatik tanlanadi.
+                </p>
+              )}
+              {staffForm.formState.errors.specialization && (
                 <p className='text-red-500 text-xs mt-1'>
-                  {staffForm.formState.errors.role.message}
+                  {staffForm.formState.errors.specialization.message}
                 </p>
               )}
             </div>
@@ -739,14 +763,14 @@ const Modals = () => {
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
             <div>
               <Controller
-                name='phone'
+                name='phone_number'
                 control={staffForm.control}
                 render={({ field }) => (
                   <PhoneInput
                     label='Telefon Raqam'
                     value={field.value}
                     onChange={field.onChange}
-                    error={staffForm.formState.errors.phone?.message}
+                    error={staffForm.formState.errors.phone_number?.message}
                   />
                 )}
               />
@@ -756,11 +780,11 @@ const Modals = () => {
                 type='number'
                 label='Komissiya Stavkasi (%)'
                 placeholder='Masalan: 45'
-                {...staffForm.register('commission', { valueAsNumber: true })}
+                {...staffForm.register('commission_rate', { valueAsNumber: true })}
               />
-              {staffForm.formState.errors.commission && (
+              {staffForm.formState.errors.commission_rate && (
                 <p className='text-red-500 text-xs mt-1'>
-                  {staffForm.formState.errors.commission.message}
+                  {staffForm.formState.errors.commission_rate.message}
                 </p>
               )}
             </div>

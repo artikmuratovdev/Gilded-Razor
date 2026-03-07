@@ -25,7 +25,7 @@ const productSchema = z.object({
 const clientSchema = z.object({
   firstName: z.string().min(2, 'Ism talab qilinadi'),
   lastName: z.string().min(2, 'Familiya talab qilinadi'),
-  email: z.string().email("Noto'g'ri email format").or(z.literal("")),
+  email: z.email("Noto'g'ri email format").or(z.literal("")),
   phone: z
     .string()
     .min(13, "To'liq telefon raqam kiriting")
@@ -34,12 +34,12 @@ const clientSchema = z.object({
 
 const staffSchema = z.object({
   name: z.string().min(2, 'Ism talab qilinadi'),
-  role: z.string().min(1, 'Lavozim talab qilinadi'),
-  phone: z
+  specialization: z.enum(['barber', 'kids', 'master_barber']),
+  phone_number: z
     .string()
     .min(13, "To'liq telefon raqam kiriting")
     .regex(/^\+998\d{9}$/, 'Format: +998XXXXXXXXX'),
-  commission: z.number().min(0).max(100),
+  commission_rate: z.number().min(0).max(100),
 });
 
 const serviceSchema = z.object({
@@ -116,9 +116,9 @@ const useModalForms = () => {
     resolver: zodResolver(staffSchema),
     defaultValues: {
       name: '',
-      role: '',
-      phone: '',
-      commission: 45,
+      specialization: 'barber',
+      phone_number: '',
+      commission_rate: 45,
     },
   });
 

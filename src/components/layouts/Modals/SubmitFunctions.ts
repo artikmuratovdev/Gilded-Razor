@@ -221,9 +221,9 @@ const useModalActions = ({
     console.log('Staff submitted:', data);
     const payload: CreateStaffReq = {
       name: data.name,
-      specialization: data.role,
-      phone: data.phone,
-      commission_rate: data.commission.toString(),
+      specialization: data.specialization,
+      phone_number: data.phone_number,
+      commission_rate: data.commission_rate.toString(),
     };
     handleRequest({
       request: async () => await createStaff(payload),
