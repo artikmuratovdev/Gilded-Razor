@@ -55,12 +55,20 @@ export const StaffPage = ({ specialization, title = 'Faol Sartaroshlar' }: Staff
       </div>
 
       {/* Barbers Grid */}
-      <StaffGrid staffMembers={staffList} isLoading={isLoading} />
+      {(!isLoading && staffList.length === 0) ? (
+        <div className='rounded-2xl border border-white/10 bg-surface-light/30 p-8 text-center text-gray-300'>
+          Ma'lumot hali yozilmagan
+        </div>
+      ) : (
+        <>
+          <StaffGrid staffMembers={staffList} isLoading={isLoading} />
 
-      {/* Leaderboard Table */}
-      <div className='pt-2'>
-        <StaffLeaderboard specialization={specialization} />
-      </div>
+          {/* Leaderboard Table */}
+          <div className='pt-2'>
+            <StaffLeaderboard specialization={specialization} />
+          </div>
+        </>
+      )}
     </div>
   );
 };

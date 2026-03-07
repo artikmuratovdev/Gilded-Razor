@@ -9,12 +9,15 @@ import { Spinner } from '@/components/ui/spinner';
 export const Clients = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'true' | 'false'>('all');
-  const [lastDateFilter, setLastDateFilter] = useState<'all' | 'month' | 'week'>('all');
+  const [recent20DaysOnly, setRecent20DaysOnly] = useState(false);
   const [page,setPage] = useState<number>(1);
 
   const is_active = statusFilter === 'all' ? undefined : statusFilter === 'true';
+  const dateFrom = recent20DaysOnly
+    ? new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    : undefined;
 
-  const {data, isLoading} = usePaginatedClients({page, searchQuery, is_active, last_date: lastDateFilter});
+  const {data, isLoading} = usePaginatedClients({page, searchQuery, is_active, date_from: dateFrom});
 
   if(!data) return;
   if(isLoading) {
@@ -35,8 +38,8 @@ export const Clients = () => {
             setSearchQuery={(q) => { setSearchQuery(q); setPage(1); }}
             statusFilter={statusFilter}
             setStatusFilter={(s) => { setStatusFilter(s); setPage(1); }}
-            lastDateFilter={lastDateFilter}
-            setLastDateFilter={(d: 'all' | 'month' | 'week') => { setLastDateFilter(d); setPage(1); }}
+            recent20DaysOnly={recent20DaysOnly}
+            setRecent20DaysOnly={(enabled) => { setRecent20DaysOnly(enabled); setPage(1); }}
           />
           <ClientsTable data={data.data} />
           <Pagination

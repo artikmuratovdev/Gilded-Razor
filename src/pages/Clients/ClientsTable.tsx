@@ -35,7 +35,7 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
   return (
     <>
       {/* Desktop Table View */}
-      <div className='hidden md:block overflow-x-auto'>
+      <div className='hidden lg:block overflow-x-auto'>
         <table className='w-full text-left'>
           <thead>
             <tr className='text-xs text-gray-500 font-bold uppercase tracking-wider bg-surface-light/30'>
@@ -109,7 +109,7 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
       </div>
 
       {/* Mobile/Tablet Card View */}
-      <div className='md:hidden divide-y divide-white/5'>
+      <div className='lg:hidden divide-y divide-white/5'>
         {data.length > 0 ? (
           data.map((client) => (
             <div

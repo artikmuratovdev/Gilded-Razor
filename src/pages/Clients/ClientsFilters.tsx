@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Search } from 'lucide-react';
 
 interface ClientsFiltersProps { 
@@ -14,8 +15,8 @@ interface ClientsFiltersProps {
   setSearchQuery: (query: string) => void;
   statusFilter: 'all' | 'true' | 'false';
   setStatusFilter: (status: 'all' | 'true' | 'false') => void;
-  lastDateFilter: 'all' | 'month' | 'week';
-  setLastDateFilter: (date: 'all' | 'month' | 'week') => void;
+  recent20DaysOnly: boolean;
+  setRecent20DaysOnly: (enabled: boolean) => void;
 }
 
 export const ClientsFilters = ({
@@ -23,8 +24,8 @@ export const ClientsFilters = ({
   setSearchQuery,
   statusFilter,
   setStatusFilter,
-  lastDateFilter,
-  setLastDateFilter,
+  recent20DaysOnly,
+  setRecent20DaysOnly,
 }: ClientsFiltersProps) => {
   return (
     <div className='p-3 sm:p-4 border-b border-white/5 flex flex-col md:flex-row gap-3 sm:gap-4'>
@@ -55,19 +56,16 @@ export const ClientsFilters = ({
           </Select>
         </div>
         <div className='flex-1 md:w-48'>
-          <Select value={lastDateFilter} onValueChange={(v) => setLastDateFilter(v as 'all' | 'month' | 'week')}>
-            <SelectTrigger className='w-full bg-surface-light border-white/5'>
-              <SelectValue placeholder='Sana' />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Sana</SelectLabel>
-                <SelectItem value='all'>Barchasi</SelectItem>
-                <SelectItem value='month'>Shu oy</SelectItem>
-                <SelectItem value='week'>Shu hafta</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <div className='h-10 px-3 rounded-xl bg-surface-light border border-white/5 flex items-center justify-between gap-3'>
+            <label htmlFor='recent-20-days-switch' className='text-sm text-gray-300 select-none'>
+              So'nggi 20 kundagi mijozlar
+            </label>
+            <Switch
+              id='recent-20-days-switch'
+              checked={recent20DaysOnly}
+              onCheckedChange={setRecent20DaysOnly}
+            />
+          </div>
         </div>
       </div>
     </div>
