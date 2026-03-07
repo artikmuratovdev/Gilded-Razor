@@ -32,7 +32,7 @@ export type GetStaffByIdRes = {
   data: {
     user: number;
     name: string;
-    specialization: string;
+    specialization: StaffSpecialization;
     specialization_display: string;
     phone: string;
     commission_rate: string;

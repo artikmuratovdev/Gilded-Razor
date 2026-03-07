@@ -35,7 +35,7 @@ import { toast } from 'sonner';
 // --- Staff edit form schema ---
 const editStaffSchema = z.object({
   name: z.string().min(2, 'Ism talab qilinadi'),
-  specialization: z.string().min(1, 'Lavozim talab qilinadi'),
+  specialization: z.enum(['barber', 'kids', 'master_barber']),
   phone: z
     .string()
     .min(13, "To'liq telefon raqam kiriting")
@@ -73,7 +73,7 @@ export const StaffProfile = () => {
     resolver: zodResolver(editStaffSchema),
     defaultValues: {
       name: '',
-      specialization: '',
+      specialization: 'barber',
       phone: '',
       commission_rate: '',
     },
@@ -98,7 +98,7 @@ export const StaffProfile = () => {
     const payload: Partial<CreateStaffReq> = {
       name: data.name,
       specialization: data.specialization,
-      phone: data.phone,
+      phone_number: data.phone,
       commission_rate: data.commission_rate,
     };
 
