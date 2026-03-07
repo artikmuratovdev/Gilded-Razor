@@ -57,8 +57,8 @@ export const ClientsFilters = ({
         </div>
         <div className='flex-1 md:w-48'>
           <div className='h-10 px-3 rounded-xl bg-surface-light border border-white/5 flex items-center justify-between gap-3'>
-            <label htmlFor='recent-20-days-switch' className='text-sm text-gray-300 select-none'>
-              So'nggi 20 kundagi mijozlar
+            <label htmlFor='recent-20-days-switch' className='sm:text-sm text-xs text-gray-300 select-none'>
+              Oxirgi 20 kunlik mijozlar
             </label>
             <Switch
               id='recent-20-days-switch'

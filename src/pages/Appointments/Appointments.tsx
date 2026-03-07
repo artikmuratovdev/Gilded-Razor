@@ -90,13 +90,13 @@ export const Appointments = () => {
       <div className='min-h-150 w-full max-w-full'>
         <div className='space-y-4'>
           {/* Mobile Card View */}
-          <div className='sm:hidden space-y-4'>
+          <div className='lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4'>
             {appointmentsData && appointmentsData.data.length > 0 ? (
               appointmentsData.data.map((appt) => {
                 return (
                   <Card
                     key={appt.id}
-                    className='overflow-hidden bg-surface/40 border-white/5'
+                    className='overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40 border-white/5'
                   >
                     <CardContent className='p-4'>
                       <div className='flex justify-between items-start mb-4'>
@@ -212,7 +212,7 @@ export const Appointments = () => {
           </div>
 
           {/* Desktop Table View */}
-          <Card className='hidden sm:block w-full'>
+          <Card className='hidden lg:block w-full'>
             <CardContent className='p-0'>
               <div className='overflow-x-auto'>
                 <table className='w-full text-left border-collapse'>

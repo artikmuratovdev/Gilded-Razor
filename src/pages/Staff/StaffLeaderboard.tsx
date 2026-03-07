@@ -35,75 +35,77 @@ export const StaffLeaderboard = ({ specialization }: StaffLeaderboardProps) => {
 
       <CardContent className="p-0">
         {/* Mobile Leaderboard Cards */}
-        <div className="sm:hidden divide-y divide-white/5">
+        <div className="lg:hidden p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           {data.data.map((staff, idx) => (
-            <div
+            <Card
               key={staff.id}
-              className="p-4 flex flex-col gap-3 hover:bg-white/2 transition-colors"
+              className="overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40 border-white/5"
             >
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <span
-                      className={cn(
-                        "absolute -top-1 -left-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold z-10",
-                        idx === 0
-                          ? "bg-primary text-background"
-                          : "bg-surface-light text-gray-400",
-                      )}
-                    >
-                      #{idx + 1}
-                    </span>
-                    <Avatar>
-                      <AvatarImage
-                        src={staff.avatar || "https://github.com/shadcn.png"}
-                        alt="@shadcn"
-                      />
-                      <AvatarFallback>{staff.name}</AvatarFallback>
-                      <AvatarBadge className="bg-green-600 dark:bg-green-800" />
-                    </Avatar>
+              <CardContent className="p-4 flex flex-col gap-3">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <span
+                        className={cn(
+                          "absolute -top-1 -left-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold z-10",
+                          idx === 0
+                            ? "bg-primary text-background"
+                            : "bg-surface-light text-gray-400",
+                        )}
+                      >
+                        #{idx + 1}
+                      </span>
+                      <Avatar>
+                        <AvatarImage
+                          src={staff.avatar || "https://github.com/shadcn.png"}
+                          alt="@shadcn"
+                        />
+                        <AvatarFallback>{staff.name}</AvatarFallback>
+                        <AvatarBadge className="bg-green-600 dark:bg-green-800" />
+                      </Avatar>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white">
+                        {staff.name}
+                      </h4>
+                      <p className="text-[10px] text-gray-500">{staff.specialization_display ?? staff.specialization}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white">
-                      {staff.name}
-                    </h4>
-                    <p className="text-[10px] text-gray-500">{staff.specialization_display ?? staff.specialization}</p>
-                  </div>
+                  <Badge variant="success" className="text-[10px]">
+                    {staff.efficiency} Samaradorlik
+                  </Badge>
                 </div>
-                <Badge variant="success" className="text-[10px]">
-                  {staff.efficiency} Samaradorlik
-                </Badge>
-              </div>
 
-              <div className="grid grid-cols-3 gap-2 pt-2">
-                <div className="bg-surface-light rounded-lg p-2 text-center">
-                  <p className="text-[8px] text-gray-500 font-bold uppercase mb-0.5">
-                    Bronlar
-                  </p>
-                  <p className="text-xs font-bold text-white">{staff.bookings}</p>
+                <div className="grid grid-cols-3 gap-2 pt-2">
+                  <div className="bg-surface-light rounded-lg p-2 text-center">
+                    <p className="text-[8px] text-gray-500 font-bold uppercase mb-0.5">
+                      Bronlar
+                    </p>
+                    <p className="text-xs font-bold text-white">{staff.bookings}</p>
+                  </div>
+                  <div className="bg-surface-light rounded-lg p-2 text-center">
+                    <p className="text-[8px] text-gray-500 font-bold uppercase mb-0.5">
+                      Reyting
+                    </p>
+                    <p className="text-xs font-bold text-primary flex items-center justify-center gap-1">
+                      {parseFloat(staff.rating).toFixed(1)}{" "}
+                      <Star className="w-2.5 h-2.5 fill-current" />
+                    </p>
+                  </div>
+                  <div className="bg-surface-light rounded-lg p-2 text-center">
+                    <p className="text-[8px] text-gray-500 font-bold uppercase mb-0.5">
+                      Daromad
+                    </p>
+                    <p className="text-xs font-bold text-white">{staff.income != null ? `${staff.income.toString()} so'm` : '—'}</p>
+                  </div>
                 </div>
-                <div className="bg-surface-light rounded-lg p-2 text-center">
-                  <p className="text-[8px] text-gray-500 font-bold uppercase mb-0.5">
-                    Reyting
-                  </p>
-                  <p className="text-xs font-bold text-primary flex items-center justify-center gap-1">
-                    {parseFloat(staff.rating).toFixed(1)}{" "}
-                    <Star className="w-2.5 h-2.5 fill-current" />
-                  </p>
-                </div>
-                <div className="bg-surface-light rounded-lg p-2 text-center">
-                  <p className="text-[8px] text-gray-500 font-bold uppercase mb-0.5">
-                    Daromad
-                  </p>
-                  <p className="text-xs font-bold text-white">{staff.income != null ? `${staff.income.toString()} so'm` : '—'}</p>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* Desktop Leaderboard Table */}
-        <div className="hidden sm:block overflow-x-auto">
+        <div className="hidden lg:block overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-white/5 text-xs text-gray-500 font-bold uppercase tracking-wider bg-white/1">

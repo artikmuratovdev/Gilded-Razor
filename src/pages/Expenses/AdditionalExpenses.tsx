@@ -69,8 +69,53 @@ const QoshimchaExpenses = () => {
             </Button>
           </div>
 
-          {/* Table */}
-          <div className='overflow-x-auto'>
+          {/* Mobile/Tablet Cards */}
+          <div className='lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
+            {expenseList.length === 0 ? (
+              <div className='col-span-full px-4 py-8 text-center text-gray-400'>
+                Qo'shimcha xarajatlar topilmadi
+              </div>
+            ) : (
+              expenseList.map((expense) => (
+                <Card
+                  key={expense.id}
+                  className='overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40 border-white/5'
+                >
+                  <CardContent className='p-4 space-y-3'>
+                    <div className='flex items-start justify-between gap-3'>
+                      <div>
+                        <p className='text-sm font-semibold text-white'>{expense.name}</p>
+                        <p className='text-xs text-gray-400 mt-1'>{expense.description}</p>
+                      </div>
+                      <p className='text-sm font-semibold text-green-400 whitespace-nowrap'>{expense.price} so'm</p>
+                    </div>
+                    <div className='text-sm text-gray-300'>
+                      {new Date(expense.created_at).toLocaleDateString('uz-UZ')}
+                    </div>
+                    <div className='flex items-center justify-end gap-2 pt-1'>
+                      <button
+                        onClick={() => handleEditExpense(expense)}
+                        className='p-2 rounded-lg hover:bg-primary/10 text-primary transition-colors'
+                        title='Tahrirlash'
+                      >
+                        <Pencil className='h-4 w-4' />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteExpense(expense)}
+                        className='p-2 rounded-lg hover:bg-red-500/10 text-red-500 transition-colors'
+                        title="O'chirish"
+                      >
+                        <Trash2 className='h-4 w-4' />
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+
+          {/* Desktop Table */}
+          <div className='hidden lg:block overflow-x-auto'>
             <table className='w-full'>
               <thead className='bg-surface-light border-b border-white/5'>
                 <tr>

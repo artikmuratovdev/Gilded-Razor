@@ -6,6 +6,7 @@ import {
 import { Button } from '../../components/ui/Button';
 import type { GetClientsRes } from '@/app/api/clientsApi/type';
 import { Badge } from '@/components/ui/Badge';
+import { Card, CardContent } from '@/components/ui/Card';
 import { useDispatch } from 'react-redux';
 import { openModal, setClientToDelete, setClientToEdit } from '@/app/slices/modalSlice';
 
@@ -109,60 +110,55 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
       </div>
 
       {/* Mobile/Tablet Card View */}
-      <div className='lg:hidden divide-y divide-white/5'>
+      <div className='lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
         {data.length > 0 ? (
           data.map((client) => (
-            <div
+            <Card
               key={client.id}
-              className='p-4 space-y-4  transition-colors'
+              className='overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40 border-white/5'
             >
-              <div className='flex justify-between items-start'>
-                  <h4 className='font-bold text-white'>{client.full_name}</h4>
-                <Badge
-                    variant={
-                      client.is_active ? "success" : "warning"
-                    }
+              <CardContent className='p-4 space-y-4'>
+                <div className='flex justify-between items-start'>
+                    <h4 className='font-bold text-white'>{client.full_name}</h4>
+                  <Badge
+                      variant={
+                        client.is_active ? "success" : "warning"
+                      }
+                    >
+                      {client.is_active ? "Faol" : "Faol Emas"}
+                    </Badge>
+                </div>
+
+                <div className='grid grid-cols-2 gap-4 bg-white/2 p-3 rounded-xl border border-white/5'>
+                    <p className='text-[8px] text-gray-500 font-bold uppercase'>
+                      Aloqa
+                    </p>
+                    <p className='text-[10px] text-gray-300'>{client.phone}</p>
+                </div>
+
+                <div className='flex gap-2 w-full'>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='flex-1 h-9 text-xs gap-2'
+                    onClick={() => handleEditClick(client)}
                   >
-                    {client.is_active ? "Faol" : "Faol Emas"}
-                  </Badge>
-              </div>
-
-              <div className='grid grid-cols-2 gap-4 bg-white/2 p-3 rounded-xl border border-white/5'>
-                  <p className='text-[8px] text-gray-500 font-bold uppercase'>
-                    Aloqa
-                  </p>
-                  <p className='text-[10px] text-gray-300'>{client.phone}</p>
-              </div>
-
-              <div className='flex gap-2 w-full'>
-                {/* <Button
-                  variant='outline'
-                  size='sm'
-                  className='flex-1 h-9 text-xs gap-2'
-                >
-                  <MessageSquare className='h-3.5 w-3.5' /> Xabar
-                </Button> */}
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='flex-1 h-9 text-xs gap-2'
-                  onClick={() => handleEditClick(client)}
-                >
-                  <Pencil className='h-3.5 w-3.5' /> Tahrirlash
-                </Button>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='w-10 h-9 p-0 text-red-400 hover:text-red-300 hover:bg-red-400/10'
-                  onClick={() => handleDeleteClick(client)}
-                >
-                  <Trash2 className='h-3.5 w-3.5' />
-                </Button>
-              </div>
-            </div>
+                    <Pencil className='h-3.5 w-3.5' /> Tahrirlash
+                  </Button>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='w-10 h-9 p-0 text-red-400 hover:text-red-300 hover:bg-red-400/10'
+                    onClick={() => handleDeleteClick(client)}
+                  >
+                    <Trash2 className='h-3.5 w-3.5' />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           ))
         ) : (
-          <div className='p-10 text-center text-gray-500 italic'>
+          <div className='col-span-full p-10 text-center text-gray-500 italic'>
             Mijozlar topilmadi
           </div>
         )}

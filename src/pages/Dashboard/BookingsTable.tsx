@@ -61,10 +61,86 @@ export const BookingsTable = () => {
               </Button>
             </div>
           </div>
-          <div className='overflow-x-auto'>
+          <div className='lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
+            {recentBookings.map((booking) => (
+              <Card
+                key={booking.id}
+                className='overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40 border-white/5'
+              >
+                <CardContent className='p-4 space-y-3'>
+                  <div className='flex items-start justify-between gap-3'>
+                    <div className='flex items-center gap-3'>
+                      <img
+                        src={booking.clientAvatar}
+                        alt='avatar'
+                        className='w-10 h-10 rounded-full object-cover'
+                      />
+                      <div>
+                        <p className='text-sm font-bold text-white'>{booking.clientName}</p>
+                        <p className='text-xs text-gray-400'>{booking.service}</p>
+                      </div>
+                    </div>
+                    <Badge
+                      variant={
+                        booking.status === 'Completed'
+                          ? 'success'
+                          : booking.status === 'Pending'
+                            ? 'warning'
+                            : booking.status === 'Confirmed'
+                              ? 'success'
+                              : 'info'
+                      }
+                    >
+                      {booking.status}
+                    </Badge>
+                  </div>
+
+                  <div className='grid grid-cols-2 gap-3 text-xs'>
+                    <div className='rounded-lg border border-white/5 bg-white/2 p-2.5'>
+                      <p className='text-gray-500 uppercase font-semibold'>Sartarosh</p>
+                      <p className='text-gray-200 mt-1'>{booking.barber}</p>
+                    </div>
+                    <div className='rounded-lg border border-white/5 bg-white/2 p-2.5'>
+                      <p className='text-gray-500 uppercase font-semibold'>Sana / Vaqt</p>
+                      <p className='text-gray-200 mt-1'>{booking.date} {booking.time}</p>
+                    </div>
+                  </div>
+
+                  <div className='flex justify-end gap-2'>
+                    <Button
+                      variant='ghost'
+                      size='icon'
+                      className='h-8 w-8 text-gray-400 hover:text-white'
+                      title='Bronni Tahrirlash'
+                      onClick={() => {
+                        setSelectedBooking(booking);
+                        setIsEditModalOpen(true);
+                      }}
+                    >
+                      <Pencil className='h-4 w-4' />
+                    </Button>
+                    <Button
+                      variant='ghost'
+                      size='icon'
+                      className='h-8 w-8 text-red-400 hover:text-red-300 hover:bg-red-400/10'
+                      title='Bronni Bekor Qilish'
+                      onClick={() => {
+                        setBookingToDelete(booking);
+                        setIsDeleteModalOpen(true);
+                      }}
+                    >
+                      <X className='h-4 w-4' />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className='hidden lg:block overflow-x-auto'>
             <table className='w-full text-left border-collapse'>
               <thead>
-                <tr className='bg-white/[0.02] border-b border-white/5'>
+                <tr className='bg-white/2 border-b border-white/5'>
                   <th className='p-4 pl-6 text-xs font-semibold text-gray-400 uppercase tracking-wider'>
                     Mijoz
                   </th>
@@ -89,7 +165,7 @@ export const BookingsTable = () => {
                 {recentBookings.map((booking) => (
                   <tr
                     key={booking.id}
-                    className='group hover:bg-white/[0.02] transition-colors'
+                    className='group hover:bg-white/2 transition-colors'
                   >
                     <td className='p-4 pl-6'>
                       <div className='flex items-center gap-3'>
