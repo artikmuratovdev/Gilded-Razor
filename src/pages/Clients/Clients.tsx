@@ -17,7 +17,7 @@ export const Clients = () => {
     ? new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
     : undefined;
 
-  const {data, isLoading} = usePaginatedClients({page, searchQuery, is_active, date_from: dateFrom});
+  const {data, isLoading} = usePaginatedClients({page, searchQuery, is_active, date_from: dateFrom,last_date:recent20DaysOnly});
 
   if(!data) return;
   if(isLoading) {
