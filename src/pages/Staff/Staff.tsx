@@ -3,13 +3,13 @@ import type { StaffSpecialization } from '@/app/api/staffApi/type';
 import { useState } from 'react';
 import { StaffGrid } from './StaffGrid';
 import { StaffLeaderboard } from './StaffLeaderboard';
+import { Spinner } from '@/components/ui/spinner';
 
 interface StaffPageProps {
   specialization?: StaffSpecialization;
-  title?: string;
 }
 
-export const StaffPage = ({ specialization, title = 'Faol Sartaroshlar' }: StaffPageProps) => {
+export const StaffPage = ({ specialization }: StaffPageProps) => {
   const [page, setPage] = useState(1);
 
   const { data, nextData, isLoading, isFetching } = usePaginatedStaffs({
@@ -22,15 +22,12 @@ export const StaffPage = ({ specialization, title = 'Faol Sartaroshlar' }: Staff
   const hasNext = !!nextData?.data?.length && page < totalPages;
   const hasPrev = page > 1;
 
+  if (isLoading) return <Spinner className="size-8 mx-auto" />;
+
   return (
     <div className='space-y-6 sm:space-y-8 animate-in fade-in zoom-in-95 duration-500'>
-      {/* Top Stats */}
-      {/* <StaffStats /> */}
 
       <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3'>
-        <h2 className='text-lg sm:text-xl font-bold text-white'>
-          {title}
-        </h2>
         {totalPages > 1 && (
           <div className='flex items-center gap-2'>
             <button

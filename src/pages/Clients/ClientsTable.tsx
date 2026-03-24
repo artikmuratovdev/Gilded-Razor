@@ -110,17 +110,18 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
       </div>
 
       {/* Mobile/Tablet Card View */}
-      <div className='lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
+      <div className='lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4 pt-4'>
         {data.length > 0 ? (
           data.map((client) => (
             <Card
               key={client.id}
-              className='overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40 border-white/5'
+              className='overflow-hidden group hover:border-primary/50 transition-colors bg-surface/40 border-white/5 shadow-[#D4AF35]'
             >
               <CardContent className='p-4 space-y-4'>
                 <div className='flex justify-between items-start'>
                     <h4 className='font-bold text-white'>{client.full_name}</h4>
-                  <Badge
+                  <Badge 
+                      className='text-base'
                       variant={
                         client.is_active ? "success" : "warning"
                       }
@@ -129,11 +130,9 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
                     </Badge>
                 </div>
 
-                <div className='grid grid-cols-2 gap-4 bg-white/2 p-3 rounded-xl border border-white/5'>
-                    <p className='text-[8px] text-gray-500 font-bold uppercase'>
-                      Aloqa
-                    </p>
-                    <p className='text-[10px] text-gray-300'>{client.phone}</p>
+                <div className='flex justify-between items-start'>
+                    <h4 className='font-bold text-white'>Aloqa</h4>
+                    <p className='text-[14px] text-gray-300'>{client.phone}</p>
                 </div>
 
                 <div className='flex gap-2 w-full'>
@@ -148,10 +147,10 @@ export const ClientsTable = ({ data }: ClientsTableProps) => {
                   <Button
                     variant='outline'
                     size='sm'
-                    className='w-10 h-9 p-0 text-red-400 hover:text-red-300 hover:bg-red-400/10'
+                    className='flex-1 h-9 p-0 text-red-400 hover:text-red-300 hover:bg-red-400/10'
                     onClick={() => handleDeleteClick(client)}
                   >
-                    <Trash2 className='h-3.5 w-3.5' />
+                    <Trash2 className='h-3.5 w-3.5' /> O'chirish
                   </Button>
                 </div>
               </CardContent>

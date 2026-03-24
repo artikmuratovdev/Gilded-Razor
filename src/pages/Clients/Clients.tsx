@@ -31,7 +31,7 @@ export const Clients = () => {
   return (
     <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
 
-      <Card>
+      <Card className='py-0'>
         <CardContent className='p-0'>
           <ClientsFilters
             searchQuery={searchQuery}

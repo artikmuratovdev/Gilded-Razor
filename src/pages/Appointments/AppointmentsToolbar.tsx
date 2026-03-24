@@ -6,10 +6,9 @@ import {
   ChevronRight,
   ChevronDown,
   Search,
-  X,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { DayPicker } from 'react-day-picker';
+import { Calendar } from '../../components/ui/calendar';
 import { Button } from '../../components/ui/Button';
 
 interface AppointmentsToolbarProps {
@@ -37,6 +36,7 @@ export const AppointmentsToolbar = ({
   onStatusChange,
 }: AppointmentsToolbarProps) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [popoverPos, setPopoverPos] = useState({ top: 0, left: 0 });
   const [search, setSearch] = useState('');
   const popoverRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -100,7 +100,13 @@ export const AppointmentsToolbar = ({
             {/* Calendar trigger */}
             <button
               ref={triggerRef}
-              onClick={() => setCalendarOpen((v) => !v)}
+              onClick={() => {
+                if (triggerRef.current) {
+                  const rect = triggerRef.current.getBoundingClientRect();
+                  setPopoverPos({ top: rect.bottom + 8, left: rect.left });
+                }
+                setCalendarOpen((v) => !v);
+              }}
               className='flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all cursor-pointer group'
             >
               <CalendarIcon className='h-4 w-4 text-primary group-hover:scale-110 transition-transform' />
@@ -132,27 +138,7 @@ export const AppointmentsToolbar = ({
           )}
         </div>
 
-        {/* Right: View Toggle */}
-        <div className='flex items-center gap-2'>
-          <div className='relative'>
-            <select
-              value={statusFilter}
-              onChange={(e) => onStatusChange(e.target.value)}
-              className='appearance-none h-9 pl-3 pr-8 rounded-xl border border-white/10 bg-surface text-sm text-gray-300 focus:outline-none focus:border-primary transition-colors cursor-pointer hover:border-white/20'
-            >
-              {STATUS_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value} className='bg-surface text-gray-200'>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className='pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400' />
-          </div>
-        </div>
-      </div>
-
-      {/* Search + Status Filter Row */}
-      <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2'>
+        <div className='flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2'>
         <div className='flex items-center bg-surface px-3 py-2.5 rounded-xl border border-white/5 focus-within:border-primary transition-all flex-1'>
           <Search className='h-4 w-4 text-gray-500 shrink-0' />
           <input
@@ -165,7 +151,7 @@ export const AppointmentsToolbar = ({
         </div>
 
         {/* Status filter select (mobile — full width, desktop — auto) */}
-        <div className='relative sm:hidden'>
+        <div className='relative'>
           <select
             value={statusFilter}
             onChange={(e) => onStatusChange(e.target.value)}
@@ -180,114 +166,34 @@ export const AppointmentsToolbar = ({
           <ChevronDown className='pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400' />
         </div>
       </div>
+      </div>
+
+      {/* Search + Status Filter Row */}
+      
 
       {/* Calendar Popover */}
       {calendarOpen && (
         <div
           ref={popoverRef}
-          className='absolute top-[calc(100%+8px)] left-0 z-50 animate-in fade-in slide-in-from-top-2 duration-200'
-          style={{ position: 'fixed', zIndex: 9999 }}
+          className='animate-in fade-in slide-in-from-top-2 duration-200'
+          style={{ position: 'fixed', top: popoverPos.top, left: popoverPos.left, zIndex: 9999 }}
         >
-          <CalendarPopover
-            selectedDate={selectedDate}
-            onSelect={(date) => {
+          <Calendar
+        mode='single'
+        selected={selectedDate}
+        onSelect={(date) => {
               if (date) {
                 onDateChange(date);
                 setCalendarOpen(false);
               }
-            }}
-            onClose={() => setCalendarOpen(false)}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
-
-/* ─── Calendar Popover Component ─── */
-interface CalendarPopoverProps {
-  selectedDate: Date;
-  onSelect: (date: Date | undefined) => void;
-  onClose: () => void;
-}
-
-const CalendarPopover = ({
-  selectedDate,
-  onSelect,
-  onClose,
-}: CalendarPopoverProps) => {
-  return (
-    <div
-      className='rounded-2xl border border-white/10 shadow-2xl overflow-hidden'
-      style={{
-        background: 'hsl(var(--color-surface, 225 15% 12%))',
-        backdropFilter: 'blur(20px)',
-        minWidth: '280px',
-      }}
-    >
-      {/* Header */}
-      <div className='flex items-center justify-between px-4 pt-3 pb-1'>
-        <span className='text-xs font-bold text-gray-400 uppercase tracking-wider'>
-          Sana tanlash
-        </span>
-        <button
-          onClick={onClose}
-          className='h-6 w-6 rounded-md flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/5 transition-all'
-        >
-          <X className='h-3.5 w-3.5' />
-        </button>
-      </div>
-
-      {/* DayPicker */}
-      <DayPicker
-        mode='single'
-        selected={selectedDate}
-        onSelect={onSelect}
+            }}  
         weekStartsOn={1}
         locale={uz}
         showOutsideDays
-        classNames={{
-          root: 'rdp-custom',
-          month: 'rdp-month',
-          month_caption: 'rdp-caption',
-          caption_label: 'rdp-caption-label',
-          nav: 'rdp-nav',
-          button_previous: 'rdp-nav-btn',
-          button_next: 'rdp-nav-btn',
-          month_grid: 'rdp-table',
-          weekdays: 'rdp-head_row',
-          weekday: 'rdp-head_cell',
-          week: 'rdp-row',
-          day: 'rdp-cell',
-          day_button: 'rdp-day',
-          selected: 'rdp-day-selected',
-          today: 'rdp-day-today',
-          outside: 'rdp-day-outside',
-          disabled: 'rdp-day-disabled',
-        }}
-        style={
-          {
-            '--rdp-accent-color': 'var(--color-primary, #c9a96e)',
-            '--rdp-background-color': 'transparent',
-          } as React.CSSProperties
-        }
+        className='p-2'
       />
-
-      {/* Footer */}
-      <div className='px-4 pb-3 flex justify-between items-center border-t border-white/5 pt-2'>
-        <button
-          onClick={() => onSelect(new Date())}
-          className='text-xs font-semibold text-primary hover:text-primary/80 transition-colors'
-        >
-          Bugun
-        </button>
-        <button
-          onClick={onClose}
-          className='text-xs text-gray-500 hover:text-gray-300 transition-colors'
-        >
-          Yopish
-        </button>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

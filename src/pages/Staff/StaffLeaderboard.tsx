@@ -3,7 +3,6 @@ import { Badge } from "../../components/ui/Badge";
 import { Card, CardContent } from "../../components/ui/Card";
 import { cn } from "../../lib/utils";
 import usePaginatedStaffs from "@/hooks/usePaginatedStaffs";
-import { Spinner } from "@/components/ui/spinner";
 import type { StaffSpecialization } from "@/app/api/staffApi/type";
 import {
   Avatar,
@@ -17,13 +16,12 @@ interface StaffLeaderboardProps {
 }
 
 export const StaffLeaderboard = ({ specialization }: StaffLeaderboardProps) => {
-  const { data, isLoading } = usePaginatedStaffs({
+  const { data } = usePaginatedStaffs({
     page: 1,
     ordering: "-rating",
     specialization,
   });
 
-  if (isLoading) return <Spinner className="size-8" />;
   if (!data) return;
   return (
     <Card className="overflow-hidden">
