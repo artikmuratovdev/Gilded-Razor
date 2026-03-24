@@ -74,7 +74,7 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
                   'w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 group',
                   isParentActive
                     ? 'bg-primary/10 text-primary'
-                    : 'text-gray-500 hover:bg-white/5 hover:text-white',
+                    : 'text-white hover:bg-white/5 hover:text-primary',
                 )}
               >
                 <item.icon
@@ -85,7 +85,7 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
                       : 'group-hover:text-primary transition-colors',
                   )}
                 />
-                <span className='font-medium text-sm flex-1 text-left'>{item.label}</span>
+                <span className='font-medium text-sm flex-1 text-left text-gold'>{item.label}</span>
                 {isExpandable && (
                   <ChevronDown
                     className={cn(
@@ -121,7 +121,7 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
                             'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-150 group text-sm',
                             isSubActive
                               ? 'bg-primary/10 text-primary'
-                              : 'text-gray-500 hover:bg-white/5 hover:text-white',
+                              : 'text-white hover:bg-white/5 hover:text-primary',
                           )}
                         >
                           <sub.icon
@@ -160,7 +160,7 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
                             'w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-150 group text-sm',
                             isSubActive
                               ? 'bg-primary/10 text-primary'
-                              : 'text-gray-500 hover:bg-white/5 hover:text-white',
+                              : 'text-white hover:bg-white/5 hover:text-primary',
                           )}
                         >
                           <sub.icon
