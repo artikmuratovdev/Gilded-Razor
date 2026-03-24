@@ -79,8 +79,8 @@ export const RevenueChart = () => {
                   }}
                   itemStyle={{ color: '#d4af35' }}
                   cursor={{ stroke: 'rgba(255,255,255,0.1)' }}
-                  formatter={(value: number | undefined) => [
-                    `$${(value ?? 0).toLocaleString()}`,
+                  formatter={(value) => [
+                    `$${(typeof value === 'number' ? value : 0).toLocaleString()}`,
                     'Daromad',
                   ]}  
                 />

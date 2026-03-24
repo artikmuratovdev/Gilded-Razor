@@ -1,7 +1,7 @@
 import { StaffPage } from './Staff';
 
 const Masters = () => {
-  return <StaffPage specialization='master_barber' title='Master Barberlar' />;
+  return <StaffPage specialization='master_barber' />;
 };
 
 export default Masters;
