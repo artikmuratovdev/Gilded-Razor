@@ -14,8 +14,6 @@ interface ClientsFiltersProps {
   setSearchQuery: (query: string) => void;
   statusFilter: 'all' | 'true' | 'false';
   setStatusFilter: (status: 'all' | 'true' | 'false') => void;
-  recent20DaysOnly: boolean;
-  setRecent20DaysOnly: (enabled: boolean) => void;
 }
 
 export const ClientsFilters = ({
@@ -23,10 +21,7 @@ export const ClientsFilters = ({
   setSearchQuery,
   statusFilter,
   setStatusFilter,
-  recent20DaysOnly,
-  setRecent20DaysOnly,
 }: ClientsFiltersProps) => {
-  console.log(recent20DaysOnly)
   return (
     <div className='sm:p-4 border-b border-white/5 flex flex-col md:flex-row gap-3 sm:gap-4'>
       <div className='relative flex-1'>
@@ -54,11 +49,6 @@ export const ClientsFilters = ({
               </SelectGroup>
             </SelectContent>
           </Select>
-        </div>
-        <div className='flex-1 md:w-48' onClick={() => setRecent20DaysOnly(!recent20DaysOnly)}>
-          <p className={(recent20DaysOnly ? "bg-[#D4AF35] text-black border-white/5" : "bg-surface-light border-[#D4AF35]") + ' h-9.5 px-3  border  flex items-center justify-between gap-3 text-sm text-center rounded-lg cursor-pointer'} >
-              Oxirgi 20 kunlik mijozlar
-          </p>
         </div>
       </div>
     </div>

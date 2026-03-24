@@ -37,6 +37,7 @@ function App() {
           </Route>
           <Route path="/clients" element={<PrivateRoute />}>
             <Route index element={<Clients />} />
+            <Route path="recent" element={<Clients />} />
           </Route>
           <Route path="/services" element={<PrivateRoute />}>
             <Route index element={<Inventory />} />

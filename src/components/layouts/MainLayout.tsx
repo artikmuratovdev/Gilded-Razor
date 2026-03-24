@@ -75,6 +75,7 @@ export const MainLayout = () => {
           },
         };
       case 'clients':
+      case 'clients/recent':
         return {
           label: "Mijoz Qo'shish",
           icon: UserPlus,
