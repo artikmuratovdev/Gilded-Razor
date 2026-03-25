@@ -16,13 +16,11 @@ export const Clients = () => {
   const isRecentPage = location.pathname === '/clients/recent';
 
   const is_active = statusFilter === 'all' ? undefined : statusFilter === 'true';
-  const dateFrom = new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
   const { data, isLoading } = usePaginatedClients({
     page,
     searchQuery,
     is_active,
-    date_from: isRecentPage ? dateFrom : undefined,
     last_date: isRecentPage ? true : undefined,
   });
 
