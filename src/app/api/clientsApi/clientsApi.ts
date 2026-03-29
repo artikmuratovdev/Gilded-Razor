@@ -30,8 +30,18 @@ const clientsApi = baseApi.injectEndpoints({
         body,
       }),
       invalidatesTags: [API_TAGS.CLIENTS],
+    }),
+    createConnection : build.mutation<MutationRes,number>({
+      query: (id) => ({
+        url: `/clients/${id}/connected/`,
+        method: 'POST',
+        body:{
+          connected:true
+        },
+      }),
+      invalidatesTags: [API_TAGS.CLIENTS],
     })
   }),
 });
 
-export const { useCreateClientMutation, useGetClientsQuery , useDeleteClientMutation, useUpdateClientMutation} = clientsApi;
+export const { useCreateClientMutation, useGetClientsQuery , useDeleteClientMutation, useUpdateClientMutation , useCreateConnectionMutation} = clientsApi;
