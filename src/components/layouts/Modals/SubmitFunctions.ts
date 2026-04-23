@@ -311,6 +311,7 @@ const useModalActions = ({
     
     handleRequest({
       request: async () => await createService(payload),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onSuccess: (res: any) => {
         console.log('Service created successfully:', res);
         toast.success('Xizmat muvaffaqiyatli yaratildi');

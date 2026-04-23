@@ -3,6 +3,14 @@ import { useForm } from 'react-hook-form';
 import type { UseFormReturn } from 'react-hook-form';
 import z from 'zod';
 
+const numericString = (message: string) =>
+  z
+    .string()
+    .min(1, message)
+    .refine((value) => !Number.isNaN(Number(value)) && Number(value) >= 0, {
+      message: "Narx to'g'ri raqam bo'lishi kerak",
+    });
+
 const bookingSchema = z.object({
   client: z.number().min(1, 'Mijoz talab qilinadi'),
   staff_member: z.number().min(1, 'Sartarosh tanlanishi shart'),
@@ -18,7 +26,7 @@ const bookingSchema = z.object({
 const quickAppointmentSchema = z.object({
   client: z.number().min(1, 'Mijoz talab qilinadi'),
   staff_member: z.number().min(1, 'Xodim tanlanishi shart'),
-  price: z.string().min(1, 'Narx talab qilinadi'),
+  price: numericString('Narx talab qilinadi'),
 });
 
 const productSchema = z.object({
@@ -32,7 +40,7 @@ const productSchema = z.object({
 const clientSchema = z.object({
   firstName: z.string().min(2, 'Ism talab qilinadi'),
   lastName: z.string().min(2, 'Familiya talab qilinadi'),
-  email: z.email("Noto'g'ri email format").or(z.literal("")),
+  email: z.string().email("Noto'g'ri email format").or(z.literal("")),
   phone: z
     .string()
     .min(13, "To'liq telefon raqam kiriting")
@@ -52,7 +60,7 @@ const staffSchema = z.object({
 const serviceSchema = z.object({
   name: z.string().min(2, 'Xizmat nomi talab qilinadi'),
   description: z.string().min(5, 'Tavsif kamida 5 belgidan iborat bo\'lishi kerak'),
-  price: z.string().min(1, 'Narx talab qilinadi'),
+  price: numericString('Narx talab qilinadi'),
   duration_minutes: z.number().min(1, 'Davomiylik talab qilinadi'),
   is_active: z.boolean().optional(),
 });
@@ -60,14 +68,14 @@ const serviceSchema = z.object({
 const expenseSchema = z.object({
   name: z.string().min(2, 'Xarajat nomi talab qilinadi'),
   description: z.string().min(5, 'Tavsif kamida 5 belgidan iborat bo\'lishi kerak'),
-  price: z.string().min(1, 'Narx talab qilinadi'),
+  price: numericString('Narx talab qilinadi'),
   reminder_date: z.string().min(1, 'Eslatma sanasi talab qilinadi'),
 });
 
 const additionalExpenseSchema = z.object({
   name: z.string().min(2, 'Xarajat nomi talab qilinadi'),
   description: z.string().min(5, 'Tavsif kamida 5 belgidan iborat bo\'lishi kerak'),
-  price: z.string().min(1, 'Narx talab qilinadi'),
+  price: numericString('Narx talab qilinadi'),
 });
 
 // --- Types ---

@@ -198,9 +198,9 @@ export const EditAppointmentModal = ({
     void barber;
     const finalData = {
       ...dataWithoutBarber,
-      client: Number(data.client),
-      staff_member: Number(data.barber),
-      service: Number(data.service),
+      client:data.client.toString(),
+      barber: data.barber.toString(),
+      service: data.service.toString(),
     };
     handleRequest({
       request: async () => await updateAppointment({ id: appointment.id, body: finalData }),

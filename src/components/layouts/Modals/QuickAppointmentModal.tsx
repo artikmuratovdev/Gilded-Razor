@@ -55,7 +55,6 @@ const QuickAppointmentModal = ({
           <Combobox
             filter={null}
             value={quickAppointmentForm.watch('client')?.toString() || ''}
-            className='w-full'
             onValueChange={(value) => {
               if (value) {
                 const client = filteredClients.find((item) => item.id.toString() === value);
@@ -100,7 +99,6 @@ const QuickAppointmentModal = ({
           <Combobox
             filter={null}
             value={quickAppointmentForm.watch('staff_member')?.toString() || ''}
-            className='w-full'
             onValueChange={(value) => {
               if (value) {
                 const staff = filteredStaff.find((item) => item.id.toString() === value);

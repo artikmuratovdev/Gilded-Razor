@@ -393,9 +393,7 @@ export const StaffProfile = () => {
                 <option value=''>Tanlang</option>
                 <option value='master_barber'>Master Barber</option>
                 <option value='barber'>Barber</option>
-                <option value='stylist'>Stylist</option>
-                <option value='colorist'>Colorist</option>
-                <option value='receptionist'>Receptionist</option>
+                <option value='kids'>Kids</option>
               </Select>
               {editForm.formState.errors.specialization && (
                 <p className='text-red-500 text-xs mt-1'>
