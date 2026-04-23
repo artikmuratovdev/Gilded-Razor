@@ -14,6 +14,7 @@ export const dashboardApi = baseApi.injectEndpoints({
         method: 'GET',
         params: { period },
       }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transformResponse: (response: any) => {
         if (Array.isArray(response)) return response;
         return response?.data ?? response?.results ?? [];

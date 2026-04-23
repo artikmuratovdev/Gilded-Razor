@@ -54,13 +54,16 @@ function ComboboxInput({
   className,
   children,
   disabled = false,
-  showTrigger = true,
-  showClear = false,
+  showTrigger: _showTrigger = true,
+  showClear: _showClear = false,
   ...props
 }: ComboboxPrimitive.Input.Props & {
   showTrigger?: boolean
   showClear?: boolean
 }) {
+  void _showTrigger
+  void _showClear
+
   return (
     <InputGroup className={cn("w-auto", className)}>
       <ComboboxPrimitive.Input
@@ -272,7 +275,6 @@ function ComboboxChip({
 
 function ComboboxChipsInput({
   className,
-  children,
   ...props
 }: ComboboxPrimitive.Input.Props) {
   return (
@@ -282,10 +284,6 @@ function ComboboxChipsInput({
       {...props}
     />
   )
-}
-
-function useComboboxAnchor() {
-  return React.useRef<HTMLDivElement | null>(null)
 }
 
 export {
@@ -304,5 +302,4 @@ export {
   ComboboxChipsInput,
   ComboboxTrigger,
   ComboboxValue,
-  useComboboxAnchor,
 }

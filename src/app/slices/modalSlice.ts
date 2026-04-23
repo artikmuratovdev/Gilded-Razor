@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-type ModalName = 'booking' | 'staff' | 'client' | 'product' | 'payment' | 'deleteClient' | 'editClient' | 'service' | 'deleteService' | 'editService' | 'expense' | 'deleteExpense' | 'editExpense' | 'additionalExpense' | 'deleteAdditionalExpense' | 'editAdditionalExpense';
+type ModalName = 'booking' | 'quickAppointment' | 'staff' | 'client' | 'product' | 'payment' | 'deleteClient' | 'editClient' | 'service' | 'deleteService' | 'editService' | 'expense' | 'deleteExpense' | 'editExpense' | 'additionalExpense' | 'deleteAdditionalExpense' | 'editAdditionalExpense';
 
 interface ClientToDelete {
   id: number;
@@ -56,6 +56,7 @@ interface AdditionalExpenseToEdit {
 
 interface ModalState {
   booking: boolean;
+  quickAppointment: boolean;
   staff: boolean;
   client: boolean;
   product: boolean;
@@ -83,6 +84,7 @@ interface ModalState {
 
 const initialState: ModalState = {
   booking: false,
+  quickAppointment: false,
   staff: false,
   client: false,
   product: false,

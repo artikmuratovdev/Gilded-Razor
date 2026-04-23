@@ -1,8 +1,12 @@
 import { useHandleError } from './useHandleError';
 
 export type Params = {
+  // This helper intentionally accepts different RTK Query result shapes.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   request: () => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSuccess?: (data?: any) => Promise<void> | void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onError?: (error?: any) => Promise<void> | void;
   onFinally?: () => Promise<void> | void;
 };
@@ -33,6 +37,7 @@ export const useHandleRequest = () => {
       if (onSuccess) {
         await onSuccess(result);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (ex: any) {
       if (onError) {
         await onError(ex);

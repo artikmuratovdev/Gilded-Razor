@@ -51,6 +51,12 @@ export type AddAppoitmentReq = {
   notes?: string;
 };
 
+export type QuickAddAppoitmentReq = {
+  client: number;
+  staff_member: number;
+  price: string;
+};
+
 export type AddAppoitmentRes = {
   id: number;
   client: number;
@@ -63,6 +69,8 @@ export type AddAppoitmentRes = {
   status: 'cancelled' | 'completed' | 'confirmed' | 'no_show' | 'pending'
   notes: string;
 };
+
+export type QuickAddAppoitmentRes = AddAppoitmentRes;
 
 export type GetOneAppoitmentRes = {
   id: number;

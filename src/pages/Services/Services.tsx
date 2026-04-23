@@ -2,7 +2,7 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Search, Plus, Pencil, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import usePaginatedService from '@/hooks/usePaginatedService';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/Button';
@@ -20,10 +20,6 @@ export const Inventory = () => {
   const totalPages = data?.pagination?.total_pages ?? 1;
   const hasNext = !!nextData?.data?.length && page < totalPages;
   const hasPrev = page > 1;
-
-  useEffect(() => {
-    setPage(1);
-  }, [searchQuery]);
 
   const handleAddService = () => {
     dispatch(openModal('service'));
@@ -63,7 +59,10 @@ export const Inventory = () => {
             <Input
               type='text'
               value={searchQuery}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               icon={<Search />}
               placeholder='Qidirish...'
               className='w-full h-10 pl-10 pr-4 rounded-xl bg-surface-light border border-white/5 focus:border-primary/50 outline-none text-sm text-white'

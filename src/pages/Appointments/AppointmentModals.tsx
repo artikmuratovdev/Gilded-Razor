@@ -10,7 +10,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Scissors, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { Button } from '../../components/ui/Button';
 import { Input, Select } from '../../components/ui/Input';
 import { Modal } from '../../components/ui/Modal';
@@ -19,24 +19,13 @@ import {
   useUpdateAppoitmentMutation,
 } from '@/app/api/appoitmentsApi/appoitmentsApi';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
-import z from 'zod';
 import { useGetAllStaffQuery } from '@/app/api/staffApi/staffApi';
 import { useGetClientsQuery } from '@/app/api/clientsApi/clientsApi';
 import { useGetServiceQuery } from '@/app/api/serviceApi/serviceApi';
 import { toast } from 'sonner';
+import { editAppointmentSchema, type EditForm } from './appointmentSchemas';
 
-export const editAppointmentSchema = z.object({
-  client: z.string().min(1, 'Mijoz tanlanishi shart'),
-  barber: z.string().min(1, 'Sartarosh tanlanishi shart'),
-  service: z.string().min(1, 'Xizmat tanlanishi shart'),
-  date: z.string().min(1, 'Sana talab qilinadi'),
-  start_time: z.string().min(1, 'Boshlanish vaqti talab qilinadi'),
-  end_time: z.string().min(1, 'Tugash vaqti talab qilinadi'),
-  status: z.enum(['pending', 'confirmed', 'completed', 'cancelled', 'no_show']),
-  price: z.number().min(0, "Narx manfiy bo'lmasligi kerak"),
-});
-
-export type EditForm = z.infer<typeof editAppointmentSchema>;
+export type { EditForm } from './appointmentSchemas';
 
 // --- Combobox Field Wrapper ---
 
@@ -61,12 +50,7 @@ const ComboboxField = ({
 }: ComboboxFieldProps) => {
   const [inputVal, setInputVal] = useState('');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // When selected value or options change, show the label for the selected ID
-  useEffect(() => {
-    const found = options.find((o) => o.value === value);
-    if (found) setInputVal(found.label);
-  }, [value, options]);
+  const selectedLabel = options.find((o) => o.value === value)?.label ?? '';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const q = e.target.value;
@@ -96,7 +80,7 @@ const ComboboxField = ({
         <div className='relative w-full flex items-center h-11 rounded-xl bg-surface-light border border-white/10 px-3 focus-within:border-primary/50 transition-colors'>
           <ComboboxInput
             placeholder={placeholder}
-            value={inputVal}
+            value={inputVal || selectedLabel}
             onChange={handleInputChange}
             showTrigger={false}
             showClear={false}
@@ -167,6 +151,9 @@ export const EditAppointmentModal = ({
   const [clientSearch, setClientSearch] = useState('');
   const [barberSearch, setBarberSearch] = useState('');
   const [serviceSearch, setServiceSearch] = useState('');
+  const selectedClient = useWatch({ control: form.control, name: 'client' });
+  const selectedBarber = useWatch({ control: form.control, name: 'barber' });
+  const selectedService = useWatch({ control: form.control, name: 'service' });
 
   // API queries with search params
   const { data: barberData } = useGetAllStaffQuery({ search: barberSearch, page_size: 50 });
@@ -200,20 +187,21 @@ export const EditAppointmentModal = ({
         price: Number(appointment.price),
       });
     }
-  }, [appointment, isOpen]);
+  }, [appointment, form, isOpen]);
 
   const [updateAppointment] = useUpdateAppoitmentMutation();
   const handleRequest = useHandleRequest();
 
   const onSubmit = (data: EditForm) => {
     if (!appointment) return;
-    const updateData = {
-      ...data,
+    const { barber, ...dataWithoutBarber } = data;
+    void barber;
+    const finalData = {
+      ...dataWithoutBarber,
       client: Number(data.client),
       staff_member: Number(data.barber),
       service: Number(data.service),
     };
-    const { barber, ...finalData } = updateData as any;
     handleRequest({
       request: async () => await updateAppointment({ id: appointment.id, body: finalData }),
       onSuccess: (res) => {
@@ -245,7 +233,7 @@ export const EditAppointmentModal = ({
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
           <ComboboxField
             label='Mijoz Ismi'
-            value={form.watch('client')}
+            value={selectedClient}
             onChange={(v) => form.setValue('client', v, { shouldValidate: true })}
             options={clientOptions}
             onSearch={setClientSearch}
@@ -254,7 +242,7 @@ export const EditAppointmentModal = ({
           />
           <ComboboxField
             label='Sartarosh'
-            value={form.watch('barber')}
+            value={selectedBarber}
             onChange={(v) => form.setValue('barber', v, { shouldValidate: true })}
             options={barberOptions}
             onSearch={setBarberSearch}
@@ -267,7 +255,7 @@ export const EditAppointmentModal = ({
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
           <ComboboxField
             label='Xizmat'
-            value={form.watch('service')}
+            value={selectedService}
             onChange={(v) => form.setValue('service', v, { shouldValidate: true })}
             options={serviceOptions}
             onSearch={setServiceSearch}

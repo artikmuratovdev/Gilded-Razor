@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 import z from 'zod';
 
 const bookingSchema = z.object({
@@ -12,6 +13,12 @@ const bookingSchema = z.object({
   price: z.number().min(1, 'Narx talab qilinadi'),
   status: z.enum(['cancelled' , 'completed' , 'confirmed' , 'no_show' , 'pending']),
   notes: z.string().optional(),
+});
+
+const quickAppointmentSchema = z.object({
+  client: z.number().min(1, 'Mijoz talab qilinadi'),
+  staff_member: z.number().min(1, 'Xodim tanlanishi shart'),
+  price: z.string().min(1, 'Narx talab qilinadi'),
 });
 
 const productSchema = z.object({
@@ -66,6 +73,7 @@ const additionalExpenseSchema = z.object({
 // --- Types ---
 
 export type BookingForm = z.infer<typeof bookingSchema>;
+export type QuickAppointmentForm = z.infer<typeof quickAppointmentSchema>;
 export type ProductForm = z.infer<typeof productSchema>;
 export type ClientForm = z.infer<typeof clientSchema>;
 export type StaffForm = z.infer<typeof staffSchema>;
@@ -73,9 +81,20 @@ export type ServiceForm = z.infer<typeof serviceSchema>;
 export type ExpenseForm = z.infer<typeof expenseSchema>;
 export type AdditionalExpenseForm = z.infer<typeof additionalExpenseSchema>;
 
+export interface ModalForms {
+  bookingForm: UseFormReturn<BookingForm>;
+  quickAppointmentForm: UseFormReturn<QuickAppointmentForm>;
+  productForm: UseFormReturn<ProductForm>;
+  clientForm: UseFormReturn<ClientForm>;
+  staffForm: UseFormReturn<StaffForm>;
+  serviceForm: UseFormReturn<ServiceForm>;
+  expenseForm: UseFormReturn<ExpenseForm>;
+  additionalExpenseForm: UseFormReturn<AdditionalExpenseForm>;
+}
+
 // --- Custom Hook ---
 
-const useModalForms = () => {
+const useModalForms = (): ModalForms => {
   const bookingForm = useForm<BookingForm>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -88,6 +107,15 @@ const useModalForms = () => {
       price: 0,
       status: 'pending',
       notes: '',
+    },
+  });
+
+  const quickAppointmentForm = useForm<QuickAppointmentForm>({
+    resolver: zodResolver(quickAppointmentSchema),
+    defaultValues: {
+      client: 0,
+      staff_member: 0,
+      price: '',
     },
   });
 
@@ -152,7 +180,16 @@ const useModalForms = () => {
     },
   });
 
-  return { bookingForm, productForm, clientForm, staffForm, serviceForm, expenseForm, additionalExpenseForm };
+  return {
+    bookingForm,
+    quickAppointmentForm,
+    productForm,
+    clientForm,
+    staffForm,
+    serviceForm,
+    expenseForm,
+    additionalExpenseForm,
+  };
 };
 
 export default useModalForms;

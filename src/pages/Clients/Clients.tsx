@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent } from '../../components/ui/Card';
 import { ClientsFilters } from './ClientsFilters';
 import { ClientsTable } from './ClientsTable';
@@ -11,9 +11,16 @@ export const Clients = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'true' | 'false'>('all');
-  const [page, setPage] = useState<number>(1);
+  const [pagination, setPagination] = useState({ page: 1, recent: false });
 
   const isRecentPage = location.pathname === '/clients/recent';
+  const page = pagination.recent === isRecentPage ? pagination.page : 1;
+  const setPage = (nextPage: number | ((page: number) => number)) => {
+    setPagination((current) => ({
+      recent: isRecentPage,
+      page: typeof nextPage === 'function' ? nextPage(current.page) : nextPage,
+    }));
+  };
 
   const is_active = statusFilter === 'all' ? undefined : statusFilter === 'true';
 
@@ -23,10 +30,6 @@ export const Clients = () => {
     is_active,
     last_date: isRecentPage ? true : undefined,
   });
-
-  useEffect(() => {
-    setPage(1);
-  }, [isRecentPage]);
 
   if (isLoading || !data) {
     return (

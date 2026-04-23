@@ -1,5 +1,5 @@
-import { useAddAppoitmentMutation } from '@/app/api/appoitmentsApi/appoitmentsApi';
-import type { AddAppoitmentReq } from '@/app/api/appoitmentsApi/type';
+import { useAddAppoitmentMutation, useQuickAddAppoitmentMutation } from '@/app/api/appoitmentsApi/appoitmentsApi';
+import type { AddAppoitmentReq, QuickAddAppoitmentReq } from '@/app/api/appoitmentsApi/type';
 import { useCreateClientMutation, useDeleteClientMutation, useUpdateClientMutation } from '@/app/api/clientsApi/clientsApi';
 import type { CreateClientReq, MutationRes } from '@/app/api/clientsApi/type';
 import { useCreateServiceMutation, useDeleteServiceMutation, useUpdateServiceMutation } from '@/app/api/serviceApi/serviceApi';
@@ -10,35 +10,27 @@ import { useAddAdditionalExpensesMutation, useDeleteAdditionalExpensesMutation, 
 import type { addAdditionalExpensesReq } from '@/app/api/additionalExpenses/type';
 import { closeModal, setClientToDelete, setClientToEdit, setServiceToDelete, setServiceToEdit, setExpenseToDelete, setExpenseToEdit, setAdditionalExpenseToDelete, setAdditionalExpenseToEdit } from '@/app/slices/modalSlice';
 import { useHandleRequest } from '@/hooks/HandleRequest/useHandleRequest';
-import type { UseFormReturn } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router';
 import type {
   BookingForm,
   ClientForm,
-  ProductForm,
-  StaffForm,
   ServiceForm,
   ExpenseForm,
   AdditionalExpenseForm,
+  ModalForms,
+  QuickAppointmentForm,
+  ProductForm,
+  StaffForm,
 } from './FormTypes';
 import type { RootState } from '@/app/store';
 import type { CreateStaffReq } from '@/app/api/staffApi/type';
 import { useCreateStaffMutation } from '@/app/api/staffApi/staffApi';
 import { toast } from 'sonner';
 
-interface ModalForms {
-  bookingForm: UseFormReturn<BookingForm>;
-  productForm: UseFormReturn<ProductForm>;
-  clientForm: UseFormReturn<ClientForm>;
-  staffForm: UseFormReturn<StaffForm>;
-  serviceForm: UseFormReturn<ServiceForm>;
-  expenseForm: UseFormReturn<ExpenseForm>;
-  additionalExpenseForm: UseFormReturn<AdditionalExpenseForm>;
-}
-
 const useModalActions = ({
   bookingForm,
+  quickAppointmentForm,
   productForm,
   clientForm,
   staffForm,
@@ -50,6 +42,7 @@ const useModalActions = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const handleRequest = useHandleRequest();
   const [createAppointment] = useAddAppoitmentMutation();
+  const [quickCreateAppointment] = useQuickAddAppoitmentMutation();
   const [createClient] = useCreateClientMutation();
   const [deleteClient] = useDeleteClientMutation();
   const [updateClient] = useUpdateClientMutation();
@@ -102,6 +95,10 @@ const useModalActions = ({
 
   const handleClosePayment = () => {
     dispatch(closeModal('payment'));
+  };
+
+  const handleCloseQuickAppointment = () => {
+    dispatch(closeModal('quickAppointment'));
   };
 
   const handleCloseDeleteClient = () => {
@@ -192,6 +189,27 @@ const useModalActions = ({
     console.log('Product submitted:', data);
     handleCloseProduct();
     productForm.reset();
+  };
+
+  const onQuickAppointmentSubmit = (data: QuickAppointmentForm) => {
+    const payload: QuickAddAppoitmentReq = {
+      client: data.client,
+      staff_member: data.staff_member,
+      price: data.price,
+    };
+
+    handleRequest({
+      request: async () => await quickCreateAppointment(payload),
+      onSuccess: () => {
+        toast.success('Tezkor bron muvaffaqiyatli yaratildi');
+        handleCloseQuickAppointment();
+        quickAppointmentForm.reset();
+      },
+      onError: (error) => {
+        console.log(error?.error?.message || error);
+        toast.error(error?.error?.message || error);
+      },
+    });
   };
 
   const onClientSubmit = (data: ClientForm) => {
@@ -483,6 +501,7 @@ const useModalActions = ({
     handleCloseClient,
     handleCloseProduct,
     handleClosePayment,
+    handleCloseQuickAppointment,
     handleCloseDeleteClient,
     handleCloseEditClient,
     handleCloseService,
@@ -496,6 +515,7 @@ const useModalActions = ({
     handleCloseEditAdditionalExpense,
     onBookingSubmit,
     onProductSubmit,
+    onQuickAppointmentSubmit,
     onClientSubmit,
     onStaffSubmit,
     onDeleteSubmit,
@@ -513,3 +533,4 @@ const useModalActions = ({
 };
 
 export default useModalActions;
+export type ModalActions = ReturnType<typeof useModalActions>;

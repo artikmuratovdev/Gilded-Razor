@@ -1,66 +1,36 @@
 import type { RootState } from '@/app/store';
-import { AlertTriangle, CreditCard, Package, Scissors, Search, UserPlus, Wrench } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Controller } from 'react-hook-form';
+import type { ChangeEvent } from 'react';
 import { useSelector } from 'react-redux';
-import { Button } from '../../ui/Button';
-import { Input, Select } from '../../ui/Input';
-import { PhoneInput } from '../../ui/PhoneInput';
-import { Modal } from '../../ui/Modal';
-import useModalForms from './FormTypes';
-import useModalActions from './SubmitFunctions';
+import { useLocation } from 'react-router';
 import { useGetClientsQuery } from '@/app/api/clientsApi/clientsApi';
 import { useGetServiceQuery } from '@/app/api/serviceApi/serviceApi';
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxContent,
-  ComboboxList,
-  ComboboxItem,
-  ComboboxEmpty,
-} from '../../ui/combobox';
 import { useGetAllStaffQuery } from '@/app/api/staffApi/staffApi';
-import { useLocation } from 'react-router';
+import useModalForms from './FormTypes';
+import useModalActions from './SubmitFunctions';
+import AdditionalExpenseModal from './AdditionalExpenseModal';
+import BookingModal from './BookingModal';
+import ClientModal from './ClientModal';
+import DeleteAdditionalExpenseModal from './DeleteAdditionalExpenseModal';
+import DeleteClientModal from './DeleteClientModal';
+import DeleteExpenseModal from './DeleteExpenseModal';
+import DeleteServiceModal from './DeleteServiceModal';
+import ExpenseModal from './ExpenseModal';
+import PaymentModal from './PaymentModal';
+import ProductModal from './ProductModal';
+import QuickAppointmentModal from './QuickAppointmentModal';
+import ServiceModal from './ServiceModal';
+import StaffModal from './StaffModal';
+import type { ClientOption, ServiceOption } from './types';
 
-// --- Schemas ---
 const Modals = () => {
   const forms = useModalForms();
-  const { bookingForm, productForm, clientForm, staffForm, serviceForm, expenseForm, additionalExpenseForm } = forms;
-  const {
-    handleCloseBooking,
-    handleCloseClient,
-    handleClosePayment,
-    handleCloseProduct,
-    handleCloseStaff,
-    handleCloseDeleteClient,
-    handleCloseEditClient,
-    handleCloseService,
-    handleCloseDeleteService,
-    handleCloseEditService,
-    handleCloseExpense,
-    handleCloseDeleteExpense,
-    handleCloseEditExpense,
-    handleCloseAdditionalExpense,
-    handleCloseDeleteAdditionalExpense,
-    handleCloseEditAdditionalExpense,
-    onBookingSubmit,
-    onClientSubmit,
-    onProductSubmit,
-    onStaffSubmit,
-    onDeleteSubmit,
-    onEditClientSubmit,
-    onServiceSubmit,
-    onDeleteServiceSubmit,
-    onEditServiceSubmit,
-    onExpenseSubmit,
-    onDeleteExpenseSubmit,
-    onEditExpenseSubmit,
-    onAdditionalExpenseSubmit,
-    onDeleteAdditionalExpenseSubmit,
-    onEditAdditionalExpenseSubmit,
-  } = useModalActions(forms);
+  const { bookingForm, quickAppointmentForm, productForm, clientForm, staffForm, serviceForm, expenseForm, additionalExpenseForm } =
+    forms;
+  const actions = useModalActions(forms);
   const {
     booking: newBooking,
+    quickAppointment: newQuickAppointment,
     staff: newStaff,
     client: newClient,
     product: newProduct,
@@ -87,22 +57,18 @@ const Modals = () => {
   } = useSelector((state: RootState) => state.modal);
   const location = useLocation();
 
-  // Get data from Redux cache (prefetched in Dashboard)
-  
-  // State for Combobox search and selected values
   const [clientSearch, setClientSearch] = useState('');
   const [serviceSearch, setServiceSearch] = useState('');
   const [staffSearch, setStaffSearch] = useState('');
   const [selectedClientName, setSelectedClientName] = useState('');
   const [selectedServiceName, setSelectedServiceName] = useState('');
   const [selectedStaffName, setSelectedStaffName] = useState('');
-  
-  const { data: clientsData } = useGetClientsQuery({ page: 1, page_size: 100 , search:clientSearch});
-  const { data: servicesData } = useGetServiceQuery({ page: 1, page_size: 100 , search:serviceSearch});
-  const { data: staffData } = useGetAllStaffQuery({ page: 1, page_size: 100 , search:staffSearch});
 
-  // Handle start time change and auto-set end time to +40 minutes
-  const handleStartTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { data: clientsData } = useGetClientsQuery({ page: 1, page_size: 100, search: clientSearch });
+  const { data: servicesData } = useGetServiceQuery({ page: 1, page_size: 100, search: serviceSearch });
+  const { data: staffData } = useGetAllStaffQuery({ page: 1, page_size: 100, search: staffSearch });
+
+  const handleStartTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     bookingForm.setValue('start_time', value);
     if (value) {
@@ -117,18 +83,18 @@ const Modals = () => {
     }
   };
 
-  // Filter options based on search
-  const filteredClients = clientsData?.data?.filter((client: any) =>
-    `${client.first_name} ${client.last_name}`.toLowerCase().includes(clientSearch.toLowerCase())
-  ) || [];
+  const filteredClients =
+    clientsData?.data?.filter((client: ClientOption) =>
+      `${client.first_name} ${client.last_name}`.toLowerCase().includes(clientSearch.toLowerCase()),
+    ) || [];
 
-  const filteredServices = servicesData?.data?.filter((service: any) =>
-    service.name.toLowerCase().includes(serviceSearch.toLowerCase())
-  ) || [];
+  const filteredServices =
+    servicesData?.data?.filter((service: ServiceOption) =>
+      service.name.toLowerCase().includes(serviceSearch.toLowerCase()),
+    ) || [];
 
-  const filteredStaff = staffData?.data?.filter(staff =>
-    staff.name.toLowerCase().includes(staffSearch.toLowerCase())
-  ) || [];
+  const filteredStaff =
+    staffData?.data?.filter((staff) => staff.name.toLowerCase().includes(staffSearch.toLowerCase())) || [];
 
   const forcedStaffRole =
     location.pathname === '/staff/kids'
@@ -136,8 +102,6 @@ const Modals = () => {
       : location.pathname === '/staff/masters'
         ? 'master_barber'
         : undefined;
-
-  // --- Form Hooks ---
 
   useEffect(() => {
     if (newBooking) {
@@ -152,15 +116,22 @@ const Modals = () => {
         status: 'pending',
         notes: '',
       });
-      // Reset selected names
-      setSelectedClientName('');
-      setSelectedServiceName('');
-      setSelectedStaffName('');
-      setClientSearch('');
-      setServiceSearch('');
-      setStaffSearch('');
     }
   }, [newBooking, bookingForm]);
+
+  const resetBookingSearchState = () => {
+    setSelectedClientName('');
+    setSelectedServiceName('');
+    setSelectedStaffName('');
+    setClientSearch('');
+    setServiceSearch('');
+    setStaffSearch('');
+  };
+
+  const handleBookingClose = () => {
+    resetBookingSearchState();
+    actions.handleCloseBooking();
+  };
 
   useEffect(() => {
     if (newStaff) {
@@ -219,1207 +190,160 @@ const Modals = () => {
 
   return (
     <>
-      {/* New Booking Modal */}
-      <Modal
+      <BookingModal
         isOpen={newBooking}
-        onClose={handleCloseBooking}
-        title='Yangi Bron'
-        description='Mijoz uchun yangi uchrashuv rejalang.'
-        icon={<Scissors className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={bookingForm.handleSubmit(onBookingSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <label className='block text-sm font-medium text-white/80 mb-1.5'>
-                Mijoz
-              </label>
-              <Combobox
-                filter={null}
-                value={bookingForm.watch('client')?.toString() || ''}
-                onValueChange={(value) => {
-                  if (value) {
-                    const client = filteredClients.find((c: any) => c.id.toString() === value);
-                    if (client) {
-                      bookingForm.setValue('client', parseInt(value));
-                      setSelectedClientName(`${client.first_name} ${client.last_name}`);
-                      setClientSearch('');
-                    }
-                  }
-                }}
-              >
-                <ComboboxInput
-                  placeholder='Mijoz qidiring...'
-                  value={selectedClientName || clientSearch}
-                  onChange={(e) => {
-                    setClientSearch(e.target.value);
-                    if (!e.target.value) {
-                      setSelectedClientName('');
-                      bookingForm.setValue('client', 0);
-                    }
-                  }}
-                  className='p-0 bg-transparent shadow-none'
-                />
-                <ComboboxContent>
-                  <ComboboxList>
-                    <ComboboxEmpty>Mijoz topilmadi</ComboboxEmpty>
-                    {filteredClients.map((client: any) => (
-                      <ComboboxItem key={client.id} value={client.id.toString()}>
-                        {client.first_name} {client.last_name}
-                      </ComboboxItem>
-                    ))}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-              {bookingForm.formState.errors.client && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {bookingForm.formState.errors.client.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className='block text-sm font-medium text-white/80 mb-1.5'>
-                Sartarosh
-              </label>
-              <Combobox
-                filter={null}
-                value={bookingForm.watch('staff_member')?.toString() || ''}
-                onValueChange={(value) => {
-                  if (value) {
-                    const staffId = parseInt(value.split('-')[0]);
-                    const staff = filteredStaff.find((s) => s.id === staffId);
-                    if (staff) {
-                      bookingForm.setValue('staff_member', staffId);
-                      setSelectedStaffName(staff.name);
-                      setStaffSearch('');
-                    }
-                  }
-                }}
-              >
-                <ComboboxInput
-                  placeholder='Sartarosh qidiring...'
-                  value={selectedStaffName || staffSearch}
-                  onChange={(e) => {
-                    setStaffSearch(e.target.value);
-                    if (!e.target.value) {
-                      setSelectedStaffName('');
-                      bookingForm.setValue('staff_member', 0);
-                    }
-                  }}
-                  className='w-full'
-                />
-                <ComboboxContent>
-                  <ComboboxList>
-                    <ComboboxEmpty>Sartarosh topilmadi</ComboboxEmpty>
-                    {filteredStaff.map((staff) => (
-                      <ComboboxItem key={staff.id} value={`${staff.id}-${staff.name}`}>
-                        {staff.name}
-                      </ComboboxItem>
-                    ))}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-              {bookingForm.formState.errors.staff_member && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {bookingForm.formState.errors.staff_member.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <label className='block text-sm font-medium text-white/80 mb-1.5'>
-                Xizmat
-              </label>
-              <Combobox
-                filter={null}
-                value={bookingForm.watch('service')?.toString() || ''}
-                onValueChange={(value) => {
-                  if (value) {
-                    const service = filteredServices.find((s: any) => s.id.toString() === value);
-                    if (service) {
-                      bookingForm.setValue('service', parseInt(value));
-                      setSelectedServiceName(`${service.name} - ${service.price} so'm`);
-                      setServiceSearch('');
-                    }
-                  }
-                }}
-              >
-                <ComboboxInput
-                  placeholder='Xizmat qidiring...'
-                  value={selectedServiceName || serviceSearch}
-                  onChange={(e) => {
-                    setServiceSearch(e.target.value);
-                    if (!e.target.value) {
-                      setSelectedServiceName('');
-                      bookingForm.setValue('service', 0);
-                    }
-                  }}
-                  className='w-full'
-                />
-                <ComboboxContent>
-                  <ComboboxList>
-                    <ComboboxEmpty>Xizmat topilmadi</ComboboxEmpty>
-                    {filteredServices.map((service: any) => (
-                      <ComboboxItem key={service.id} value={service.id.toString()}>
-                        {service.name} - {service.price} so'm
-                      </ComboboxItem>
-                    ))}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-              {bookingForm.formState.errors.service && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {bookingForm.formState.errors.service.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-              label='Narx'
-              placeholder='0.00'
-              type='number'
-              step='1'
-              min='0'
-              value={bookingForm.watch('price') || ''}
-              onChange={(e) => {
-                const val = e.target.value;
-                bookingForm.setValue('price', val ? parseInt(val) : 0);
-              }}
-              />
-              {bookingForm.formState.errors.price && (
-              <p className='text-red-500 text-xs mt-1'>
-                {bookingForm.formState.errors.price.message}
-              </p>
-              )}
-            </div>
-          </div>
-          <div>
-            <Input
-              label='Sana'
-              type='date'
-              className='scheme-dark'
-              {...bookingForm.register('date')}
-            />
-            {bookingForm.formState.errors.date && (
-              <p className='text-red-500 text-xs mt-1'>
-                {bookingForm.formState.errors.date.message}
-              </p>
-            )}
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Boshlanish vaqti'
-                type='time'
-                lang='en-GB'
-                className='scheme-dark'
-                value={bookingForm.watch('start_time') || ''}
-                onChange={handleStartTimeChange}
-              />
-              {bookingForm.formState.errors.start_time && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {bookingForm.formState.errors.start_time.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Tugash vaqti'
-                type='time'
-                lang='en-GB'
-                className='scheme-dark'
-                value={bookingForm.watch('end_time') || ''}
-                onChange={(e) => bookingForm.setValue('end_time', e.target.value)}
-              />
-              {bookingForm.formState.errors.end_time && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {bookingForm.formState.errors.end_time.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div>
-            <Input
-              label='Izohlar'
-              placeholder="Qo'shimcha izohlar..."
-              {...bookingForm.register('notes')}
-            />
-          </div>
+        bookingForm={bookingForm}
+        onSubmit={actions.onBookingSubmit}
+        onClose={handleBookingClose}
+        filteredClients={filteredClients}
+        filteredServices={filteredServices}
+        filteredStaff={filteredStaff}
+        clientSearch={clientSearch}
+        serviceSearch={serviceSearch}
+        staffSearch={staffSearch}
+        selectedClientName={selectedClientName}
+        selectedServiceName={selectedServiceName}
+        selectedStaffName={selectedStaffName}
+        setClientSearch={setClientSearch}
+        setServiceSearch={setServiceSearch}
+        setStaffSearch={setStaffSearch}
+        setSelectedClientName={setSelectedClientName}
+        setSelectedServiceName={setSelectedServiceName}
+        setSelectedStaffName={setSelectedStaffName}
+        handleStartTimeChange={handleStartTimeChange}
+      />
 
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseBooking} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Bronni Tasdiqlash
-            </Button>
-          </div>
-        </form>
-      </Modal>
+      <QuickAppointmentModal
+        isOpen={newQuickAppointment}
+        quickAppointmentForm={quickAppointmentForm}
+        onSubmit={actions.onQuickAppointmentSubmit}
+        onClose={actions.handleCloseQuickAppointment}
+      />
 
-      {/* Add Product Modal */}
-      <Modal
+      <ProductModal
         isOpen={newProduct}
-        onClose={handleCloseProduct}
-        title="Yangi Mahsulot Qo'shish"
-        description="Omborga yangi mahsulot qo'shing."
-        icon={<Package className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={productForm.handleSubmit(onProductSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div>
-            <Input
-              label='Mahsulot Nomi'
-              placeholder='Masalan: Matt Loy'
-              {...productForm.register('name')}
-            />
-            {productForm.formState.errors.name && (
-              <p className='text-red-500 text-xs mt-1'>
-                {productForm.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Select
-                label='Kategoriya'
-                icon={<Package className='h-4 w-4' />}
-                {...productForm.register('category')}
-              >
-                <option value=''>Tanlang</option>
-                <option>Soch Bezatish</option>
-                <option>Sartaroshlik</option>
-                <option>Soqol Parvarishi</option>
-              </Select>
-              {productForm.formState.errors.category && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {productForm.formState.errors.category.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Narx'
-                type='number'
-                step='0.01'
-                placeholder='0.00'
-                {...productForm.register('price', { valueAsNumber: true })}
-              />
-              {productForm.formState.errors.price && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {productForm.formState.errors.price.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Joriy Zaxira'
-                type='number'
-                placeholder='0'
-                {...productForm.register('stock', { valueAsNumber: true })}
-              />
-              {productForm.formState.errors.stock && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {productForm.formState.errors.stock.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Min Zaxira Ogohlantirishi'
-                type='number'
-                placeholder='10'
-                {...productForm.register('minStock', { valueAsNumber: true })}
-              />
-              {productForm.formState.errors.minStock && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {productForm.formState.errors.minStock.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseProduct} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Mahsulotni Saqlash
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        productForm={productForm}
+        onSubmit={actions.onProductSubmit}
+        onClose={actions.handleCloseProduct}
+      />
 
-      {/* Add Client Modal */}
-      <Modal
+      <ClientModal
         isOpen={newClient}
-        onClose={handleCloseClient}
+        clientForm={clientForm}
+        onSubmit={actions.onClientSubmit}
+        onClose={actions.handleCloseClient}
         title="Yangi Mijoz Qo'shish"
         description='Yangi mijoz profili yarating.'
-        icon={<UserPlus className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={clientForm.handleSubmit(onClientSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Ism'
-                placeholder='Jasur'
-                {...clientForm.register('firstName')}
-              />
-              {clientForm.formState.errors.firstName && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {clientForm.formState.errors.firstName.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Familiya'
-                placeholder='Karimov'
-                {...clientForm.register('lastName')}
-              />
-              {clientForm.formState.errors.lastName && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {clientForm.formState.errors.lastName.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div>
-            <Input
-              label='Elektron Pochta'
-              type='email'
-              placeholder='jasur@example.com'
-              {...clientForm.register('email')}
-            />
-            {clientForm.formState.errors.email && (
-              <p className='text-red-500 text-xs mt-1'>
-                {clientForm.formState.errors.email.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Controller
-              name='phone'
-              control={clientForm.control}
-              render={({ field }) => (
-                <PhoneInput
-                  label='Telefon Raqam'
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={clientForm.formState.errors.phone?.message}
-                />
-              )}
-            />
-          </div>
+        submitLabel='Profil Yaratish'
+      />
 
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseClient} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Profil Yaratish
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* Edit Client Modal */}
-      <Modal
+      <ClientModal
         isOpen={editClient}
-        onClose={handleCloseEditClient}
-        title="Mijozni Tahrirlash"
-        description="Mijoz ma\'lumotlarini yangilang."
-        icon={<UserPlus className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={clientForm.handleSubmit(onEditClientSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Ism'
-                placeholder='Jasur'
-                {...clientForm.register('firstName')}
-              />
-              {clientForm.formState.errors.firstName && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {clientForm.formState.errors.firstName.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Familiya'
-                placeholder='Karimov'
-                {...clientForm.register('lastName')}
-              />
-              {clientForm.formState.errors.lastName && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {clientForm.formState.errors.lastName.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div>
-            <Input
-              label='Elektron Pochta'
-              type='email'
-              placeholder='jasur@example.com'
-              {...clientForm.register('email')}
-            />
-            {clientForm.formState.errors.email && (
-              <p className='text-red-500 text-xs mt-1'>
-                {clientForm.formState.errors.email.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Controller
-              name='phone'
-              control={clientForm.control}
-              render={({ field }) => (
-                <PhoneInput
-                  label='Telefon Raqam'
-                  value={field.value}
-                  onChange={field.onChange}
-                  error={clientForm.formState.errors.phone?.message}
-                />
-              )}
-            />
-          </div>
+        clientForm={clientForm}
+        onSubmit={actions.onEditClientSubmit}
+        onClose={actions.handleCloseEditClient}
+        title='Mijozni Tahrirlash'
+        description="Mijoz ma'lumotlarini yangilang."
+        submitLabel='Saqlash'
+      />
 
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseEditClient} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Saqlash
-            </Button>
-          </div>
-        </form>
-      </Modal>
-
-      {/* Add Staff Modal */}
-      <Modal
+      <StaffModal
         isOpen={newStaff}
-        onClose={handleCloseStaff}
-        title="Xodim Qo'shish"
-        description="Jamoangizga yangi mutaxassis ro'yxatga olish."
-        icon={<Scissors className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={staffForm.handleSubmit(onStaffSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Xodim Ismi'
-                placeholder='Jasur Karimov'
-                icon={<UserPlus className='h-4 w-4' />}
-                {...staffForm.register('name')}
-              />
-              {staffForm.formState.errors.name && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {staffForm.formState.errors.name.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Select
-                label='Mutaxassislik / Lavozim'
-                icon={<Scissors className='h-4 w-4' />}
-                disabled={Boolean(forcedStaffRole)}
-                {...staffForm.register('specialization')}
-              >
-                <option value=''>Tanlang</option>
-                <option value='master_barber'>Master Barber</option>
-                <option value='barber'>Barber</option>
-                <option value='kids'>Kids</option>
-              </Select>
-              {forcedStaffRole && (
-                <p className='text-xs text-gray-400 mt-1'>
-                  Bu sahifada mutaxassislik avtomatik tanlanadi.
-                </p>
-              )}
-              {staffForm.formState.errors.specialization && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {staffForm.formState.errors.specialization.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Controller
-                name='phone_number'
-                control={staffForm.control}
-                render={({ field }) => (
-                  <PhoneInput
-                    label='Telefon Raqam'
-                    value={field.value}
-                    onChange={field.onChange}
-                    error={staffForm.formState.errors.phone_number?.message}
-                  />
-                )}
-              />
-            </div>
-            <div>
-              <Input
-                type='number'
-                label='Komissiya Stavkasi (%)'
-                placeholder='Masalan: 45'
-                {...staffForm.register('commission_rate', { valueAsNumber: true })}
-              />
-              {staffForm.formState.errors.commission_rate && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {staffForm.formState.errors.commission_rate.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseStaff} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Xodim Qo'shish
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        staffForm={staffForm}
+        onSubmit={actions.onStaffSubmit}
+        onClose={actions.handleCloseStaff}
+        forcedStaffRole={forcedStaffRole}
+      />
+  
+      <PaymentModal isOpen={newPayment} onClose={actions.handleClosePayment} />
 
-      {/* Process Payment Modal */}
-      <Modal
-        isOpen={newPayment}
-        onClose={handleClosePayment}
-        title="To'lovni Qayta Ishlash"
-        description='Mijoz uchun tranzaktsiyani yakunlang.'
-        icon={<CreditCard className='text-primary h-8 w-8' />}
-      >
-        <div className='space-y-2 sm:space-y-4'>
-          <Input
-            label='Mijozni Tanlash'
-            placeholder='Mijozni qidiring...'
-            icon={<Search className='h-4 w-4' />}
-          />
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <Select label="To'lov Usuli">
-              <option>Kredit Karta</option>
-              <option>Naqd Pul</option>
-              <option>Sovg'a Kartasi</option>
-            </Select>
-            <Input
-              label='Jami Miqdor'
-              type='number'
-              placeholder='0.00'
-              className='text-right'
-            />
-          </div>
-          <div className='bg-surface-light p-3 sm:p-4 rounded-xl border border-white/5'>
-            <div className='flex justify-between text-sm mb-2'>
-              <span className='text-gray-400'>Narx</span>
-              <span className='text-white'>$0.00</span>
-            </div>
-            <div className='flex justify-between text-sm mb-2'>
-              <span className='text-gray-400'>Soliq (8%)</span>
-              <span className='text-white'>$0.00</span>
-            </div>
-            <div className='border-t border-white/5 my-2 pt-2 flex justify-between font-bold'>
-              <span className='text-white'>Jami</span>
-              <span className='text-primary'>$0.00</span>
-            </div>
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' onClick={handleClosePayment} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' className='w-full sm:w-auto'>
-              Kartani To'lash
-            </Button>
-          </div>
-
-        </div>
-      </Modal>
-
-      {/* Delete Client Modal */}
-      <Modal
+      <DeleteClientModal
         isOpen={deleteClient}
-        onClose={handleCloseDeleteClient}
-        title="Mijozni O'chirish"
-        description="Bu amalni ortga qaytarib bo'lmaydi. Mijoz va unga tegishli barcha ma'lumotlar o'chiriladi."  
-        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
-      >
-        <div className='space-y-4'>
-          {clientToDelete && (
-            <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
-              <p className='text-sm text-gray-300'>
-                <span className='font-semibold text-white'>
-                  {clientToDelete.name}
-                </span>{' '}
-                nomli mijozni o'chirmoqchimisiz?
-              </p>
-            </div>
-          )}
-          
-          <div className='pt-3 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button 
-              variant='ghost' 
-              onClick={handleCloseDeleteClient}
-              className='w-full sm:w-auto'
-            >
-              Bekor Qilish
-            </Button>
-            <Button 
-              variant='default' 
-              onClick={onDeleteSubmit}
-              className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
-            >
-              O'chirish
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        clientToDelete={clientToDelete}
+        onClose={actions.handleCloseDeleteClient}
+        onDelete={actions.onDeleteSubmit}
+      />
 
-      {/* Add Service Modal */}
-      <Modal
+      <ServiceModal
         isOpen={newService}
-        onClose={handleCloseService}
+        serviceForm={serviceForm}
+        onSubmit={actions.onServiceSubmit}
+        onClose={actions.handleCloseService}
         title="Yangi Xizmat Qo'shish"
-        description="Yangi xizmat yarating."
-        icon={<Wrench className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={serviceForm.handleSubmit(onServiceSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div>
-            <Input
-              label='Xizmat Nomi'
-              placeholder='Masalan: Soch Kesish'
-              {...serviceForm.register('name')}
-            />
-            {serviceForm.formState.errors.name && (
-              <p className='text-red-500 text-xs mt-1'>
-                {serviceForm.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              label="Ta'rif"
-              placeholder="Xizmat ta'rifini kiriting"
-              {...serviceForm.register('description')}
-            />
-            {serviceForm.formState.errors.description && (
-              <p className='text-red-500 text-xs mt-1'>
-                {serviceForm.formState.errors.description.message}
-              </p>
-            )}
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Narx'
-                placeholder='25000'
-                {...serviceForm.register('price')}
-              />
-              {serviceForm.formState.errors.price && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {serviceForm.formState.errors.price.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Davomiyligi (minut)'
-                type='number'
-                placeholder='30'
-                {...serviceForm.register('duration_minutes', { valueAsNumber: true })}
-              />
-              {serviceForm.formState.errors.duration_minutes && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {serviceForm.formState.errors.duration_minutes.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseService} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Xizmat Qo'shish
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        description='Yangi xizmat yarating.'
+        submitLabel="Xizmat Qo'shish"
+      />
 
-      {/* Edit Service Modal */}
-      <Modal
+      <ServiceModal
         isOpen={editService}
-        onClose={handleCloseEditService}
-        title="Xizmatni Tahrirlash"
+        serviceForm={serviceForm}
+        onSubmit={actions.onEditServiceSubmit}
+        onClose={actions.handleCloseEditService}
+        title='Xizmatni Tahrirlash'
         description="Xizmat ma'lumotlarini yangilang."
-        icon={<Wrench className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={serviceForm.handleSubmit(onEditServiceSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div>
-            <Input
-              label='Xizmat Nomi'
-              placeholder='Masalan: Soch Kesish'
-              {...serviceForm.register('name')}
-            />
-            {serviceForm.formState.errors.name && (
-              <p className='text-red-500 text-xs mt-1'>
-                {serviceForm.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              label="Ta'rif"
-              placeholder="Xizmat ta'rifini kiriting"
-              {...serviceForm.register('description')}
-            />
-            {serviceForm.formState.errors.description && (
-              <p className='text-red-500 text-xs mt-1'>
-                {serviceForm.formState.errors.description.message}
-              </p>
-            )}
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Narx'
-                placeholder='25000'
-                {...serviceForm.register('price')}
-              />
-              {serviceForm.formState.errors.price && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {serviceForm.formState.errors.price.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Davomiyligi (minut)'
-                type='number'
-                placeholder='30'
-                {...serviceForm.register('duration_minutes', { valueAsNumber: true })}
-              />
-              {serviceForm.formState.errors.duration_minutes && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {serviceForm.formState.errors.duration_minutes.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseEditService} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Saqlash
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        submitLabel='Saqlash'
+      />
 
-      {/* Delete Service Modal */}
-      <Modal
+      <DeleteServiceModal
         isOpen={deleteService}
-        onClose={handleCloseDeleteService}
-        title="Xizmatni O'chirish"
-        description="Bu amalni ortga qaytarib bo'lmaydi. Xizmat va unga tegishli barcha ma'lumotlar o'chiriladi."
-        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
-      >
-        <div className='space-y-4'>
-          {serviceToDelete && (
-            <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
-              <p className='text-sm text-gray-300'>
-                <span className='font-semibold text-white'>
-                  {serviceToDelete.name}
-                </span>{' '}
-                nomli xizmatni o'chirmoqchimisiz?
-              </p>
-            </div>
-          )}
-          
-          <div className='pt-3 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button 
-              variant='ghost' 
-              onClick={handleCloseDeleteService}
-              className='w-full sm:w-auto'
-            >
-              Bekor Qilish
-            </Button>
-            <Button 
-              variant='default' 
-              onClick={onDeleteServiceSubmit}
-              className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
-            >
-              O'chirish
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        serviceToDelete={serviceToDelete}
+        onClose={actions.handleCloseDeleteService}
+        onDelete={actions.onDeleteServiceSubmit}
+      />
 
-      {/* Add Expense Modal */}
-      <Modal
+      <ExpenseModal
         isOpen={newExpense}
-        onClose={handleCloseExpense}
+        expenseForm={expenseForm}
+        onSubmit={actions.onExpenseSubmit}
+        onClose={actions.handleCloseExpense}
         title="Do'kon Xarajati Qo'shish"
         description="Yangi do'kon xarajatini yarating."
-        icon={<Package className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={expenseForm.handleSubmit(onExpenseSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div>
-            <Input
-              label='Xarajat Nomi'
-              placeholder="Masalan: Elektr energiyasi"
-              {...expenseForm.register('name')}
-            />
-            {expenseForm.formState.errors.name && (
-              <p className='text-red-500 text-xs mt-1'>
-                {expenseForm.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              label="Ta'rif"
-              placeholder="Xarajat ta'rifini kiriting"
-              {...expenseForm.register('description')}
-            />
-            {expenseForm.formState.errors.description && (
-              <p className='text-red-500 text-xs mt-1'>
-                {expenseForm.formState.errors.description.message}
-              </p>
-            )}
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Narx'
-                placeholder='50000'
-                {...expenseForm.register('price')}
-              />
-              {expenseForm.formState.errors.price && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {expenseForm.formState.errors.price.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Eslatma Sanasi'
-                type='date'
-                {...expenseForm.register('reminder_date')}
-              />
-              {expenseForm.formState.errors.reminder_date && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {expenseForm.formState.errors.reminder_date.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseExpense} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Xarajat Qo'shish
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        submitLabel="Xarajat Qo'shish"
+      />
 
-      {/* Edit Expense Modal */}
-      <Modal
+      <ExpenseModal
         isOpen={editExpense}
-        onClose={handleCloseEditExpense}
-        title="Xarajatni Tahrirlash"
+        expenseForm={expenseForm}
+        onSubmit={actions.onEditExpenseSubmit}
+        onClose={actions.handleCloseEditExpense}
+        title='Xarajatni Tahrirlash'
         description="Xarajat ma'lumotlarini yangilang."
-        icon={<Package className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={expenseForm.handleSubmit(onEditExpenseSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div>
-            <Input
-              label='Xarajat Nomi'
-              placeholder="Masalan: Elektr energiyasi"
-              {...expenseForm.register('name')}
-            />
-            {expenseForm.formState.errors.name && (
-              <p className='text-red-500 text-xs mt-1'>
-                {expenseForm.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              label="Ta'rif"
-              placeholder="Xarajat ta'rifini kiriting"
-              {...expenseForm.register('description')}
-            />
-            {expenseForm.formState.errors.description && (
-              <p className='text-red-500 text-xs mt-1'>
-                {expenseForm.formState.errors.description.message}
-              </p>
-            )}
-          </div>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'>
-            <div>
-              <Input
-                label='Narx'
-                placeholder='50000'
-                {...expenseForm.register('price')}
-              />
-              {expenseForm.formState.errors.price && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {expenseForm.formState.errors.price.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                label='Eslatma Sanasi'
-                type='date'
-                {...expenseForm.register('reminder_date')}
-              />
-              {expenseForm.formState.errors.reminder_date && (
-                <p className='text-red-500 text-xs mt-1'>
-                  {expenseForm.formState.errors.reminder_date.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseEditExpense} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Saqlash
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        submitLabel='Saqlash'
+      />
 
-      {/* Delete Expense Modal */}
-      <Modal
+      <DeleteExpenseModal
         isOpen={deleteExpense}
-        onClose={handleCloseDeleteExpense}
-        title="Xarajatni O'chirish"
-        description="Bu amalni ortga qaytarib bo'lmaydi. Xarajat va unga tegishli barcha ma'lumotlar o'chiriladi."
-        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
-      >
-        <div className='space-y-4'>
-          {expenseToDelete && (
-            <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
-              <p className='text-sm text-gray-300'>
-                <span className='font-semibold text-white'>
-                  {expenseToDelete.name}
-                </span>{' '}
-                nomli xarajatni o'chirmoqchimisiz?
-              </p>
-            </div>
-          )}
-          
-          <div className='pt-3 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button 
-              variant='ghost' 
-              onClick={handleCloseDeleteExpense}
-              className='w-full sm:w-auto'
-            >
-              Bekor Qilish
-            </Button>
-            <Button 
-              variant='default' 
-              onClick={onDeleteExpenseSubmit}
-              className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
-            >
-              O'chirish
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        expenseToDelete={expenseToDelete}
+        onClose={actions.handleCloseDeleteExpense}
+        onDelete={actions.onDeleteExpenseSubmit}
+      />
 
-      {/* Add Additional Expense Modal */}
-      <Modal
+      <AdditionalExpenseModal
         isOpen={newAdditionalExpense}
-        onClose={handleCloseAdditionalExpense}
+        additionalExpenseForm={additionalExpenseForm}
+        onSubmit={actions.onAdditionalExpenseSubmit}
+        onClose={actions.handleCloseAdditionalExpense}
         title="Qo'shimcha Xarajat Qo'shish"
         description="Yangi qo'shimcha xarajatni yarating."
-        icon={<Package className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={additionalExpenseForm.handleSubmit(onAdditionalExpenseSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div>
-            <Input
-              label='Xarajat Nomi'
-              placeholder="Masalan: Transport xarajatlari"
-              {...additionalExpenseForm.register('name')}
-            />
-            {additionalExpenseForm.formState.errors.name && (
-              <p className='text-red-500 text-xs mt-1'>
-                {additionalExpenseForm.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              label="Ta'rif"
-              placeholder="Xarajat ta'rifini kiriting"
-              {...additionalExpenseForm.register('description')}
-            />
-            {additionalExpenseForm.formState.errors.description && (
-              <p className='text-red-500 text-xs mt-1'>
-                {additionalExpenseForm.formState.errors.description.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              label='Narx'
-              placeholder='50000'
-              {...additionalExpenseForm.register('price')}
-            />
-            {additionalExpenseForm.formState.errors.price && (
-              <p className='text-red-500 text-xs mt-1'>
-                {additionalExpenseForm.formState.errors.price.message}
-              </p>
-            )}
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseAdditionalExpense} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Xarajat Qo'shish
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        submitLabel="Xarajat Qo'shish"
+      />
 
-      {/* Edit Additional Expense Modal */}
-      <Modal
+      <AdditionalExpenseModal
         isOpen={editAdditionalExpense}
-        onClose={handleCloseEditAdditionalExpense}
+        additionalExpenseForm={additionalExpenseForm}
+        onSubmit={actions.onEditAdditionalExpenseSubmit}
+        onClose={actions.handleCloseEditAdditionalExpense}
         title="Qo'shimcha Xarajatni Tahrirlash"
         description="Qo'shimcha xarajat ma'lumotlarini yangilang."
-        icon={<Package className='text-primary h-8 w-8' />}
-      >
-        <form
-          onSubmit={additionalExpenseForm.handleSubmit(onEditAdditionalExpenseSubmit)}
-          className='space-y-2 sm:space-y-4'
-        >
-          <div>
-            <Input
-              label='Xarajat Nomi'
-              placeholder="Masalan: Transport xarajatlari"
-              {...additionalExpenseForm.register('name')}
-            />
-            {additionalExpenseForm.formState.errors.name && (
-              <p className='text-red-500 text-xs mt-1'>
-                {additionalExpenseForm.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              label="Ta'rif"
-              placeholder="Xarajat ta'rifini kiriting"
-              {...additionalExpenseForm.register('description')}
-            />
-            {additionalExpenseForm.formState.errors.description && (
-              <p className='text-red-500 text-xs mt-1'>
-                {additionalExpenseForm.formState.errors.description.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <Input
-              label='Narx'
-              placeholder='50000'
-              {...additionalExpenseForm.register('price')}
-            />
-            {additionalExpenseForm.formState.errors.price && (
-              <p className='text-red-500 text-xs mt-1'>
-                {additionalExpenseForm.formState.errors.price.message}
-              </p>
-            )}
-          </div>
-          <div className='pt-3 sm:pt-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button variant='ghost' type='button' onClick={handleCloseEditAdditionalExpense} className='w-full sm:w-auto'>
-              Bekor Qilish
-            </Button>
-            <Button variant='default' type='submit' className='w-full sm:w-auto'>
-              Saqlash
-            </Button>
-          </div>
-        </form>
-      </Modal>
+        submitLabel='Saqlash'
+      />
 
-      {/* Delete Additional Expense Modal */}
-      <Modal
+      <DeleteAdditionalExpenseModal
         isOpen={deleteAdditionalExpense}
-        onClose={handleCloseDeleteAdditionalExpense}
-        title="Qo'shimcha Xarajatni O'chirish"
-        description="Bu amalni ortga qaytarib bo'lmaydi. Qo'shimcha xarajat va unga tegishli barcha ma'lumotlar o'chiriladi."
-        icon={<AlertTriangle className='text-red-500 h-8 w-8' />}
-      >
-        <div className='space-y-4'>
-          {additionalExpenseToDelete && (
-            <div className='bg-red-500/10 border border-red-500/20 rounded-lg p-4'>
-              <p className='text-sm text-gray-300'>
-                <span className='font-semibold text-white'>
-                  {additionalExpenseToDelete.name}
-                </span>{' '}
-                nomli qo'shimcha xarajatni o'chirmoqchimisiz?
-              </p>
-            </div>
-          )}
-          
-          <div className='pt-3 flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 border-t border-white/5'>
-            <Button 
-              variant='ghost' 
-              onClick={handleCloseDeleteAdditionalExpense}
-              className='w-full sm:w-auto'
-            >
-              Bekor Qilish
-            </Button>
-            <Button 
-              variant='default' 
-              onClick={onDeleteAdditionalExpenseSubmit}
-              className='w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white'
-            >
-              O'chirish
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        additionalExpenseToDelete={additionalExpenseToDelete}
+        onClose={actions.handleCloseDeleteAdditionalExpense}
+        onDelete={actions.onDeleteAdditionalExpenseSubmit}
+      />
     </>
   );
 };

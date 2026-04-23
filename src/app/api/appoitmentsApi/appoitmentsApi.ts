@@ -6,6 +6,8 @@ import type {
   AddAppoitmentReq,
   AddAppoitmentRes,
   GetOneAppoitmentRes,
+  QuickAddAppoitmentReq,
+  QuickAddAppoitmentRes,
 } from './type';
 import type { EditForm } from '@/pages/Appointments/AppointmentModals';
 
@@ -21,6 +23,14 @@ export const appoitmentsApi = baseApi.injectEndpoints({
     addAppoitment: builder.mutation<AddAppoitmentRes, AddAppoitmentReq>({
       query: (body) => ({
         url: '/appointments/',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [API_TAGS.APPOITMENTS],
+    }),
+    quickAddAppoitment: builder.mutation<QuickAddAppoitmentRes, QuickAddAppoitmentReq>({
+      query: (body) => ({
+        url: '/appointments/quick-create/',
         method: 'POST',
         body,
       }),
@@ -56,4 +66,12 @@ export const appoitmentsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetAppoitmentsQuery, useAddAppoitmentMutation, useGetOneAppoitmentQuery, useUpdateAppoitmentMutation, useDeleteAppoitmentMutation, useSetStatusAppointmentMutation } = appoitmentsApi;
+export const {
+  useGetAppoitmentsQuery,
+  useAddAppoitmentMutation,
+  useQuickAddAppoitmentMutation,
+  useGetOneAppoitmentQuery,
+  useUpdateAppoitmentMutation,
+  useDeleteAppoitmentMutation,
+  useSetStatusAppointmentMutation,
+} = appoitmentsApi;

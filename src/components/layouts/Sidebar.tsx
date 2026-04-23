@@ -1,8 +1,11 @@
+import { openModal } from '@/app/slices/modalSlice';
 import { expensesSubItems, menuItems, staffSubItems } from '@/constants/menuItems';
 import { cn } from '../../lib/utils';
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Plus } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router';
+import { Button } from '../ui/Button';
+import { useDispatch } from 'react-redux';
 
 interface SidebarProps {
   currentPage: string;
@@ -11,6 +14,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -179,6 +183,9 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
             </div>
           );
         })}
+        <Button className='mt-5 w-full' onClick={() => dispatch(openModal('quickAppointment'))}>
+          <Plus /> Tezkor Bron
+        </Button>
       </nav>
     </aside>
   );

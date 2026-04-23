@@ -33,6 +33,7 @@ const refreshBaseQuery = fetchBaseQuery({ baseUrl: SERVER_URL });
 // qolgan requestlar natijani kutadi
 let refreshPromise: Promise<boolean> | null = null;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isTokenNotValid = (result: any): boolean => {
   const errorData = result?.error?.data;
   return (
