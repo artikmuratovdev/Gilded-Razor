@@ -83,8 +83,8 @@ export const setMenuLabel = (page: string) => {
       };
     case 'clients/recent':
       return {
-        title: '15 kunlik mijozlar',
-        description: "15 kundan oshgan mijozlaringizni ko'ring va boshqaring.",
+        title: '20 kunlik mijozlar',
+        description: "20 kundan oshgan mijozlaringizni ko'ring va boshqaring.",
       };
     case 'services':
       return {
