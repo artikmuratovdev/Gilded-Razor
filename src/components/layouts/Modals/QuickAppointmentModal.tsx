@@ -46,8 +46,8 @@ const QuickAppointmentModal = ({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title='Tezkor Bron'
-      description="Mijoz va xodimni tanlab tezkor bron yarating."
+      title="Tushum qo'shish"
+      description="Mijoz va xodimni tanlab tushum qo'shing."
       icon={<Scissors className='text-primary h-8 w-8' />}
     >
       <form onSubmit={quickAppointmentForm.handleSubmit(onSubmit)} className='space-y-3 sm:space-y-4'>
