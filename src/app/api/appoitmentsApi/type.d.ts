@@ -52,7 +52,7 @@ export type AddAppoitmentReq = {
 };
 
 export type QuickAddAppoitmentReq = {
-  client: number;
+  client: number | string;
   staff_member: number;
   price: string;
 };

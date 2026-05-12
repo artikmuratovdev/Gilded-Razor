@@ -31,6 +31,7 @@ const QuickAppointmentModal = ({
 
   const filteredClients = clientsData?.data ?? [];
   const filteredStaff = staffData?.data ?? [];
+  const selectedClient = quickAppointmentForm.watch('client');
 
   const handleClose = () => {
     setClientSearch('');
@@ -54,7 +55,7 @@ const QuickAppointmentModal = ({
           <label className='mb-1.5 block text-sm font-medium text-white/80'>Mijoz</label>
           <Combobox
             filter={null}
-            value={quickAppointmentForm.watch('client')?.toString() || ''}
+            value={typeof selectedClient === 'number' ? selectedClient.toString() : ''}
             onValueChange={(value) => {
               if (value) {
                 const client = filteredClients.find((item) => item.id.toString() === value);
@@ -67,20 +68,23 @@ const QuickAppointmentModal = ({
             }}
           >
             <ComboboxInput
-              placeholder='Mijoz qidiring...'
+              placeholder='Mijoz qidiring yoki yangi mijoz nomini kiriting...'
               value={selectedClientName || clientSearch}
               onChange={(e) => {
-                setClientSearch(e.target.value);
-                if (!e.target.value) {
+                const value = e.target.value;
+                setClientSearch(value);
+                setSelectedClientName('');
+                quickAppointmentForm.setValue('client', value, { shouldValidate: true });
+                if (!value) {
                   setSelectedClientName('');
-                  quickAppointmentForm.setValue('client', 0, { shouldValidate: true });
+                  quickAppointmentForm.setValue('client', '', { shouldValidate: true });
                 }
               }}
               className='w-full [&>div]:w-full [&_input]:w-full'
             />
             <ComboboxContent>
               <ComboboxList>
-                <ComboboxEmpty>Mijoz topilmadi</ComboboxEmpty>
+                <ComboboxEmpty>Yangi mijoz sifatida kiritiladi</ComboboxEmpty>
                 {filteredClients.map((client) => (
                   <ComboboxItem key={client.id} value={client.id.toString()}>
                     {client.first_name} {client.last_name}

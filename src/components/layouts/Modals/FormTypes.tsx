@@ -24,7 +24,10 @@ const bookingSchema = z.object({
 });
 
 const quickAppointmentSchema = z.object({
-  client: z.number().min(1, 'Mijoz talab qilinadi'),
+  client: z.union([
+    z.number().min(1, 'Mijoz talab qilinadi'),
+    z.string().trim().min(2, "Mijoz nomi kamida 2 belgidan iborat bo'lishi kerak"),
+  ]),
   staff_member: z.number().min(1, 'Xodim tanlanishi shart'),
   price: numericString('Narx talab qilinadi'),
 });
@@ -121,7 +124,7 @@ const useModalForms = (): ModalForms => {
   const quickAppointmentForm = useForm<QuickAppointmentForm>({
     resolver: zodResolver(quickAppointmentSchema),
     defaultValues: {
-      client: 0,
+      client: '',
       staff_member: 0,
       price: '',
     },
