@@ -184,7 +184,7 @@ export const Sidebar = ({ currentPage, onNavigate, isOpen }: SidebarProps) => {
           );
         })}
         <Button className='mt-5 w-full' onClick={() => dispatch(openModal('quickAppointment'))}>
-          <Plus /> Tezkor Bron
+          <Plus /> Tushum qo'shish
         </Button>
       </nav>
     </aside>
