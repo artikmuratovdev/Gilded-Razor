@@ -30,7 +30,7 @@ export const menuItems = [
   },
   { id: 'staff', label: 'Jamoa', icon: Users, path: '/staff' },
   { id: 'clients', label: 'Mijozlar', icon: UserCheck, path: '/clients' },
-  { id: 'clients/recent', label: '15 kunlik mijozlar', icon: UserCheck, path: '/clients/recent/' },
+  { id: 'clients/recent', label: '20 kunlik mijozlar', icon: UserCheck, path: '/clients/recent/' },
   { id: 'services', label: 'Xizmatlar', icon: Package, path: '/services' },
   { id: 'reports', label: 'Hisobotlar', icon: BarChart3, path: '/reports' },
   { id: 'academy', label: 'Akademiya', icon: GraduationCap, path: '/academy' },
